@@ -16,10 +16,11 @@ return new class extends Migration
             $table->string('title');
             $table->string('slug')->unique();
             $table->text('description');
-            $table->enum('status', ['tersedia', 'terambil'])->default('tersedia');
-            $table->string('phone_number');
-            $table->text('address');
+            $table->enum("urgency",["low","medium","high"])->nullable();
+            $table->string('phone_number')->nullable();
+            $table->text('location')->nullable();
             $table->foreignId('user_id')->constrained()->onDelete('cascade');
+            $table->foreignId('status_id')->constrained()->onDelete('');
             $table->foreignId('donation_category_id')->constrained()->onDelete('cascade');
             $table->softDeletes();
             $table->timestamps();

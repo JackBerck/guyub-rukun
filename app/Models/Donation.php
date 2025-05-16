@@ -41,4 +41,9 @@ class Donation extends Model
     {
         return $this->hasMany(DonationImage::class);
     }
+
+    public function DonationStatus()
+    {
+        return $this->belongsTo(DonationStatus::class);
+    }
 }

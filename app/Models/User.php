@@ -3,14 +3,17 @@
 namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
+use Filament\Models\Contracts\FilamentUser;
+use Filament\Panel;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Spatie\Permission\Traits\HasRoles;
 
-class User extends Authenticatable
+class User extends Authenticatable implements FilamentUser
 {
     /** @use HasFactory<\Database\Factories\UserFactory> */
-    use HasFactory, Notifiable;
+    use HasFactory, Notifiable, HasRoles;
 
     /**
      * The attributes that are mass assignable.
@@ -49,6 +52,11 @@ class User extends Authenticatable
         ];
     }
 
+    public function canAccessPanel(Panel $panel): bool
+    {
+        return $this->hasRole("admin");
+    }
+
     public function forums()
     {
         return $this->hasMany(Forum::class);
@@ -59,15 +67,13 @@ class User extends Authenticatable
         return $this->hasMany(ForumComment::class);
     }
 
-    public function donations() {
+    public function donations()
+    {
         return $this->hasMany(Donation::class);
     }
 
-    public function requests() {
-        return $this->hasMany(DonationRequest::class);
-    }
-
-    public function stories() {
+    public function stories()
+    {
         return $this->hasMany(Story::class);
     }
 }
