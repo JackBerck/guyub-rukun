@@ -11,7 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('requests', function (Blueprint $table) {
+        Schema::create('donation_requests', function (Blueprint $table) {
             $table->id();
             $table->string('title');
             $table->string('slug')->unique();

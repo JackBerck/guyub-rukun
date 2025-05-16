@@ -10,6 +10,7 @@
 @theme {
     --font-sans:
         'Instrument Sans', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
+    --font-poppins: 'Poppins', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
 
     --radius-lg: var(--radius);
     --radius-md: calc(var(--radius) - 2px);
@@ -57,6 +58,19 @@
     --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
     --color-sidebar-border: var(--sidebar-border);
     --color-sidebar-ring: var(--sidebar-ring);
+
+    /* Costum Colours */
+    --color-dark-base: oklch(0.129 0.042 264.695);
+    --color-light-base: oklch(0.984 0.003 247.858);
+    --color-blue-base: oklch(0.546 0.245 262.881);
+    --color-rose-base: oklch(0.586 0.253 17.585);
+    --color-green-base: oklch(0.627 0.194 149.214);
+    --color-lime-base: oklch(0.648 0.2 131.684);
+    --color-yellow-base: oklch(0.681 0.162 75.834);
+    --color-purple-base: oklch(0.558 0.288 302.321);
+    --color-amber-base: oklch(0.666 0.179 58.318);
+    --color-emerald-base: oklch(0.596 0.145 163.225);
+    --color-red-base: oklch(0.577 0.245 27.325);
 }
 
 /*
@@ -149,11 +163,65 @@
 }
 
 @layer base {
-    * {
-        @apply border-border;
+    h1 {
+      @apply text-2xl md:text-3xl lg:text-4xl;
     }
 
-    body {
-        @apply bg-background text-foreground;
+    h2 {
+      @apply text-xl md:text-2xl lg:text-3xl;
     }
-}
+
+    h3 {
+      @apply text-lg md:text-xl lg:text-2xl;
+    }
+
+    h4 {
+      @apply text-xl md:text-2xl;
+    }
+
+    h5 {
+      @apply text-lg md:text-xl;
+    }
+
+    h6 {
+      @apply text-base lg:text-lg;
+    }
+
+    p {
+      @apply text-sm sm:text-base;
+    }
+
+    small {
+      @apply text-xs lg:text-sm;
+    }
+  }
+
+  @utility container {
+    @apply mx-auto;
+  }
+
+  @layer components {
+    .section-padding-x {
+      @apply px-6 sm:px-8 md:px-12 xl:px-20;
+    }
+
+    .section-padding-x-sm {
+      @apply px-4 sm:px-6 md:px-8 lg:px-10 xl:px-12;
+    }
+
+    .big-font-size {
+      @apply text-base md:text-lg lg:text-xl;
+    }
+
+    .medium-font-size {
+      @apply text-sm md:text-base lg:text-lg;
+    }
+
+    .small-font-size {
+      @apply text-sm md:text-base;
+    }
+
+    .extra-small-font-size {
+      @apply text-xs md:text-sm;
+    }
+  }

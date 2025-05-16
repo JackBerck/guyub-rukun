@@ -2,9 +2,9 @@
 
 namespace App\Filament\Resources;
 
-use App\Filament\Resources\RequestResource\Pages;
-use App\Filament\Resources\RequestResource\RelationManagers;
-use App\Models\Request;
+use App\Filament\Resources\DonationRequestResource\Pages;
+use App\Filament\Resources\DonationRequestResource\RelationManagers;
+use App\Models\DonationRequest;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
@@ -13,9 +13,9 @@ use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 
-class RequestResource extends Resource
+class DonationRequestResource extends Resource
 {
-    protected static ?string $model = Request::class;
+    protected static ?string $model = DonationRequest::class;
 
     protected static ?string $navigationGroup = 'Posts';
 
@@ -139,9 +139,9 @@ class RequestResource extends Resource
     public static function getPages(): array
     {
         return [
-            'index' => Pages\ListRequests::route('/'),
-            'create' => Pages\CreateRequest::route('/create'),
-            'edit' => Pages\EditRequest::route('/{record}/edit'),
+            'index' => Pages\ListDonationRequests::route('/'),
+            'create' => Pages\CreateDonationRequest::route('/create'),
+            'edit' => Pages\EditDonationRequest::route('/{record}/edit'),
         ];
     }
 
