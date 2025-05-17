@@ -17,9 +17,9 @@ class DonationCategoryResource extends Resource
 {
     protected static ?string $model = DonationCategory::class;
 
-    protected static ?string $navigationGroup = 'Categories';
+    protected static ?string $navigationGroup = 'Donation Management';
 
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?string $navigationIcon = 'heroicon-s-tag';
 
     public static function form(Form $form): Form
     {
@@ -53,8 +53,8 @@ class DonationCategoryResource extends Resource
                 Tables\Filters\TrashedFilter::make(),
             ])
             ->actions([
-                Tables\Actions\DeleteAction::make(),
                 Tables\Actions\EditAction::make(),
+                Tables\Actions\DeleteAction::make(),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
