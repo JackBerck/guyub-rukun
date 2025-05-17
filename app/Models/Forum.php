@@ -35,8 +35,4 @@ class Forum extends Model
         return $this->belongsTo(ForumCategory::class);
     }
 
-    public function forumComments()
-    {
-        return $this->hasMany(ForumComment::class);
-    }
 }

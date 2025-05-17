@@ -43,14 +43,6 @@ class DonationResource extends Resource
                     ->searchable()
                     ->preload()
                     ->required(),
-                Forms\Components\ToggleButtons::make('urgency')
-                    ->inline()
-                    ->required()
-                    ->options([
-                        'low' => 'Low',
-                        'medium' => 'Medium',
-                        'high' => 'High',
-                    ]),
                 ToggleButtons::make('type')
                     ->required()
                     ->inline()
@@ -59,7 +51,17 @@ class DonationResource extends Resource
                             "donation" => "Donation",
                             "request" => "Request"
                         ]
-                    ),
+                    )
+                    ->reactive(),
+                Forms\Components\ToggleButtons::make('urgency')
+                    ->helperText('Select the urgency level of the request.')
+                    ->inline()
+                    ->options([
+                        'low' => 'Low',
+                        'medium' => 'Medium',
+                        'high' => 'High',
+                    ])
+                    ->disabled(fn(callable $get) => $get('type') !== 'request'),
                 Forms\Components\Toggle::make('status')
                     ->required(),
                 Forms\Components\ToggleButtons::make('is_popular')
@@ -104,12 +106,12 @@ class DonationResource extends Resource
                     ->searchable(),
                 Tables\Columns\TextColumn::make('phone_number')
                     ->searchable(),
-                Tables\Columns\TextColumn::make('urgency')
-                    ->label('Urgency')
-                    ->badge(),
                 Tables\Columns\TextColumn::make('type')
                     ->badge()
                     ->label('Type'),
+                Tables\Columns\TextColumn::make('urgency')
+                    ->label('Urgency')
+                    ->badge(),
                 Tables\Columns\TextColumn::make('donationCategory.name')
                     ->label('Donation Category'),
                 Tables\Columns\IconColumn::make('status')
@@ -149,7 +151,7 @@ class DonationResource extends Resource
     public static function getRelations(): array
     {
         return [
-            //
+            RelationManagers\CommentRelationManager::class,
         ];
     }
 

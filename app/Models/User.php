@@ -62,18 +62,14 @@ class User extends Authenticatable implements FilamentUser
         return $this->hasMany(Forum::class);
     }
 
-    public function forumComments()
-    {
-        return $this->hasMany(ForumComment::class);
-    }
-
     public function donations()
     {
         return $this->hasMany(Donation::class);
     }
 
-    public function stories()
+    public function comments()
     {
-        return $this->hasMany(Story::class);
+        return $this->hasMany(Comment::class);
     }
+
 }

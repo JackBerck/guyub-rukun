@@ -45,4 +45,10 @@ class Donation extends Model
         return $this->hasMany(DonationImage::class);
     }
 
+    public function comments()
+    {
+        return $this->morphMany(Comment::class, 'commentable');
+    }
+
+
 }
