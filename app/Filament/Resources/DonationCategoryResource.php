@@ -17,7 +17,7 @@ class DonationCategoryResource extends Resource
 {
     protected static ?string $model = DonationCategory::class;
 
-    protected static ?string $navigationGroup = 'Donation Management';
+    protected static ?string $navigationGroup = 'Donations & Request Management';
 
     protected static ?string $navigationIcon = 'heroicon-s-tag';
 
