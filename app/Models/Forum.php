@@ -35,4 +35,9 @@ class Forum extends Model
         return $this->belongsTo(ForumCategory::class);
     }
 
+    public function comments()
+    {
+        return $this->morphMany(Comment::class, 'commentable');
+    }
+
 }

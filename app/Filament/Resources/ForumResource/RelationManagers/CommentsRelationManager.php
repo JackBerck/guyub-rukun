@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Filament\Resources\DonationResource\RelationManagers;
+namespace App\Filament\Resources\ForumResource\RelationManagers;
 
 use Filament\Forms;
 use Filament\Forms\Form;
@@ -8,10 +8,9 @@ use Filament\Resources\RelationManagers\RelationManager;
 use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 
-class CommentRelationManager extends RelationManager
+class CommentsRelationManager extends RelationManager
 {
     protected static string $relationship = 'comments';
 

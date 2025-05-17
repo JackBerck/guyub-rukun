@@ -151,7 +151,7 @@ class DonationResource extends Resource
     public static function getRelations(): array
     {
         return [
-            RelationManagers\CommentRelationManager::class,
+            RelationManagers\CommentsRelationManager::class,
         ];
     }
 
