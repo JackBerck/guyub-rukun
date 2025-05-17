@@ -62,8 +62,15 @@ class DonationResource extends Resource
                     ),
                 Forms\Components\Toggle::make('status')
                     ->required(),
-                Forms\Components\Toggle::make('is_popular')
-                    ->required(),
+                Forms\Components\ToggleButtons::make('is_popular')
+                    ->inline()
+                    ->required()
+                    ->options([
+                        '0' => 'No',
+                        '1' => 'Yes',
+                    ])
+                    ->default('0')
+                    ->label('Is Popular'),
                 Forms\Components\Textarea::make('address')
                     ->required()
                     ->columnSpanFull(),
@@ -75,6 +82,8 @@ class DonationResource extends Resource
                     ->relationship()
                     ->schema([
                         Forms\Components\FileUpload::make('image')
+                            ->maxSize(4096)
+                            ->directory('donation-images')
                             ->imageEditor()
                             ->label('Donation Image')
                             ->required(),
