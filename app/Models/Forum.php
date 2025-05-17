@@ -40,4 +40,9 @@ class Forum extends Model
         return $this->morphMany(Comment::class, 'commentable');
     }
 
+    public function likedByUsers()
+    {
+        return $this->belongsToMany(User::class, 'likes')->withTimestamps();
+    }
+
 }
