@@ -176,7 +176,7 @@
     }
 
     h4 {
-      @apply text-xl md:text-2xl;
+      @apply text-base md:text-lg lg:text-xl;
     }
 
     h5 {
@@ -202,7 +202,7 @@
 
   @layer components {
     .section-padding-x {
-      @apply px-6 sm:px-8 md:px-12 xl:px-20;
+      @apply px-4 sm:px-4 xl:px-12;
     }
 
     .section-padding-x-sm {
@@ -215,6 +215,10 @@
 
     .medium-font-size {
       @apply text-sm md:text-base lg:text-lg;
+    }
+
+    .normal-font-size {
+      @apply text-base md:text-lg;
     }
 
     .small-font-size {

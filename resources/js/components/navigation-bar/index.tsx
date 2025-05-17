@@ -1,76 +1,142 @@
 'use client';
 
-import navigations from '@/data/navigations';
-import { Link, usePage } from '@inertiajs/react';
-import { useEffect, useState } from 'react';
-import NavigationLink from './navigation-link';
+import { Link } from '@inertiajs/react';
+import { Bell, Menu, Search, User, X } from 'lucide-react';
+import { useState } from 'react';
 
-export default function NavigationBar() {
+import { Button } from '@/components/ui/button';
+import {
+    DropdownMenu,
+    DropdownMenuContent,
+    DropdownMenuItem,
+    DropdownMenuLabel,
+    DropdownMenuSeparator,
+    DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
+import { Input } from '@/components/ui/input';
+
+export default function Navbar() {
+    const [isSearchOpen, setIsSearchOpen] = useState(false);
     const [isMenuOpen, setIsMenuOpen] = useState(false);
-    const { props } = usePage();
-    const { auth } = props;
-    const isAuthenticated = auth.user !== null;
-
-    useEffect(() => {
-        if (isAuthenticated) {
-            navigations.push({
-                title: 'Dashboard',
-                path: '/dashboard',
-            });
-        } else {
-            navigations.push({
-                title: 'Daftar',
-                path: '/daftar',
-            });
-            navigations.push({
-                title: 'Masuk',
-                path: '/masuk',
-            });
-        }
-    }, [isAuthenticated]);
 
     return (
-        <nav
-            id="navbar"
-            className={`section-padding-x text-dark-base normal-font-size bg-light-base fixed top-0 z-[998] w-full shadow-md transition-all duration-300`}
-        >
-            <div className="mx-auto flex max-w-screen-xl flex-wrap items-center justify-between py-4 xl:px-0">
-                <Link href="/" className="flex items-center space-x-3 rtl:space-x-reverse">
-                    <img src="/guyub-rukun.webp" className="w-10" alt="Guyub Rukun Logo" />
-                    <span className="self-center text-2xl font-semibold whitespace-nowrap">
-                        <span className="text-green-base">Guyub</span>
-                        <span className="text-blue-base">Rukun</span>
-                    </span>
-                </Link>
-                <button
-                    type="button"
-                    className="text-dark-base relative z-[999] focus:outline-none lg:hidden"
-                    onClick={() => setIsMenuOpen(!isMenuOpen)}
-                >
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" className="w-8" viewBox="0 0 448 512">
-                        <path d="M0 96C0 78.3 14.3 64 32 64l384 0c17.7 0 32 14.3 32 32s-14.3 32-32 32L32 128C14.3 128 0 113.7 0 96zM0 256c0-17.7 14.3-32 32-32l384 0c17.7 0 32 14.3 32 32s-14.3 32-32 32L32 288c-17.7 0-32-14.3-32-32zM448 416c0 17.7-14.3 32-32 32L32 448c-17.7 0-32-14.3-32-32s14.3-32 32-32l384 0c17.7 0 32 14.3 32 32z" />
-                    </svg>
-                </button>
-                <div className={`w-full lg:block lg:w-auto ${isMenuOpen ? 'block' : 'hidden'}`}>
-                    <ul className="mt-4 flex flex-col gap-4 rounded-lg border p-4 font-medium lg:mt-0 lg:flex-row lg:items-center lg:gap-2 lg:border-0 lg:p-0 rtl:space-x-reverse">
-                        {navigations.map((route: { title: string; path: string }, index: number) => (
-                            <NavigationLink
-                                key={index}
-                                url={route.path}
-                                addClass={`py-2 px-3 ${
-                                    route.title.toLowerCase() === 'daftar'
-                                        ? 'bg-lime-base text-light-base'
-                                        : route.title.toLowerCase() === 'masuk'
-                                          ? 'bg-blue-base text-light-base'
-                                          : undefined
-                                }`}
-                            >
-                                {route.title}
-                            </NavigationLink>
-                        ))}
-                    </ul>
+        <header className="section-padding-x sticky top-0 z-50 w-full border-b bg-gray-50">
+            <div className="container flex h-16 max-w-screen-xl items-center justify-between">
+                <div className="flex items-center gap-2 md:gap-6">
+                    <Link href="/" className="w-10">
+                        <img src="/guyub-rukun.webp" alt="Guyub Rukun Logo" />
+                    </Link>
+                    <nav className="hidden md:flex md:items-center md:gap-6">
+                        <Link href="/" className="text-sm font-medium transition-colors hover:text-emerald-600">
+                            Beranda
+                        </Link>
+                        <Link href="/about" className="text-sm font-medium transition-colors hover:text-emerald-600">
+                            Tentang Kami
+                        </Link>
+                        <Link href="/contact" className="text-sm font-medium transition-colors hover:text-emerald-600">
+                            Kontak
+                        </Link>
+                    </nav>
+                </div>
+                <div className="flex items-center gap-2">
+                    {isSearchOpen ? (
+                        <div className="relative flex items-center md:w-40 lg:w-64">
+                            <Input type="search" placeholder="Cari..." className="pr-8" />
+                            <Button variant="ghost" size="icon" className="absolute top-0 right-0" onClick={() => setIsSearchOpen(false)}>
+                                <X className="h-4 w-4" />
+                                <span className="sr-only">Close search</span>
+                            </Button>
+                        </div>
+                    ) : (
+                        <Button variant="ghost" size="icon" onClick={() => setIsSearchOpen(true)}>
+                            <Search className="h-5 w-5" />
+                            <span className="sr-only">Search</span>
+                        </Button>
+                    )}
+                    <Button variant="ghost" size="icon">
+                        <Bell className="h-5 w-5" />
+                        <span className="sr-only">Notifications</span>
+                    </Button>
+                    <DropdownMenu>
+                        <DropdownMenuTrigger asChild>
+                            <Button variant="ghost" size="icon">
+                                <User className="h-5 w-5" />
+                                <span className="sr-only">User menu</span>
+                            </Button>
+                        </DropdownMenuTrigger>
+                        <DropdownMenuContent align="end">
+                            <DropdownMenuLabel>Akun Saya</DropdownMenuLabel>
+                            <DropdownMenuSeparator />
+                            <DropdownMenuItem>
+                                <Link href="/profile" className="flex w-full">
+                                    Profil
+                                </Link>
+                            </DropdownMenuItem>
+                            <DropdownMenuItem>
+                                <Link href="/my-donations" className="flex w-full">
+                                    Donasi Saya
+                                </Link>
+                            </DropdownMenuItem>
+                            <DropdownMenuItem>
+                                <Link href="/settings" className="flex w-full">
+                                    Pengaturan
+                                </Link>
+                            </DropdownMenuItem>
+                            <DropdownMenuSeparator />
+                            <DropdownMenuItem>
+                                <Link href="/logout" className="flex w-full">
+                                    Keluar
+                                </Link>
+                            </DropdownMenuItem>
+                        </DropdownMenuContent>
+                    </DropdownMenu>
+                    <Button className="text-light-base hidden bg-emerald-600 transition duration-100 hover:bg-emerald-700 md:inline-flex">
+                        Donasikan Sekarang
+                    </Button>
+
+                    {/* Hamburger menu with dropdown from top */}
+                    <Button variant="ghost" size="icon" className="md:hidden" onClick={() => setIsMenuOpen(!isMenuOpen)}>
+                        {isMenuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
+                        <span className="sr-only">Toggle menu</span>
+                    </Button>
                 </div>
             </div>
-        </nav>
+
+            {/* Mobile menu dropdown */}
+            <div
+                className={`section-padding-x absolute top-16 right-0 left-0 z-20 transform bg-white pb-4 shadow-md transition-all duration-300 ease-in-out md:hidden ${
+                    isMenuOpen ? 'translate-y-0 opacity-100' : 'pointer-events-none -translate-y-4 opacity-0'
+                }`}
+            >
+                <nav className="container max-w-screen-xl">
+                    <div className="flex flex-col space-y-2">
+                        <Link
+                            href="/"
+                            className="rounded-md py-2 text-base font-medium transition-colors hover:bg-emerald-50 hover:text-emerald-600"
+                            onClick={() => setIsMenuOpen(false)}
+                        >
+                            Beranda
+                        </Link>
+                        <Link
+                            href="/about"
+                            className="rounded-md py-2 text-base font-medium transition-colors hover:bg-emerald-50 hover:text-emerald-600"
+                            onClick={() => setIsMenuOpen(false)}
+                        >
+                            Tentang Kami
+                        </Link>
+                        <Link
+                            href="/contact"
+                            className="rounded-md py-2 text-base font-medium transition-colors hover:bg-emerald-50 hover:text-emerald-600"
+                            onClick={() => setIsMenuOpen(false)}
+                        >
+                            Kontak
+                        </Link>
+                        <Button className="w-full bg-emerald-600 transition duration-100 hover:bg-emerald-700 text-light-base" onClick={() => setIsMenuOpen(false)}>
+                            Donasikan Sekarang
+                        </Button>
+                    </div>
+                </nav>
+            </div>
+        </header>
     );
 }
