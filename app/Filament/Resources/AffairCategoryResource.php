@@ -2,9 +2,9 @@
 
 namespace App\Filament\Resources;
 
-use App\Filament\Resources\DonationCategoryResource\Pages;
-use App\Filament\Resources\DonationCategoryResource\RelationManagers;
-use App\Models\DonationCategory;
+use App\Filament\Resources\AffairCategoryResource\Pages;
+use App\Filament\Resources\AffairCategoryResource\RelationManagers;
+use App\Models\AffairCategory;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
@@ -13,12 +13,10 @@ use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 
-class DonationCategoryResource extends Resource
+class AffairCategoryResource extends Resource
 {
-    protected static ?string $model = DonationCategory::class;
-
-    protected static ?string $navigationGroup = 'Donations & Request Management';
-
+    protected static ?string $model = AffairCategory::class;
+    protected static ?string $navigationGroup = 'Affairs Management';
     protected static ?string $navigationIcon = 'heroicon-s-tag';
 
     public static function form(Form $form): Form
@@ -26,9 +24,9 @@ class DonationCategoryResource extends Resource
         return $form
             ->schema([
                 Forms\Components\TextInput::make('name')
-                    ->label('Donation Category Name')
+                    ->label('Category Name')
                     ->required()
-                    ->placeholder('Enter donation category name')
+                    ->placeholder('Enter category name')
                     ->maxLength(255),
             ]);
     }
@@ -37,16 +35,13 @@ class DonationCategoryResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('name')
-                    ->label('Name')
-                    ->sortable()
-                    ->searchable(),
-                Tables\Columns\TextColumn::make('slug')
-                    ->label('Slug')
+                Tables\Columns\TextColumn::make("name")
+                    ->label("Category Name")
+                    ->searchable()
                     ->sortable(),
-                Tables\Columns\TextColumn::make('created_at')
-                    ->label('Created At')
-                    ->dateTime()
+                Tables\Columns\TextColumn::make("slug")
+                    ->label("Category Slug")
+                    ->searchable()
                     ->sortable(),
             ])
             ->filters([
@@ -54,7 +49,6 @@ class DonationCategoryResource extends Resource
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),
-                Tables\Actions\DeleteAction::make(),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
@@ -75,9 +69,9 @@ class DonationCategoryResource extends Resource
     public static function getPages(): array
     {
         return [
-            'index' => Pages\ListDonationCategories::route('/'),
-            'create' => Pages\CreateDonationCategory::route('/create'),
-            'edit' => Pages\EditDonationCategory::route('/{record}/edit'),
+            'index' => Pages\ListAffairCategories::route('/'),
+            'create' => Pages\CreateAffairCategory::route('/create'),
+            'edit' => Pages\EditAffairCategory::route('/{record}/edit'),
         ];
     }
 

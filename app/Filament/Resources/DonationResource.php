@@ -6,6 +6,8 @@ use App\Filament\Resources\DonationResource\Pages;
 use App\Filament\Resources\DonationResource\RelationManagers;
 use App\Models\Donation;
 use Filament\Forms;
+use Filament\Forms\Components\Repeater;
+use Filament\Forms\Components\ToggleButtons;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
@@ -16,71 +18,88 @@ use Illuminate\Database\Eloquent\SoftDeletingScope;
 class DonationResource extends Resource
 {
     protected static ?string $model = Donation::class;
-
-    protected static ?string $navigationGroup = 'Posts';
-
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?string $navigationGroup = 'Donations & Request Management';
+    protected static ?string $navigationIcon = 'heroicon-s-gift';
 
     public static function form(Form $form): Form
     {
         return $form
             ->schema([
+                Forms\Components\Select::make('user_id')
+                    ->label('User Email')
+                    ->relationship('user', 'email')
+                    ->searchable()
+                    ->preload()
+                    ->required(),
                 Forms\Components\TextInput::make('title')
                     ->required()
-                    ->placeholder('Enter donation title')
                     ->maxLength(255),
-                Forms\Components\RichEditor::make('description')
-                    ->fileAttachmentsDirectory('attachments')
-                    ->fileAttachmentsVisibility('public')
-                    ->placeholder('Enter donation description')
-                    ->required(),
-                Forms\Components\Select::make('status')
-                    ->options([
-                        'tersedia' => 'Tersedia',
-                        'terambil' => 'Terambil',
-                    ])
-                    ->default('tersedia')
-                    ->required(),
                 Forms\Components\TextInput::make('phone_number')
-                    ->label('Phone Number')
                     ->tel()
-                    ->maxLength(15)
-                    ->required()
-                    ->placeholder('Enter phone number'),
-                Forms\Components\TextInput::make('address')
-                    ->label('Address')
-                    ->maxLength(255)
-                    ->required()
-                    ->placeholder('Enter address'),
-                Forms\Components\Repeater::make('donation_images')
-                    ->label('Donation Images')
-                    ->relationship('donationImages')
-                    ->schema([
-                        Forms\Components\FileUpload::make('image')
-                            ->required()
-                            ->placeholder('Upload donation image')
-                            ->image()
-                            ->maxSize(4096)
-                            ->disk('public')
-                            ->directory('donations'),
-                    ])
-                    ->columns(1)
-                    ->addActionLabel('Add Image'),
-                Forms\Components\Select::make('user_id')
-                    ->relationship('user', 'name')
-                    ->required()
-                    ->searchable()
-                    ->live()
-                    ->preload()
-                    ->placeholder('Select user'),
+                    ->maxLength(255),
                 Forms\Components\Select::make('donation_category_id')
+                    ->createOptionForm([
+                        Forms\Components\TextInput::make('name')
+                            ->label('Donation Category Name')
+                            ->required()
+                            ->placeholder('Enter donation category name')
+                            ->maxLength(255),
+                    ])
                     ->label('Donation Category')
                     ->relationship('donationCategory', 'name')
-                    ->required()
                     ->searchable()
-                    ->live()
                     ->preload()
-                    ->placeholder('Select donation category'),
+                    ->required(),
+                ToggleButtons::make('type')
+                    ->required()
+                    ->inline()
+                    ->options(
+                        [
+                            "donation" => "Donation",
+                            "request" => "Request"
+                        ]
+                    )
+                    ->reactive(),
+                Forms\Components\ToggleButtons::make('urgency')
+                    ->helperText('Select the urgency level of the request.')
+                    ->inline()
+                    ->options([
+                        'low' => 'Low',
+                        'medium' => 'Medium',
+                        'high' => 'High',
+                    ])
+                    ->disabled(fn(callable $get) => $get('type') !== 'request'),
+                Forms\Components\Toggle::make('status')
+                    ->required(),
+                Forms\Components\ToggleButtons::make('is_popular')
+                    ->inline()
+                    ->required()
+                    ->options([
+                        '0' => 'No',
+                        '1' => 'Yes',
+                    ])
+                    ->default('0')
+                    ->label('Is Popular'),
+                Forms\Components\Textarea::make('address')
+                    ->required()
+                    ->columnSpanFull(),
+                Forms\Components\RichEditor::make('description')
+                    ->disableToolbarButtons(["attachFiles", "codeBlock"])
+                    ->required()
+                    ->columnSpanFull(),
+                Repeater::make('donationImages')
+                    ->relationship()
+                    ->schema([
+                        Forms\Components\FileUpload::make('image')
+                            ->maxSize(4096)
+                            ->directory('donation-images')
+                            ->imageEditor()
+                            ->label('Donation Image')
+                            ->required(),
+                    ])
+                    ->columnSpanFull()
+                    ->columns(1)
+                    ->createItemButtonLabel('Add Donation Image'),
             ]);
     }
 
@@ -88,38 +107,45 @@ class DonationResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('title')
+                Tables\Columns\TextColumn::make('user.email')
                     ->searchable()
-                    ->sortable()
-                    ->limit(50),
-                Tables\Columns\TextColumn::make('description')
-                    ->limit(50),
-                Tables\Columns\TextColumn::make('status')
-                    ->sortable(),
+                    ->label('User Email'),
+                Tables\Columns\TextColumn::make('title')
+                    ->searchable(),
                 Tables\Columns\TextColumn::make('phone_number')
-                    ->label('Phone Number')
-                    ->limit(15),
-                Tables\Columns\ImageColumn::make('donationImages.image')
-                    ->label('Thumbnail')
-                    ->disk('public')
-                    ->circular()
-                    ->url(fn ($record) => asset('storage/' . $record->donationImages->first()?->image)),
-                Tables\Columns\TextColumn::make('user.name')
-                    ->label('User')
-                    ->sortable()
                     ->searchable(),
+                Tables\Columns\TextColumn::make('type')
+                    ->badge()
+                    ->label('Type'),
+                Tables\Columns\TextColumn::make('urgency')
+                    ->label('Urgency')
+                    ->badge(),
                 Tables\Columns\TextColumn::make('donationCategory.name')
-                    ->label('Donation Category')
+                    ->label('Donation Category'),
+                Tables\Columns\IconColumn::make('status')
+                    ->boolean(),
+                Tables\Columns\IconColumn::make('is_popular')
+                    ->boolean(),
+                Tables\Columns\TextColumn::make('deleted_at')
+                    ->dateTime()
                     ->sortable()
-                    ->searchable(),
+                    ->toggleable(isToggledHiddenByDefault: true),
+                Tables\Columns\TextColumn::make('created_at')
+                    ->dateTime()
+                    ->sortable()
+                    ->toggleable(isToggledHiddenByDefault: true),
+                Tables\Columns\TextColumn::make('updated_at')
+                    ->dateTime()
+                    ->sortable()
+                    ->toggleable(isToggledHiddenByDefault: true),
             ])
             ->filters([
                 Tables\Filters\TrashedFilter::make(),
             ])
             ->actions([
                 Tables\Actions\ViewAction::make(),
-                Tables\Actions\DeleteAction::make(),
                 Tables\Actions\EditAction::make(),
+                Tables\Actions\DeleteAction::make(),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
@@ -133,7 +159,7 @@ class DonationResource extends Resource
     public static function getRelations(): array
     {
         return [
-            //
+            RelationManagers\CommentsRelationManager::class,
         ];
     }
 

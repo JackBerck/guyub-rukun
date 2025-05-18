@@ -35,8 +35,14 @@ class Forum extends Model
         return $this->belongsTo(ForumCategory::class);
     }
 
-    public function forumComments()
+    public function comments()
     {
-        return $this->hasMany(ForumComment::class);
+        return $this->morphMany(Comment::class, 'commentable');
     }
+
+    public function likedByUsers()
+    {
+        return $this->belongsToMany(User::class, 'likes')->withTimestamps();
+    }
+
 }

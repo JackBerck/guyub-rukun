@@ -3,23 +3,21 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Str;
 
-class DonationRequest extends Model
+class Affair extends Model
 {
     use SoftDeletes;
-
     protected $fillable = [
-        'title',
-        'slug',
-        'description',
-        'status',
-        'urgency',
-        'phone_number',
         'thumbnail',
-        'address',
-        'donation_category_id',
+        'title',
+        'description',
+        'date',
+        'time',
+        'location',
+        'affair_category_id',
         'user_id',
     ];
 
@@ -29,11 +27,13 @@ class DonationRequest extends Model
         $this->attributes['slug'] = Str::slug($value);
     }
 
-    public function donationCategory() {
-        return $this->belongsTo(DonationCategory::class);
+    public function user(): BelongsTo
+    {
+        return $this->belongsTo(User::class);
     }
 
-    public function user() {
-        return $this->belongsTo(User::class);
+    public function affairCategory(): BelongsTo
+    {
+        return $this->belongsTo(AffairCategory::class);
     }
 }

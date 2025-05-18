@@ -1,14 +1,14 @@
 <?php
 
-namespace App\Filament\Resources\StoryResource\Pages;
+namespace App\Filament\Resources\AffairResource\Pages;
 
-use App\Filament\Resources\StoryResource;
+use App\Filament\Resources\AffairResource;
 use Filament\Actions;
 use Filament\Resources\Pages\ListRecords;
 
-class ListStories extends ListRecords
+class ListAffairs extends ListRecords
 {
-    protected static string $resource = StoryResource::class;
+    protected static string $resource = AffairResource::class;
 
     protected function getHeaderActions(): array
     {

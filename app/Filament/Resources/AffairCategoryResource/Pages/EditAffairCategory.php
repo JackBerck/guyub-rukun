@@ -1,14 +1,14 @@
 <?php
 
-namespace App\Filament\Resources\StoryResource\Pages;
+namespace App\Filament\Resources\AffairCategoryResource\Pages;
 
-use App\Filament\Resources\StoryResource;
+use App\Filament\Resources\AffairCategoryResource;
 use Filament\Actions;
 use Filament\Resources\Pages\EditRecord;
 
-class EditStory extends EditRecord
+class EditAffairCategory extends EditRecord
 {
-    protected static string $resource = StoryResource::class;
+    protected static string $resource = AffairCategoryResource::class;
 
     protected function getHeaderActions(): array
     {

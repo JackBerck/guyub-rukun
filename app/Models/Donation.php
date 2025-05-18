@@ -14,9 +14,12 @@ class Donation extends Model
         'title',
         'slug',
         'description',
-        'status',
+        'urgency',
         'phone_number',
         'address',
+        'status',
+        'type',
+        'is_popular',
         'donation_category_id',
         'user_id',
     ];
@@ -41,4 +44,11 @@ class Donation extends Model
     {
         return $this->hasMany(DonationImage::class);
     }
+
+    public function comments()
+    {
+        return $this->morphMany(Comment::class, 'commentable');
+    }
+
+
 }

@@ -17,40 +17,65 @@ class ForumResource extends Resource
 {
     protected static ?string $model = Forum::class;
 
-    protected static ?string $navigationGroup = 'Posts';
+    protected static ?string $navigationGroup = 'Forum Management';
 
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?string $navigationIcon = 'heroicon-s-chat-bubble-left-right';
 
     public static function form(Form $form): Form
     {
         return $form
             ->schema([
+                Forms\Components\Select::make('user_id')
+                    ->label('User Email')
+                    ->relationship('user', 'email')
+                    ->required()
+                    ->searchable()
+                    ->preload()
+                    ->placeholder('Select user'),
                 Forms\Components\TextInput::make('title')
                     ->required()
                     ->placeholder('Enter forum title')
                     ->maxLength(255),
-                Forms\Components\RichEditor::make('description')
-                    ->fileAttachmentsDirectory('attachments')
-                    ->fileAttachmentsVisibility('public')
-                    ->placeholder('Enter forum description')
+                Forms\Components\Select::make('forum_category_id')
+                    ->createOptionForm([
+                        Forms\Components\TextInput::make('name')
+                            ->label('Forum Category Name')
+                            ->required()
+                            ->placeholder('Enter forum category name')
+                            ->maxLength(255),
+                    ])
+                    ->label('Forum Category')
+                    ->searchable()
+                    ->preload()
+                    ->relationship('forumCategory', 'name')
                     ->required(),
+
+                Forms\Components\ToggleButtons::make('is_popular')
+                    ->inline()
+                    ->required()
+                    ->options([
+                        '0' => 'No',
+                        '1' => 'Yes',
+                    ])
+                    ->default('0')
+                    ->label('Is Popular'),
+
                 Forms\Components\FileUpload::make('thumbnail')
                     ->required()
-                    ->placeholder('Upload forum image')
+                    ->columnSpanFull()
                     ->image()
                     ->maxSize(4096)
                     ->disk('public')
                     ->directory('thumbnails'),
-                Forms\Components\Select::make('user_id')
-                    ->relationship('user', 'name')
+                Forms\Components\RichEditor::make('description')
+                    ->disableToolbarButtons([
+                        "codeBlock",
+                    ])
+                    ->fileAttachmentsDirectory('forum-descriptions')
+                    ->fileAttachmentsVisibility('public')
+                    ->placeholder('Enter forum description')
                     ->required()
-                    ->searchable()
-                    ->live()
-                    ->preload()
-                    ->placeholder('Select user'),
-                Forms\Components\Select::make('forum_category_id')
-                    ->relationship('forumCategory', 'name')
-                    ->required(),
+                    ->columnSpanFull(),
             ]);
     }
 
@@ -58,31 +83,33 @@ class ForumResource extends Resource
     {
         return $table
             ->columns([
+                Tables\Columns\TextColumn::make('user.email')
+                    ->label('User Email')
+                    ->sortable()
+                    ->searchable(),
+                Tables\Columns\TextColumn::make('user.name')
+                    ->label('User Name')
+                    ->sortable()
+                    ->searchable(),
                 Tables\Columns\TextColumn::make('title')
                     ->label('Title')
-                    ->sortable()
-                    ->searchable(),
-                Tables\Columns\TextColumn::make('description')
-                    ->label('Description')
-                    ->limit(50)
-                    ->sortable()
-                    ->searchable(),
-                Tables\Columns\ImageColumn::make('thumbnail')
-                    ->label('Thumbnail')
-                    ->disk('public')
-                    ->circular()
-                    ->url(fn ($record) => asset('storage/' . $record->image)),
-                Tables\Columns\TextColumn::make('user.name')
-                    ->label('User')
                     ->sortable()
                     ->searchable(),
                 Tables\Columns\TextColumn::make('forumCategory.name')
                     ->label('Category')
                     ->sortable()
                     ->searchable(),
+                Tables\Columns\IconColumn::make('is_popular')
+                    ->boolean(),
+                Tables\Columns\ImageColumn::make('thumbnail')
+                    ->label('Thumbnail')
+                    ->disk('public')
+                    ->url(fn($record) => asset('storage/' . $record->image)),
+
                 Tables\Columns\TextColumn::make('created_at')
                     ->label('Created At')
                     ->dateTime()
+                    ->toggleable(isToggledHiddenByDefault: true)
                     ->sortable(),
             ])
             ->filters([
@@ -90,8 +117,8 @@ class ForumResource extends Resource
             ])
             ->actions([
                 Tables\Actions\ViewAction::make(),
-                Tables\Actions\DeleteAction::make(),
                 Tables\Actions\EditAction::make(),
+                Tables\Actions\DeleteAction::make(),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
@@ -105,6 +132,7 @@ class ForumResource extends Resource
     public static function getRelations(): array
     {
         return [
+            RelationManagers\CommentsRelationManager::class,
         ];
     }
 

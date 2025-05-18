@@ -10,17 +10,18 @@ return new class extends Migration {
      */
     public function up(): void
     {
-        Schema::create('forums', function (Blueprint $table) {
+        Schema::create('affairs', function (Blueprint $table) {
             $table->id();
+            $table->string('thumbnail');
             $table->string('title');
             $table->string('slug')->unique();
-            $table->text('description');
-            $table->string('thumbnail');
-            $table->boolean("is_popular")->default(false);
-            $table->foreignId('user_id')->constrained()->onDelete('cascade');
-            $table->foreignId('forum_category_id')->constrained()->onDelete('cascade');
-            $table->softDeletes();
+            $table->text('description')->nullable();
+            $table->date('date')->nullable();
+            $table->time('time')->nullable();
+            $table->string('location')->nullable();
+            $table->foreignId('user_id')->constrained()->cascadeOnDelete();
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 
@@ -29,6 +30,6 @@ return new class extends Migration {
      */
     public function down(): void
     {
-        Schema::dropIfExists('forums');
+        Schema::dropIfExists('affairs');
     }
 };
