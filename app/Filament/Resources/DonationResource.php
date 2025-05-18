@@ -38,6 +38,13 @@ class DonationResource extends Resource
                     ->tel()
                     ->maxLength(255),
                 Forms\Components\Select::make('donation_category_id')
+                    ->createOptionForm([
+                        Forms\Components\TextInput::make('name')
+                            ->label('Donation Category Name')
+                            ->required()
+                            ->placeholder('Enter donation category name')
+                            ->maxLength(255),
+                    ])
                     ->label('Donation Category')
                     ->relationship('donationCategory', 'name')
                     ->searchable()
@@ -90,6 +97,7 @@ class DonationResource extends Resource
                             ->label('Donation Image')
                             ->required(),
                     ])
+                    ->columnSpanFull()
                     ->columns(1)
                     ->createItemButtonLabel('Add Donation Image'),
             ]);

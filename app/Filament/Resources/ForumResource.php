@@ -37,6 +37,13 @@ class ForumResource extends Resource
                     ->placeholder('Enter forum title')
                     ->maxLength(255),
                 Forms\Components\Select::make('forum_category_id')
+                    ->createOptionForm([
+                        Forms\Components\TextInput::make('name')
+                            ->label('Forum Category Name')
+                            ->required()
+                            ->placeholder('Enter forum category name')
+                            ->maxLength(255),
+                    ])
                     ->label('Forum Category')
                     ->searchable()
                     ->preload()
