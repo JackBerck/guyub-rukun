@@ -4,10 +4,12 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Str;
 
 class Affair extends Model
 {
+    use SoftDeletes;
     protected $fillable = [
         'thumbnail',
         'title',
@@ -32,6 +34,6 @@ class Affair extends Model
 
     public function affairCategory(): BelongsTo
     {
-        return $this->belongsTo(AffairCateogory::class);
+        return $this->belongsTo(AffairCategory::class);
     }
 }
