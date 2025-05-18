@@ -77,4 +77,9 @@ class User extends Authenticatable implements FilamentUser
         return $this->belongsToMany(Forum::class, 'likes')->withTimestamps();
     }
 
+    public function affairs()
+    {
+        return $this->hasMany(Affair::class);
+    }
+
 }
