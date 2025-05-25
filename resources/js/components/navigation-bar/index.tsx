@@ -53,6 +53,7 @@ export default function Navbar() {
                             <span className="sr-only">Search</span>
                         </Button>
                     )}
+                    
                     <Button variant="ghost" size="icon">
                         <Bell className="h-5 w-5" />
                         <span className="sr-only">Notifications</span>
@@ -64,7 +65,7 @@ export default function Navbar() {
                                 <span className="sr-only">User menu</span>
                             </Button>
                         </DropdownMenuTrigger>
-                        <DropdownMenuContent align="end">
+                        <DropdownMenuContent align="end" className='bg-light-base text-dark-base shadow-lg'>
                             <DropdownMenuLabel>Akun Saya</DropdownMenuLabel>
                             <DropdownMenuSeparator />
                             <DropdownMenuItem>
@@ -83,7 +84,7 @@ export default function Navbar() {
                                 </Link>
                             </DropdownMenuItem>
                             <DropdownMenuSeparator />
-                            <DropdownMenuItem>
+                            <DropdownMenuItem className='bg-red-base text-light-base hover:bg-red-700'>
                                 <Link href="/logout" className="flex w-full">
                                     Keluar
                                 </Link>

@@ -1,19 +1,45 @@
-export default function Authentication({children, id, sideImage, direction, addClass}: {children: React.ReactNode, id: string, sideImage: string, direction: "left" | "right", addClass?: string}) {
-    return (
-      <section id={id} className={`section-padding-x pt-24 pb-12 ${addClass}`}>
-        <div className="container max-w-screen-sm lg:max-w-screen-lg">
+import type React from "react"
+
+interface AuthenticationProps {
+  children: React.ReactNode
+  id?: string
+  sideImage: string
+  direction: "left" | "right"
+  quote: string
+  quoteAuthor?: string
+  addClass?: string
+}
+
+export function Authentication({
+  children,
+  id,
+  sideImage,
+  direction,
+  quote,
+  quoteAuthor,
+  addClass = "",
+}: AuthenticationProps) {
+  return (
+    <section id={id} className={`section-padding-x pt-8 pb-12 ${addClass}`}>
+      <div className="container max-w-screen-xl">
+        <div
+          className={`mx-auto flex h-auto overflow-hidden rounded-xl shadow-lg ${
+            direction === "right" ? "flex-col lg:flex-row-reverse" : "flex-col lg:flex-row"
+          }`}
+        >
           <div
-            className={`flex ${
-              direction === "right" ? "flex-row-reverse" : "flex-row"
-            } rounded-lg mx-auto shadow-purple-base shadow-md overflow-hidden`}
+            className="relative h-64 w-full bg-cover bg-center md:h-80 lg:h-auto lg:w-1/2"
+            style={{ backgroundImage: `url('${sideImage}')` }}
           >
-            <div
-              className={`hidden lg:block lg:w-1/2 bg-cover bg-center`}
-              style={{backgroundImage: `url('${sideImage}')`}}
-            ></div>
-            {children}
+            <div className="absolute inset-0 bg-gradient-to-t from-emerald-900/80 to-transparent"></div>
+            <div className="absolute bottom-6 left-6 right-6 z-20">
+              <p className="mb-2 text-xl font-medium text-white md:text-2xl">{quote}</p>
+              {quoteAuthor && <p className="text-sm text-white/80">— {quoteAuthor}</p>}
+            </div>
           </div>
+          {children}
         </div>
-      </section>
-    );
-  }
+      </div>
+    </section>
+  )
+}
