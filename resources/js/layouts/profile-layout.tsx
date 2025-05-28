@@ -22,38 +22,38 @@ export function ProfileLayout({ children }: ProfileLayoutProps) {
 
     const navigationItems = [
         {
-            href: '/profile',
+            href: '/profil',
             label: 'Kelola Profil',
             icon: <User className="h-5 w-5" />,
             exact: true,
         },
         {
-            href: '/profile/liked',
+            href: '/profil/disukai',
             label: 'Postingan Disukai',
             icon: <Heart className="h-5 w-5" />,
         },
         {
-            href: '/profile/commented',
+            href: '/profil/dikomentari',
             label: 'Postingan Dikomentari',
             icon: <MessageSquare className="h-5 w-5" />,
         },
         {
-            href: '/profile/donations',
+            href: '/profil/donasi',
             label: 'Kelola Donasi',
             icon: <Gift className="h-5 w-5" />,
         },
         {
-            href: '/profile/forums',
+            href: '/profil/forum',
             label: 'Kelola Forum',
             icon: <Users className="h-5 w-5" />,
         },
         {
-            href: '/profile/requests',
+            href: '/profil/permintaan',
             label: 'Kelola Butuh Bantuan',
             icon: <HelpCircle className="h-5 w-5" />,
         },
         {
-            href: '/profile/events',
+            href: '/profil/acara',
             label: 'Kelola Acara',
             icon: <Calendar className="h-5 w-5" />,
         },

@@ -34,9 +34,27 @@ Route::middleware(['auth', 'verified'])->group(function () {
     })->name('affair.create');
 
     // Routes for profile management
+    Route::get('/profil', function () {
+        return Inertia::render('profile/main');
+    })->name('profile.settings');
     Route::get('/profil/dikomentari', function () {
         return Inertia::render('profile/commented');
     })->name('profile.commented');
+    Route::get('/profil/disukai', function () {
+        return Inertia::render('profile/liked');
+    })->name('profile.liked');
+    Route::get('/profil/donasi', function () {
+        return Inertia::render('profile/donations');
+    })->name('profile.donations');
+    Route::get('/profil/forum', function () {
+        return Inertia::render('profile/forums');
+    })->name('profile.forums');
+    Route::get('/profil/permintaan', function () {
+        return Inertia::render('profile/requests');
+    })->name('profile.requests');
+    Route::get('/profil/acara', function () {
+        return Inertia::render('profile/affairs');
+    })->name('profile.affairs');
 });
 
 require __DIR__ . '/settings.php';
