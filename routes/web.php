@@ -19,22 +19,24 @@ Route::middleware(['auth', 'verified'])->group(function () {
         return Inertia::render('dashboard');
     })->name('dashboard');
 
+    // Routes for creating various resources
     Route::get('/donasikan', function () {
         return Inertia::render('donation/create');
     })->name('donation.create');
-
     Route::get('/buka-forum', function () {
         return Inertia::render('forum/create');
     })->name('forum.create');
-
     Route::get('/butuh-bantuan', function () {
         return Inertia::render('request/create');
     })->name('request.create');
-
-
     Route::get('/sebar-acara', function () {
         return Inertia::render('affair/create');
     })->name('affair.create');
+
+    // Routes for profile management
+    Route::get('/profil/dikomentari', function () {
+        return Inertia::render('profile/commented');
+    })->name('profile.commented');
 });
 
 require __DIR__ . '/settings.php';
