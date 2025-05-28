@@ -1,6 +1,6 @@
-import ContactFormAbout from "./contact-form";
+import ContactForm from "./contact-form";
 
-export default function ContactAbout() {
+export default function ContactInformation() {
   return (
     <section id="contact-about" className="section-padding-x pt-6 pb-6">
       <div className="container max-w-screen-xl">
@@ -43,7 +43,7 @@ export default function ContactAbout() {
             </ul>
           </div>
           <div className="w-full lg:w-1/2">
-            <ContactFormAbout />
+            <ContactForm />
           </div>
         </div>
       </div>

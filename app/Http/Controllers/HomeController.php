@@ -14,10 +14,7 @@ class HomeController extends Controller
         return inertia('index', [
             $donations = Donation::with('donationCategory', 'user', 'donationImages')
                 ->orderBy('created_at', 'desc')
-                ->get(),
-            $donationRequests = DonationRequest::with('donationCategory', 'user')
-                ->orderBy('created_at', 'desc')
-                ->get(),
+                ->get()
         ]);
     }
 }

@@ -1,112 +1,33 @@
-import { Link, router } from '@inertiajs/react';
-import { AlertCircle, EyeIcon, EyeOffIcon, Loader2, Mail } from 'lucide-react';
+import { Link, useForm } from '@inertiajs/react';
+import { EyeIcon, EyeOffIcon, Loader2, Mail } from 'lucide-react';
 import { useState } from 'react';
-import { Alert, AlertDescription } from '../ui/alert';
 import { Button } from '../ui/button';
 import { Input } from '../ui/input';
 import { Label } from '../ui/label';
 import { Separator } from '../ui/separator';
 
+type LoginForm = {
+    email: string;
+    password: string;
+    remember: boolean;
+};
+
 export default function LoginForm() {
-    // Form state
-    const [formData, setFormData] = useState({
+    const { data, setData, post, processing, errors, reset } = useForm<LoginForm>({
         email: '',
         password: '',
         remember: false,
     });
+    const [showPassword, setShowPassword] = useState<boolean>(false);
 
-    // UI state
-    const [errors, setErrors] = useState<Record<string, string>>({});
-    const [isSubmitting, setIsSubmitting] = useState(false);
-    const [showPassword, setShowPassword] = useState(false);
-    const [loginAttempts, setLoginAttempts] = useState(0);
-
-    // Handle input change
-    const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        const { name, value, type, checked } = e.target;
-        setFormData({
-            ...formData,
-            [name]: type === 'checkbox' ? checked : value,
-        });
-
-        // Clear error for this field when user starts typing
-        if (errors[name]) {
-            setErrors({
-                ...errors,
-                [name]: '',
-            });
-        }
-    };
-
-    // Validate form
-    const validate = () => {
-        const newErrors: Record<string, string> = {};
-
-        if (!formData.email.trim()) {
-            newErrors.email = 'Email wajib diisi';
-        } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
-            newErrors.email = 'Format email tidak valid';
-        }
-
-        if (!formData.password) {
-            newErrors.password = 'Password wajib diisi';
-        }
-
-        return newErrors;
-    };
-
-    // Toggle password visibility
-    const togglePasswordVisibility = () => {
-        setShowPassword(!showPassword);
-    };
-
-    // Handle form submission
-    const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
 
-        // Client-side validation
-        const validationErrors = validate();
-        if (Object.keys(validationErrors).length > 0) {
-            setErrors(validationErrors);
-            return;
-        }
-
-        setIsSubmitting(true);
-
-        // Simulate a brief delay for better UX
-        setTimeout(() => {
-            // Send request to server using Inertia.js
-            router.post(
-                '/login',
-                {
-                    email: formData.email,
-                    password: formData.password,
-                    remember: formData.remember,
-                },
-                {
-                    onSuccess: () => {
-                        // Redirect will be handled by the controller
-                    },
-                    onError: (errors) => {
-                        setErrors(errors);
-                        setLoginAttempts((prev) => prev + 1);
-                        setIsSubmitting(false);
-                    },
-                    onFinish: () => {
-                        setIsSubmitting(false);
-                    },
-                },
-            );
-        }, 500);
-    };
-
-    // Social login handlers
-    const handleGoogleLogin = () => {
-        router.get('/auth/google');
-    };
-
-    const handleFacebookLogin = () => {
-        router.get('/auth/facebook');
+        post(route('masuk'), {
+            onFinish: () => {
+                reset();
+            },
+        });
     };
 
     return (
@@ -123,12 +44,12 @@ export default function LoginForm() {
             </div>
 
             {/* General error alert */}
-            {errors.general && (
+            {/* {errors.general && (
                 <Alert variant="destructive" className="mb-4">
                     <AlertCircle className="h-4 w-4" />
                     <AlertDescription>{errors.general}</AlertDescription>
                 </Alert>
-            )}
+            )} */}
 
             {/* Too many attempts warning */}
             {/* {loginAttempts >= 3 && (
@@ -152,11 +73,11 @@ export default function LoginForm() {
                         id="email"
                         name="email"
                         type="email"
-                        value={formData.email}
-                        onChange={handleChange}
+                        value={data.email}
+                        onChange={(e) => setData('email', e.target.value)}
                         placeholder="nama@example.com"
                         className={errors.email ? 'border-destructive' : ''}
-                        disabled={isSubmitting}
+                        disabled={processing}
                         autoComplete="email"
                     />
                     {errors.email && <p className="text-destructive text-xs">{errors.email}</p>}
@@ -176,17 +97,17 @@ export default function LoginForm() {
                             id="password"
                             name="password"
                             type={showPassword ? 'text' : 'password'}
-                            value={formData.password}
-                            onChange={handleChange}
+                            value={data.password}
+                            onChange={(e) => setData('password', e.target.value)}
                             placeholder="••••••••"
                             className={`pr-10 ${errors.password ? 'border-destructive' : ''}`}
-                            disabled={isSubmitting}
+                            disabled={processing}
                             autoComplete="current-password"
                         />
                         <button
                             type="button"
                             className="absolute inset-y-0 right-0 flex items-center pr-3 text-gray-400 hover:text-gray-500"
-                            onClick={togglePasswordVisibility}
+                            onClick={() => setShowPassword(!showPassword)}
                         >
                             {showPassword ? <EyeOffIcon className="h-5 w-5" /> : <EyeIcon className="h-5 w-5" />}
                         </button>
@@ -199,8 +120,8 @@ export default function LoginForm() {
                         type="checkbox"
                         id="remember"
                         name="remember"
-                        checked={formData.remember}
-                        onChange={handleChange}
+                        checked={data.remember}
+                        onChange={(e) => setData('remember', e.target.checked)}
                         className="h-4 w-4 rounded border-gray-300 text-emerald-600 focus:ring-emerald-500"
                     />
                     <label htmlFor="remember" className="text-sm text-gray-600">
@@ -208,8 +129,8 @@ export default function LoginForm() {
                     </label>
                 </div>
 
-                <Button type="submit" className="w-full bg-emerald-600 text-light-base hover:bg-emerald-700" disabled={isSubmitting}>
-                    {isSubmitting ? (
+                <Button type="submit" className="text-light-base w-full bg-emerald-600 hover:bg-emerald-700" disabled={processing}>
+                    {processing ? (
                         <>
                             <Loader2 className="mr-2 h-4 w-4 animate-spin" />
                             Memproses
@@ -225,7 +146,13 @@ export default function LoginForm() {
                 </div>
 
                 <div className="grid grid-cols-2 gap-4">
-                    <Button type="button" variant="outline" className="w-full text-dark-base bg-light-base" onClick={handleGoogleLogin} disabled={isSubmitting}>
+                    <Button
+                        type="button"
+                        variant="outline"
+                        className="text-dark-base bg-light-base w-full"
+                        // onClick={handleGoogleLogin}
+                        disabled={processing}
+                    >
                         <svg className="mr-2 h-4 w-4" viewBox="0 0 24 24">
                             <path
                                 d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"
@@ -246,7 +173,13 @@ export default function LoginForm() {
                         </svg>
                         Google
                     </Button>
-                    <Button type="button" variant="outline" className="w-full text-dark-base bg-light-base" onClick={handleFacebookLogin} disabled={isSubmitting}>
+                    <Button
+                        type="button"
+                        variant="outline"
+                        className="text-dark-base bg-light-base w-full"
+                        // onClick={handleFacebookLogin}
+                        disabled={processing}
+                    >
                         <svg className="mr-2 h-4 w-4" fill="currentColor" viewBox="0 0 24 24">
                             <path d="M22 12c0-5.523-4.477-10-10-10S2 6.477 2 12c0 4.991 3.657 9.128 8.438 9.878v-6.987h-2.54V12h2.54V9.797c0-2.506 1.492-3.89 3.777-3.89 1.094 0 2.238.195 2.238.195v2.46h-1.26c-1.243 0-1.63.771-1.63 1.562V12h2.773l-.443 2.89h-2.33v6.988C18.343 21.128 22 16.991 22 12z" />
                         </svg>

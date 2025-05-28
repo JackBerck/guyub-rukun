@@ -1,9 +1,5 @@
 'use client';
 
-import { Link } from '@inertiajs/react';
-import { Bell, Menu, Search, User, X } from 'lucide-react';
-import { useState } from 'react';
-
 import { Button } from '@/components/ui/button';
 import {
     DropdownMenu,
@@ -14,8 +10,15 @@ import {
     DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { Input } from '@/components/ui/input';
+import navigations from '@/data/navigations';
+import { SharedData } from '@/types';
+import { Link, usePage } from '@inertiajs/react';
+import { Bell, Menu, Search, User, X } from 'lucide-react';
+import { useState } from 'react';
 
 export default function Navbar() {
+    const { auth } = usePage<SharedData>().props;
+
     const [isSearchOpen, setIsSearchOpen] = useState(false);
     const [isMenuOpen, setIsMenuOpen] = useState(false);
 
@@ -27,15 +30,15 @@ export default function Navbar() {
                         <img src="/guyub-rukun.webp" alt="Guyub Rukun Logo" />
                     </Link>
                     <nav className="hidden md:flex md:items-center md:gap-6">
-                        <Link href="/" className="text-sm font-medium transition-colors hover:text-emerald-600">
-                            Beranda
-                        </Link>
-                        <Link href="/about" className="text-sm font-medium transition-colors hover:text-emerald-600">
-                            Tentang Kami
-                        </Link>
-                        <Link href="/contact" className="text-sm font-medium transition-colors hover:text-emerald-600">
-                            Kontak
-                        </Link>
+                        {navigations.map((nav) => (
+                            <Link
+                                key={nav.path}
+                                href={nav.path}
+                                className="text-dark-base text-sm font-medium transition-colors hover:text-emerald-600"
+                            >
+                                {nav.title}
+                            </Link>
+                        ))}
                     </nav>
                 </div>
                 <div className="flex items-center gap-2">
@@ -53,48 +56,56 @@ export default function Navbar() {
                             <span className="sr-only">Search</span>
                         </Button>
                     )}
-                    
-                    <Button variant="ghost" size="icon">
-                        <Bell className="h-5 w-5" />
-                        <span className="sr-only">Notifications</span>
-                    </Button>
-                    <DropdownMenu>
-                        <DropdownMenuTrigger asChild>
+                    {auth.user && (
+                        <>
                             <Button variant="ghost" size="icon">
-                                <User className="h-5 w-5" />
-                                <span className="sr-only">User menu</span>
+                                <Bell className="h-5 w-5" />
+                                <span className="sr-only">Notifications</span>
                             </Button>
-                        </DropdownMenuTrigger>
-                        <DropdownMenuContent align="end" className='bg-light-base text-dark-base shadow-lg'>
-                            <DropdownMenuLabel>Akun Saya</DropdownMenuLabel>
-                            <DropdownMenuSeparator />
-                            <DropdownMenuItem>
-                                <Link href="/profile" className="flex w-full">
-                                    Profil
-                                </Link>
-                            </DropdownMenuItem>
-                            <DropdownMenuItem>
-                                <Link href="/my-donations" className="flex w-full">
-                                    Donasi Saya
-                                </Link>
-                            </DropdownMenuItem>
-                            <DropdownMenuItem>
-                                <Link href="/settings" className="flex w-full">
-                                    Pengaturan
-                                </Link>
-                            </DropdownMenuItem>
-                            <DropdownMenuSeparator />
-                            <DropdownMenuItem className='bg-red-base text-light-base hover:bg-red-700'>
-                                <Link href="/logout" className="flex w-full">
-                                    Keluar
-                                </Link>
-                            </DropdownMenuItem>
-                        </DropdownMenuContent>
-                    </DropdownMenu>
-                    <Button className="text-light-base hidden bg-emerald-600 transition duration-100 hover:bg-emerald-700 md:inline-flex">
-                        Donasikan Sekarang
-                    </Button>
-
+                            <DropdownMenu>
+                                <DropdownMenuTrigger asChild>
+                                    <Button variant="ghost" size="icon">
+                                        <User className="h-5 w-5" />
+                                        <span className="sr-only">User menu</span>
+                                    </Button>
+                                </DropdownMenuTrigger>
+                                <DropdownMenuContent align="end" className="bg-light-base text-dark-base shadow-lg">
+                                    <DropdownMenuLabel>Akun Saya</DropdownMenuLabel>
+                                    <DropdownMenuSeparator />
+                                    <DropdownMenuItem>
+                                        <Link href="/profile" className="flex w-full">
+                                            Profil
+                                        </Link>
+                                    </DropdownMenuItem>
+                                    <DropdownMenuItem>
+                                        <Link href="/my-donations" className="flex w-full">
+                                            Donasi Saya
+                                        </Link>
+                                    </DropdownMenuItem>
+                                    <DropdownMenuItem>
+                                        <Link href="/settings" className="flex w-full">
+                                            Pengaturan
+                                        </Link>
+                                    </DropdownMenuItem>
+                                    <DropdownMenuSeparator />
+                                    <DropdownMenuItem className="bg-red-base text-light-base hover:bg-red-700">
+                                        <Link href="/logout" className="flex w-full">
+                                            Keluar
+                                        </Link>
+                                    </DropdownMenuItem>
+                                </DropdownMenuContent>
+                            </DropdownMenu>
+                        </>
+                    )}
+                    {!auth.user ? (
+                        <Button className="text-light-base hidden bg-emerald-600 transition duration-100 hover:bg-emerald-700 md:inline-flex">
+                            <Link href="/masuk">Donasikan Sekarang</Link>
+                        </Button>
+                    ) : (
+                        <Button className="text-light-base hidden bg-emerald-600 transition duration-100 hover:bg-emerald-700 md:inline-flex">
+                            <Link href="/donasikan">Donasikan Sekarang</Link>
+                        </Button>
+                    )}
                     {/* Hamburger menu with dropdown from top */}
                     <Button variant="ghost" size="icon" className="md:hidden" onClick={() => setIsMenuOpen(!isMenuOpen)}>
                         {isMenuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
@@ -132,7 +143,10 @@ export default function Navbar() {
                         >
                             Kontak
                         </Link>
-                        <Button className="w-full bg-emerald-600 transition duration-100 hover:bg-emerald-700 text-light-base" onClick={() => setIsMenuOpen(false)}>
+                        <Button
+                            className="text-light-base w-full bg-emerald-600 transition duration-100 hover:bg-emerald-700"
+                            onClick={() => setIsMenuOpen(false)}
+                        >
                             Donasikan Sekarang
                         </Button>
                     </div>
