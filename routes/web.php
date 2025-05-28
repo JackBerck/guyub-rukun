@@ -19,10 +19,23 @@ Route::middleware(['auth', 'verified'])->group(function () {
         return Inertia::render('dashboard');
     })->name('dashboard');
 
-    Route::get('/donasikan', function() {
+    Route::get('/donasikan', function () {
         return Inertia::render('donation/create');
-    })->name('create.donation');
+    })->name('donation.create');
+
+    Route::get('/buka-forum', function () {
+        return Inertia::render('forum/create');
+    })->name('forum.create');
+
+    Route::get('/butuh-bantuan', function () {
+        return Inertia::render('request/create');
+    })->name('request.create');
+
+
+    Route::get('/sebar-acara', function () {
+        return Inertia::render('affair/create');
+    })->name('affair.create');
 });
 
-require __DIR__.'/settings.php';
-require __DIR__.'/auth.php';
+require __DIR__ . '/settings.php';
+require __DIR__ . '/auth.php';

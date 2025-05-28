@@ -11,7 +11,7 @@ import { Textarea } from '@/components/ui/textarea';
 import Layout from '@/layouts/layout';
 import { Head, Link, useForm } from '@inertiajs/react';
 import { ArrowLeft, Camera, MapPin, X } from 'lucide-react';
-import { useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
 type CreateDonationForm = {
     title: string;
@@ -43,12 +43,11 @@ export default function CreateDonationPage() {
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
 
-        post(route('donasikan'), {
+        post(route('donation.create'), {
             onFinish: () => {
                 reset();
             },
         });
-        console.info('Form submitted:', data);
     };
 
     const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -79,6 +78,35 @@ export default function CreateDonationPage() {
         newImages.splice(index, 1);
         setData({ ...data, images: newImages });
     };
+
+    const saveForDraft = () => {
+        localStorage.setItem('affair_draft', JSON.stringify(data));
+
+        alert('Acara berhasil disimpan sebagai draft');
+    };
+
+    useEffect(() => {
+        const draftKey = 'affair_draft';
+        const draft = localStorage.getItem(draftKey);
+
+        if (draft) {
+            const parsedDraft = JSON.parse(draft);
+            setData({
+                title: parsedDraft.title || '',
+                description: parsedDraft.description || '',
+                phone_number: parsedDraft.phone_number || '',
+                address: parsedDraft.address || '',
+                status: parsedDraft.status || false,
+                type: parsedDraft.type || 'donation',
+                is_popular: parsedDraft.is_popular || false,
+                donation_category_id: parsedDraft.donation_category_id || 0,
+                images: parsedDraft.images || [],
+            });
+            
+            const existingPreviews = parsedDraft.images.map((file: File) => URL.createObjectURL(file));
+            setImagesPreviews(existingPreviews);
+        }
+    }, [setData]);
 
     return (
         <Layout>
@@ -215,12 +243,16 @@ export default function CreateDonationPage() {
                                     {errors.images && <p className="text-sm text-red-600">{errors.images}</p>}
                                 </div>
                             </CardContent>
-                            <CardFooter className="flex flex-col space-y-4">
-                                <Button type="submit" disabled={processing} className="w-full bg-emerald-600 hover:bg-emerald-700 text-light-base py-4">
+                            <CardFooter className="flex flex-col space-y-4 sm:flex-row sm:space-y-0 sm:space-x-4">
+                                <Button
+                                    type="submit"
+                                    disabled={processing}
+                                    className="text-light-base w-full bg-emerald-600 py-4 hover:bg-emerald-700"
+                                >
                                     {processing ? 'Memproses...' : 'Publikasikan Donasi'}
                                 </Button>
-                                <Button type="button" className="w-full bg-red-500 hover:bg-red-600 text-light-base py-4" onClick={() => setData({ ...data, status: false })}>
-                                    Batalkan Donasi
+                                <Button type="button" variant="outline" className="text-light-base w-full" onClick={saveForDraft}>
+                                    Simpan sebagai Draft
                                 </Button>
                             </CardFooter>
                         </Card>
