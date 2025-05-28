@@ -18,7 +18,7 @@ return new class extends Migration {
             $table->enum("urgency", ["low", "medium", "high"])->nullable();
             $table->string('phone_number')->nullable();
             $table->text('address')->nullable();
-            $table->boolean("status")->default(0);
+            $table->boolean("status")->default(0)->nullable();
             $table->enum("type", ["donation", "request"])->default("donation");
             $table->boolean("is_popular")->default(0);
             $table->foreignId('user_id')->constrained()->onDelete('cascade');

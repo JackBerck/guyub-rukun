@@ -4,7 +4,7 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class CreateDonationRequest extends FormRequest
+class CreateHelpRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -28,7 +28,6 @@ class CreateDonationRequest extends FormRequest
             'phone_number' => 'required|string|max:20',
             'address' => 'required|string|max:255',
             'status' => 'required|boolean',
-            'type' => 'required|in:donation,request',
             'donation_category_id' => 'required|exists:donation_categories,id',
             'images' => 'required|array',
             'images.*' => 'file|mimes:jpg,jpeg,png|max:2048',

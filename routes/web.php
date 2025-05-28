@@ -16,8 +16,17 @@ Route::middleware(['auth', 'verified'])->group(function () {
         return Inertia::render('dashboard');
     })->name('dashboard');
 
-    Route::post("donation", [DonationController::class, "store"])->name("donation.store");
-    Route::post("")
+    Route::get("donate")->name("donation.donate.create");
+    Route::post("donate", [DonationController::class, "storeDonate"])->name("donation.donate.store");
+    Route::get("donate/{donation:slug}/edit",[DonationController::class,"editDonate"])->name("donation.donate.edit");
+    Route::put("donate/{donation:slug}/edit", [DonationController::class, "update"])->name("donation.donate.update");
+
+    Route::get("help")->name("donation.help.create");
+    Route::get("help/{donation:slug}/edit",[DonationController::class,"editHelp"])->name("donation.help.edit");
+    Route::post("help", [DonationController::class, "storeHelp"])->name("donation.help.store");
+    Route::put("help/{donation:slug}/edit", [DonationController::class, "update"])->name("donation.help.update");
+
+    Route::delete("donation/{donation:slug}",[DonationController::class,""])->name("donation.remove");
 
 });
 

@@ -2,12 +2,14 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\CreateDonationRequest;
+use App\Http\Requests\CreateDonateRequest;
+use App\Http\Requests\CreateHelpRequest;
 use App\Http\Requests\UpdateDonationRequest;
 use App\Models\Donation;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 use Inertia\Inertia;
 
 class DonationController extends Controller
@@ -19,22 +21,17 @@ class DonationController extends Controller
             ->cursorPaginate(16);
     }
 
-    public function create()
+    public function createDonate()
     {
         // return inertia
     }
 
-    /**
-     * Store a newly created donation in storage.
-     *
-     * @param  \App\Http\Requests\CreateDonationRequest  $request
-     * @return \Illuminate\Http\JsonResponse|\Illuminate\Http\RedirectResponse
-     */
-    public function store(CreateDonationRequest $request): RedirectResponse
+    public function storeDonate(CreateDonateRequest $request): RedirectResponse
     {
         try {
-            $user = Auth::user();
+            $user = request()->user();
             $data = $request->validated();
+            $data["type"] = "donation";
 
             $donation = $user->donations()->create($data);
 
@@ -56,7 +53,45 @@ class DonationController extends Controller
         }
     }
 
-    public function edit(Donation $donation)
+    public function createHelp()
+    {
+        // return inertia
+    }
+
+    public function storeHelp(CreateHelpRequest $request)
+    {
+        try {
+
+            $user = request()->user();
+            $data = $request->validated();
+            $data["type"] = "request";
+
+            $help = $user->donations()->create($data);
+
+            // Simpan setiap file gambar ke relasi donationImages
+            if (isset($data['images']) && is_array($data['images'])) {
+                foreach ($data['images'] as $image) {
+                    $path = $image->store('donation-images', 'public');
+                    $help->donationImages()->create(['path' => $path]);
+                }
+            }
+
+            // You can return JSON or redirect as needed
+            return redirect()->route('donations.index')
+                ->with('status', "Postingan $help->title berhasil dibuat");
+        } catch (\Exception $e) {
+            Log::error($e->getMessage()); // Log error untuk debugging
+            return back()->withErrors(['error' => "Postingan gagal dibuat"])->withInput();
+        }
+
+    }
+
+    public function editDonate(Donation $donation)
+    {
+        // return Inertia::render()
+    }
+
+    public function editHelp(Donation $donation)
     {
         // return Inertia::render()
     }
@@ -64,26 +99,21 @@ class DonationController extends Controller
     public function update(UpdateDonationRequest $request, Donation $donation): RedirectResponse
     {
         try {
+
+            if ($donation->user_id !== Auth::id()) {
+                return back()->withErrors(['error' => "Anda tidak memiliki izin untuk memperbarui donasi ini"]);
+            }
+
             $data = $request->validated();
+            $data["type"] = $donation->type;
 
             // Update donation data
             $donation->update($data);
 
-            // Update images if provided
-            if (isset($data['images']) && is_array($data['images'])) {
-                // Delete old images
-                $donation->donationImages()->delete();
-
-                // Save new images
-                foreach ($data['images'] as $image) {
-                    $path = $image->store('donation-images', 'public');
-                    $donation->donationImages()->create(['path' => $path]);
-                }
-            }
-
             return redirect()->route('donations.index')
                 ->with('status', "Postingan $donation->title berhasil diperbarui");
         } catch (\Exception $e) {
+            Log::error($e->getMessage()); // Log error untuk debugging
             return back()->withErrors(['error' => "Postingan gagal diperbarui"])
                 ->withInput();
         }
@@ -92,8 +122,10 @@ class DonationController extends Controller
     public function remove(Donation $donation): RedirectResponse
     {
         try {
-            // Delete associated images
-            $donation->donationImages()->delete();
+
+            if ($donation->user_id !== Auth::id()) {
+                return back()->withErrors(['error' => "Anda tidak boleh menghapus postingan ini. Postingan gagal dihapus"]);
+            }
 
             // Delete the donation
             $donation->delete();

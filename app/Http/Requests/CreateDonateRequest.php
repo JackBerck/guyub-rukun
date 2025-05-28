@@ -4,14 +4,14 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class UpdateDonationRequest extends FormRequest
+class CreateDonateRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
      */
     public function authorize(): bool
     {
-        return request()->user() != null;
+        return $this->user() != null;
     }
 
     /**
@@ -24,11 +24,11 @@ class UpdateDonationRequest extends FormRequest
         return [
             'title' => 'required|string|max:255',
             'description' => 'required|string',
-            'urgency' => 'nullable|in:low,medium,high',
             'phone_number' => 'required|string|max:20',
             'address' => 'required|string|max:255',
-            'status' => 'required|boolean',
             'donation_category_id' => 'required|exists:donation_categories,id',
+            'images' => 'required|array',
+            'images.*' => 'file|mimes:jpg,jpeg,png|max:2048',
         ];
     }
 }
