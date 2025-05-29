@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AffairController;
 use App\Http\Controllers\DonationController;
 use App\Http\Controllers\ForumController;
 use Illuminate\Support\Facades\Route;
@@ -36,7 +37,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
     // Route Forum
     Route::get("forum/create", [ForumController::class, "create"])->name("forum.create");
-    Route::get("forum/search", [ForumController::class, "search"])->name("forum.create");
+    Route::get("forum/search", [ForumController::class, "search"])->name("forum.search");
     Route::get("forum/{forum:slug}/edit", [ForumController::class, "edit"])->name("forum.edit");
     Route::get("forum/{forum:slug}/view", [ForumController::class, "view"])->name("forum.detail");
     Route::post("forum/{forum}/like", [ForumController::class, "like"])->name("forum.like");
@@ -45,6 +46,15 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::put("forum/{forum:slug}", [ForumController::class, "update"])->name("forum.update");
     Route::delete("forum/{forum:slug}", [ForumController::class, "remove"])->name("forum.delete");
     Route::delete("forum/{forum:slug}/{comment}", [ForumController::class, "removeComment"])->name("forum.comment.delete");
+
+    // route Affair
+    Route::get("affair/create", [AffairController::class, "create"])->name("affair.create");
+    Route::get("affair/search", [AffairController::class, "search"])->name("affair.search");
+    Route::get("affair/{affair:slug}", [AffairController::class, "edit"])->name("affair.edit");
+    Route::get("affair/{affair:slug}", [AffairController::class, "view"])->name("affair.view");
+    Route::post("affair", [AffairController::class, "store"])->name("affair.store");
+    Route::put("affair/{affair:slug}", [AffairController::class, "update"])->name("affair.update");
+    Route::delete("affair/{affair:slug}", [AffairController::class, "remove"])->name("affair.remove");
 
 });
 
