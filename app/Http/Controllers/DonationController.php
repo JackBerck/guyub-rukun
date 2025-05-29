@@ -2,9 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\CreateCommentForumRequest;
 use App\Http\Requests\CreateDonateRequest;
 use App\Http\Requests\CreateHelpRequest;
 use App\Http\Requests\UpdateDonationRequest;
+use App\Models\Comment;
 use App\Models\Donation;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -72,7 +74,7 @@ class DonationController extends Controller
             if (isset($data['images']) && is_array($data['images'])) {
                 foreach ($data['images'] as $image) {
                     $path = $image->store('donation-images', 'public');
-                    $help->donationImages()->create(['path' => $path]);
+                    $help->donationImages()->create(['image' => $path]);
                 }
             }
 
@@ -134,6 +136,53 @@ class DonationController extends Controller
                 ->with('status', "Postingan $donation->title berhasil dihapus");
         } catch (\Exception $e) {
             return back()->withErrors(['error' => "Postingan gagal dihapus"]);
+        }
+    }
+
+    public function comment(CreateCommentForumRequest $request, Donation $donation)
+    {
+        try {
+            $data = $request->validated();
+
+            // Ambil user ID dari pengguna yang sedang login
+            $data["user_id"] = Auth::id();
+
+            // Simpan gambar jika ada
+            if ($request->hasFile('image')) {
+                $data["image"] = $request->file('image')->store('comment-images', 'public');
+            }
+
+            // Simpan komentar
+            $donation->comments()->create($data);
+
+            return redirect()->back()->with('status', 'Komentar berhasil ditambahkan');
+        } catch (\Exception $e) {
+            // Log error untuk debugging
+            \Log::error($e->getMessage());
+
+            // Redirect kembali dengan pesan error
+            return back()->withErrors(['error' => "Terjadi kesalahan saat menambahkan komentar. Silakan coba lagi."]);
+        }
+    }
+
+    public function removeComment(Comment $comment)
+    {
+        try {
+            // Pastikan hanya pemilik komentar yang dapat menghapus
+            if ($comment->user_id !== Auth::id()) {
+                return back()->withErrors(['error' => "Anda tidak memiliki izin untuk menghapus komentar ini."]);
+            }
+
+            // Hapus komentar
+            $comment->delete();
+
+            return redirect()->back()->with('status', "Komentar berhasil dihapus");
+        } catch (\Exception $e) {
+            // Log error untuk debugging
+            \Log::error($e->getMessage());
+
+            // Redirect kembali dengan pesan error
+            return back()->withErrors(['error' => "Terjadi kesalahan saat menghapus komentar. Silakan coba lagi."]);
         }
     }
 }

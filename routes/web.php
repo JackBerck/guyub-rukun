@@ -33,7 +33,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
     Route::delete("donation/{donation:slug}", [DonationController::class, ""])->name("donation.remove");
 
-    // Route::comment("donation/{donation:slug}/comment",[]);
+    Route::post("donation/{donation:slug}/comment", [DonationController::class, "comment"])->name("donation.comment.create");
+    Route::delete("donation/{donation:slug}/{comment}", [DonationController::class, "removeComment"])->name("donation.comment.delete");
 
     // Route Forum
     Route::get("forum/create", [ForumController::class, "create"])->name("forum.create");
