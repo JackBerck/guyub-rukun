@@ -1,6 +1,6 @@
-export default function ContactFormAbout() {
+export default function ContactForm() {
     return (
-      <form action="#" method="POST" className="flex flex-col gap-4 p-2 lg:p-6 bg-gray-100 rounded-md">
+      <form action="#" method="POST" className="flex flex-col gap-4 p-2 lg:p-6 rounded-md">
         <div className="flex flex-col gap-2">
           <label htmlFor="name" className="font-semibold">
             Nama <span className="text-red-600">*</span>

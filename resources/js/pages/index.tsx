@@ -12,14 +12,14 @@ export default function Home() {
     return (
         <Layout>
             <Head title="Beranda" />
-            <section className="pt-4 pb-8 md:pb-12 lg:pt-4 section-padding-x">
+            <section className="section-padding-x pt-4 pb-8 md:pb-12 lg:pt-4">
                 <div className="container max-w-screen-xl">
                     {/* Feed Layout */}
                     <div className="container mx-auto">
                         <div className="grid grid-cols-1 gap-6 md:grid-cols-3 lg:grid-cols-4">
                             {/* Sidebar Kiri - Profile & Menu (hanya tampil di desktop) */}
                             <aside className="hidden lg:block">
-                                <div className="sticky top-20 lg:top-24 space-y-4">
+                                <div className="sticky top-20 space-y-4 lg:top-24">
                                     {/* Profile Card */}
                                     <Card className="bg-light-base text-dark-base gap-2 p-2">
                                         <CardHeader className="p-0">
@@ -40,34 +40,42 @@ export default function Home() {
                                                 <Button
                                                     variant="outline"
                                                     size="sm"
-                                                    className="text-dark-base bg-light-base hover:text-dark-base flex items-center justify-start gap-2 border-pink-500 transition duration-100 hover:bg-pink-100"
+                                                    className="text-dark-base bg-light-base hover:text-dark-base border-pink-500 transition duration-100 hover:bg-pink-100"
                                                 >
-                                                    <Heart className="h-4 w-4 text-pink-500" />
-                                                    <span>Donasi</span>
+                                                    <Link href="/donasikan" className="flex items-center justify-start gap-2">
+                                                        <Heart className="h-4 w-4 text-pink-500" />
+                                                        <span>Donasi</span>
+                                                    </Link>
                                                 </Button>
                                                 <Button
                                                     variant="outline"
                                                     size="sm"
-                                                    className="text-dark-base bg-light-base hover:text-dark-base flex items-center justify-start gap-2 border-blue-500 transition duration-100 hover:bg-blue-100"
+                                                    className="text-dark-base bg-light-base hover:text-dark-base border-blue-500 transition duration-100 hover:bg-blue-100"
                                                 >
-                                                    <MessageSquare className="h-4 w-4 text-blue-500" />
-                                                    <span>Forum</span>
+                                                    <Link href="/buka-forum" className="flex items-center justify-start gap-2">
+                                                        <MessageSquare className="h-4 w-4 text-blue-500" />
+                                                        <span>Forum</span>
+                                                    </Link>
                                                 </Button>
                                                 <Button
                                                     variant="outline"
                                                     size="sm"
-                                                    className="text-dark-base bg-light-base hover:text-dark-base flex items-center justify-start gap-2 border-emerald-500 transition duration-100 hover:bg-emerald-100"
+                                                    className="text-dark-base bg-light-base hover:text-dark-base border-emerald-500 transition duration-100 hover:bg-emerald-100"
                                                 >
-                                                    <BadgeCheck className="h-4 w-4 text-emerald-500" />
-                                                    <span>Cerita</span>
+                                                    <Link href="/butuh-bantuan" className="flex items-center justify-start gap-2">
+                                                        <BadgeCheck className="h-4 w-4 text-emerald-500" />
+                                                        <span>Butuh Bantuan</span>
+                                                    </Link>
                                                 </Button>
                                                 <Button
                                                     variant="outline"
                                                     size="sm"
-                                                    className="text-dark-base bg-light-base hover:text-dark-base flex items-center justify-start gap-2 border-purple-500 transition duration-100 hover:bg-purple-100"
+                                                    className="text-dark-base bg-light-base hover:text-dark-base border-purple-500 transition duration-100 hover:bg-purple-100"
                                                 >
-                                                    <Calendar className="h-4 w-4 text-purple-500" />
-                                                    <span>Event</span>
+                                                    <Link href="/sebar-acara" className="flex items-center justify-start gap-2">
+                                                        <Calendar className="h-4 w-4 text-purple-500" />
+                                                        <span>Event</span>
+                                                    </Link>
                                                 </Button>
                                             </div>
                                         </CardContent>
@@ -140,7 +148,7 @@ export default function Home() {
                             {/* Main Content - Feed */}
                             <div className="md:col-span-2">
                                 {/* Sidebar Kiri - Profile & Menu (hanya tampil di desktop) */}
-                                <aside className="lg:hidden block mb-4">
+                                <aside className="mb-4 block lg:hidden">
                                     <div className="sticky top-20 space-y-4">
                                         {/* Profile Card */}
                                         <Card className="bg-light-base text-dark-base gap-2 p-2">
@@ -164,32 +172,40 @@ export default function Home() {
                                                         size="sm"
                                                         className="text-dark-base bg-light-base hover:text-dark-base flex items-center justify-start gap-2 border-pink-500 transition duration-100 hover:bg-pink-100"
                                                     >
-                                                        <Heart className="h-4 w-4 text-pink-500" />
-                                                        <span>Donasi</span>
+                                                        <Link href="/donasikan" className="flex items-center justify-start gap-2">
+                                                            <Heart className="h-4 w-4 text-pink-500" />
+                                                            <span>Donasi</span>
+                                                        </Link>
                                                     </Button>
                                                     <Button
                                                         variant="outline"
                                                         size="sm"
                                                         className="text-dark-base bg-light-base hover:text-dark-base flex items-center justify-start gap-2 border-blue-500 transition duration-100 hover:bg-blue-100"
                                                     >
-                                                        <MessageSquare className="h-4 w-4 text-blue-500" />
-                                                        <span>Forum</span>
+                                                        <Link href="/buka-forum" className="flex items-center justify-start gap-2">
+                                                            <MessageSquare className="h-4 w-4 text-blue-500" />
+                                                            <span>Forum</span>
+                                                        </Link>
                                                     </Button>
                                                     <Button
                                                         variant="outline"
                                                         size="sm"
                                                         className="text-dark-base bg-light-base hover:text-dark-base flex items-center justify-start gap-2 border-emerald-500 transition duration-100 hover:bg-emerald-100"
                                                     >
-                                                        <BadgeCheck className="h-4 w-4 text-emerald-500" />
-                                                        <span>Cerita</span>
+                                                        <Link href="/butuh-bantuan" className="flex items-center justify-start gap-2">
+                                                            <BadgeCheck className="h-4 w-4 text-emerald-500" />
+                                                            <span>Butuh Bantuan</span>
+                                                        </Link>
                                                     </Button>
                                                     <Button
                                                         variant="outline"
                                                         size="sm"
                                                         className="text-dark-base bg-light-base hover:text-dark-base flex items-center justify-start gap-2 border-purple-500 transition duration-100 hover:bg-purple-100"
                                                     >
-                                                        <Calendar className="h-4 w-4 text-purple-500" />
-                                                        <span>Event</span>
+                                                        <Link href="/sebar-acara" className="flex items-center justify-start gap-2">
+                                                            <Calendar className="h-4 w-4 text-purple-500" />
+                                                            <span>Event</span>
+                                                        </Link>
                                                     </Button>
                                                 </div>
                                             </CardContent>
@@ -260,7 +276,7 @@ export default function Home() {
 
                             {/* Sidebar Kanan - Trending & Suggestions */}
                             <aside>
-                                <div className="sticky top-20 lg:top-24 space-y-6">
+                                <div className="sticky top-20 space-y-6 lg:top-24">
                                     {/* Forum Populer */}
                                     <Card className="bg-light-base text-dark-base gap-2 p-2">
                                         <CardHeader className="p-0">

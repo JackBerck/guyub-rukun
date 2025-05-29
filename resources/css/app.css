@@ -209,6 +209,10 @@
       @apply px-4 sm:px-6 md:px-8 lg:px-10 xl:px-12;
     }
 
+    .large-font-size {
+      @apply text-lg md:text-xl lg:text-2xl;
+    }
+
     .big-font-size {
       @apply text-base md:text-lg lg:text-xl;
     }

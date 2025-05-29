@@ -1,116 +1,39 @@
-import { Link, router } from '@inertiajs/react';
+import { Link, useForm } from '@inertiajs/react';
 import { UserPlus } from 'lucide-react';
-import { useState } from 'react';
-import { Alert, AlertDescription, AlertTitle } from '../ui/alert';
 import { Button } from '../ui/button';
 import { Input } from '../ui/input';
 import { Label } from '../ui/label';
 import { Separator } from '../ui/separator';
+import { useState } from 'react';
+
+type RegisterForm = {
+    name: string;
+    email: string;
+    password: string;
+    password_confirmation: string;
+};
 
 export default function RegisterForm() {
-    const [formData, setFormData] = useState({
+    const { data, setData, post, processing, errors, reset } = useForm<RegisterForm>({
         name: '',
         email: '',
-        phone: '',
         password: '',
-        verifyPassword: '',
-        terms: false,
+        password_confirmation: '',
     });
-    const [errors, setErrors] = useState<Record<string, string>>({});
-    const [isSubmitting, setIsSubmitting] = useState(false);
+    const [terms, setTerms] = useState<boolean>(false);
 
-    const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        const { name, value, type, checked } = e.target;
-        setFormData({
-            ...formData,
-            [name]: type === 'checkbox' ? checked : value,
-        });
-
-        // Clear error for this field when user starts typing
-        if (errors[name]) {
-            setErrors({
-                ...errors,
-                [name]: '',
-            });
-        }
-    };
-
-    const validate = () => {
-        const newErrors: Record<string, string> = {};
-
-        if (!formData.name.trim()) {
-            newErrors.name = 'Nama lengkap wajib diisi';
-        }
-
-        if (!formData.email.trim()) {
-            newErrors.email = 'Email wajib diisi';
-        } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
-            newErrors.email = 'Format email tidak valid';
-        }
-
-        if (!formData.phone.trim()) {
-            newErrors.phone = 'Nomor telepon wajib diisi';
-        } else if (!/^08[0-9]{8,11}$/.test(formData.phone)) {
-            newErrors.phone = 'Format nomor telepon tidak valid';
-        }
-
-        if (!formData.password) {
-            newErrors.password = 'Password wajib diisi';
-        } else if (formData.password.length < 8) {
-            newErrors.password = 'Password minimal 8 karakter';
-        } else if (!/(?=.*[a-zA-Z])(?=.*[0-9])/.test(formData.password)) {
-            newErrors.password = 'Password harus mengandung huruf dan angka';
-        }
-
-        if (formData.password !== formData.verifyPassword) {
-            newErrors.verifyPassword = 'Konfirmasi password tidak cocok';
-        }
-
-        if (!formData.terms) {
-            newErrors.terms = 'Anda harus menyetujui syarat dan ketentuan';
-        }
-
-        return newErrors;
-    };
-
-    const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
 
-        const validationErrors = validate();
-        if (Object.keys(validationErrors).length > 0) {
-            setErrors(validationErrors);
+        if (!terms) {
+            alert('Anda harus menyetujui syarat dan ketentuan sebelum mendaftar.');
             return;
         }
-
-        setIsSubmitting(true);
-
-        try {
-            // Kirim data ke backend menggunakan Inertia.js
-            router.post(
-                '/register',
-                {
-                    name: formData.name,
-                    email: formData.email,
-                    phone: formData.phone,
-                    password: formData.password,
-                    password_confirmation: formData.verifyPassword,
-                },
-                {
-                    onSuccess: () => {
-                        // Redirect akan ditangani oleh controller
-                    },
-                    onError: (errors) => {
-                        setErrors(errors);
-                    },
-                },
-            );
-        } catch (error) {
-            setErrors({
-                general: 'Terjadi kesalahan. Silakan coba lagi.',
-            });
-        } finally {
-            setIsSubmitting(false);
-        }
+        post(route('daftar'), {
+            onFinish: () => {
+                reset();
+            },
+        });
     };
 
     return (
@@ -125,14 +48,6 @@ export default function RegisterForm() {
                 <h2 className="text-xl font-semibold">Daftar Akun Baru</h2>
                 <p className="text-gray-600">Buat akun untuk mulai berbagi dan membantu sesama</p>
             </div>
-
-            {errors.general && (
-                <Alert variant="destructive" className="mb-4">
-                    <AlertTitle>Error</AlertTitle>
-                    <AlertDescription>{errors.general}</AlertDescription>
-                </Alert>
-            )}
-
             <form className="space-y-5" onSubmit={handleSubmit}>
                 <div className="space-y-2">
                     <Label htmlFor="name" className={errors.name ? 'text-destructive' : ''}>
@@ -141,8 +56,8 @@ export default function RegisterForm() {
                     <Input
                         id="name"
                         name="name"
-                        value={formData.name}
-                        onChange={handleChange}
+                        value={data.name}
+                        onChange={(e) => setData('name', e.target.value)}
                         placeholder="Masukkan nama lengkap Anda"
                         className={errors.name ? 'border-destructive' : ''}
                     />
@@ -157,15 +72,15 @@ export default function RegisterForm() {
                         id="email"
                         name="email"
                         type="email"
-                        value={formData.email}
-                        onChange={handleChange}
+                        value={data.email}
+                        onChange={(e) => setData('email', e.target.value)}
                         placeholder="nama@example.com"
                         className={errors.email ? 'border-destructive' : ''}
                     />
                     {errors.email && <p className="text-destructive text-xs">{errors.email}</p>}
                 </div>
 
-                <div className="space-y-2">
+                {/* <div className="space-y-2">
                     <Label htmlFor="phone" className={errors.phone ? 'text-destructive' : ''}>
                         Nomor Telepon
                     </Label>
@@ -173,13 +88,13 @@ export default function RegisterForm() {
                         id="phone"
                         name="phone"
                         type="tel"
-                        value={formData.phone}
-                        onChange={handleChange}
+                        value={data.phone}
+                        onChange={(e) => setData('phone', e.target.value)}
                         placeholder="08xxxxxxxxxx"
                         className={errors.phone ? 'border-destructive' : ''}
                     />
                     {errors.phone && <p className="text-destructive text-xs">{errors.phone}</p>}
-                </div>
+                </div> */}
 
                 <div className="space-y-2">
                     <Label htmlFor="password" className={errors.password ? 'text-destructive' : ''}>
@@ -189,8 +104,8 @@ export default function RegisterForm() {
                         id="password"
                         name="password"
                         type="password"
-                        value={formData.password}
-                        onChange={handleChange}
+                        value={data.password}
+                        onChange={(e) => setData('password', e.target.value)}
                         placeholder="••••••••"
                         className={errors.password ? 'border-destructive' : ''}
                     />
@@ -202,19 +117,19 @@ export default function RegisterForm() {
                 </div>
 
                 <div className="space-y-2">
-                    <Label htmlFor="verifyPassword" className={errors.verifyPassword ? 'text-destructive' : ''}>
+                    <Label htmlFor="password_confirmation" className={errors.password_confirmation ? 'text-destructive' : ''}>
                         Konfirmasi Password
                     </Label>
                     <Input
-                        id="verifyPassword"
-                        name="verifyPassword"
+                        id="password_confirmation"
+                        name="password_confirmation"
                         type="password"
-                        value={formData.verifyPassword}
-                        onChange={handleChange}
+                        value={data.password_confirmation}
+                        onChange={(e) => setData('password_confirmation', e.target.value)}
                         placeholder="••••••••"
-                        className={errors.verifyPassword ? 'border-destructive' : ''}
+                        className={errors.password_confirmation ? 'border-destructive' : ''}
                     />
-                    {errors.verifyPassword && <p className="text-destructive text-xs">{errors.verifyPassword}</p>}
+                    {errors.password_confirmation && <p className="text-destructive text-xs">{errors.password_confirmation}</p>}
                 </div>
 
                 <div className="flex items-center space-x-2">
@@ -222,11 +137,12 @@ export default function RegisterForm() {
                         type="checkbox"
                         id="terms"
                         name="terms"
-                        checked={formData.terms}
-                        onChange={handleChange}
-                        className={`h-4 w-4 rounded border-gray-300 text-emerald-600 focus:ring-emerald-500 ${errors.terms ? 'border-destructive' : ''}`}
+                        checked={terms}
+                        onChange={(e) => setTerms(e.target.checked)}
+                        required
+                        className={`h-4 w-4 rounded border-gray-300 text-emerald-600 focus:ring-emerald-500 ${terms ? 'border-destructive' : ''}`}
                     />
-                    <label htmlFor="terms" className={`text-sm ${errors.terms ? 'text-destructive' : 'text-gray-600'}`}>
+                    <label htmlFor="terms" className={`text-sm ${terms ? 'text-destructive' : 'text-gray-600'}`}>
                         Saya menyetujui{' '}
                         <Link href="/terms" className="font-medium text-emerald-600 hover:underline">
                             Syarat & Ketentuan
@@ -237,10 +153,9 @@ export default function RegisterForm() {
                         </Link>
                     </label>
                 </div>
-                {errors.terms && <p className="text-destructive -mt-2 text-xs">{errors.terms}</p>}
 
-                <Button type="submit" className="w-full bg-emerald-600 hover:bg-emerald-700 text-light-base" disabled={isSubmitting}>
-                    {isSubmitting ? 'Mendaftar...' : 'Daftar Sekarang'}
+                <Button type="submit" className="text-light-base w-full bg-emerald-600 hover:bg-emerald-700" disabled={processing}>
+                    {processing ? 'Mendaftar...' : 'Daftar Sekarang'}
                 </Button>
 
                 <div className="relative flex items-center justify-center">
@@ -249,7 +164,7 @@ export default function RegisterForm() {
                 </div>
 
                 <div className="grid grid-cols-2 gap-4">
-                    <Button variant="outline" type="button" className="w-full bg-light-base text-dark-base">
+                    <Button variant="outline" type="button" className="bg-light-base text-dark-base w-full">
                         <svg className="mr-2 h-4 w-4" viewBox="0 0 24 24">
                             <path
                                 d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"
@@ -270,7 +185,7 @@ export default function RegisterForm() {
                         </svg>
                         Google
                     </Button>
-                    <Button variant="outline" type="button" className="w-full bg-light-base text-dark-base">
+                    <Button variant="outline" type="button" className="bg-light-base text-dark-base w-full">
                         <svg className="mr-2 h-4 w-4" fill="currentColor" viewBox="0 0 24 24">
                             <path d="M22 12c0-5.523-4.477-10-10-10S2 6.477 2 12c0 4.991 3.657 9.128 8.438 9.878v-6.987h-2.54V12h2.54V9.797c0-2.506 1.492-3.89 3.777-3.89 1.094 0 2.238.195 2.238.195v2.46h-1.26c-1.243 0-1.63.771-1.63 1.562V12h2.773l-.443 2.89h-2.33v6.988C18.343 21.128 22 16.991 22 12z" />
                         </svg>

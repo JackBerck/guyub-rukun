@@ -13,10 +13,31 @@ Route::get('/tentang-kami', function () {
     return Inertia::render('about');
 })->name('about');
 
+Route::get('/kontak', function () {
+    return Inertia::render('contact');
+})->name('contact');
+
 Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('dashboard', function () {
         return Inertia::render('dashboard');
     })->name('dashboard');
+  
+    Route::get('/donasikan', function () {
+        return Inertia::render('donation/create');
+    })->name('donation.create');
+
+    Route::get('/buka-forum', function () {
+        return Inertia::render('forum/create');
+    })->name('forum.create');
+
+    Route::get('/butuh-bantuan', function () {
+        return Inertia::render('request/create');
+    })->name('request.create');
+
+
+    Route::get('/sebar-acara', function () {
+        return Inertia::render('affair/create');
+    })->name('affair.create');
 
     // Route Donate and help
     Route::get("donate")->name("donation.donate.create");
@@ -56,7 +77,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::post("affair", [AffairController::class, "store"])->name("affair.store");
     Route::put("affair/{affair:slug}", [AffairController::class, "update"])->name("affair.update");
     Route::delete("affair/{affair:slug}", [AffairController::class, "remove"])->name("affair.remove");
-
+  
 });
 
 require __DIR__ . '/settings.php';
