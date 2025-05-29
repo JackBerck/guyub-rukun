@@ -66,7 +66,7 @@ class ForumResource extends Resource
                     ->image()
                     ->maxSize(4096)
                     ->disk('public')
-                    ->directory('thumbnails'),
+                    ->directory('forum-thumbnails'),
                 Forms\Components\RichEditor::make('description')
                     ->disableToolbarButtons([
                         "codeBlock",
