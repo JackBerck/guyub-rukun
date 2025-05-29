@@ -32,6 +32,7 @@ class CommentsRelationManager extends RelationManager
                     ->maxLength(255)
                     ->label('Comment'),
                 Forms\Components\FileUpload::make('image')
+                    ->directory("comment-images")
                     ->label('Image')
                     ->columnSpanFull()
                     ->imageEditor(),
