@@ -85,7 +85,6 @@ class DonationController extends Controller
             Log::error($e->getMessage()); // Log error untuk debugging
             return back()->withErrors(['error' => "Postingan gagal dibuat"])->withInput();
         }
-
     }
 
     public function editDonate(Donation $donation)
@@ -158,7 +157,7 @@ class DonationController extends Controller
             return redirect()->back()->with('status', 'Komentar berhasil ditambahkan');
         } catch (\Exception $e) {
             // Log error untuk debugging
-            \Log::error($e->getMessage());
+            Log::error($e->getMessage());
 
             // Redirect kembali dengan pesan error
             return back()->withErrors(['error' => "Terjadi kesalahan saat menambahkan komentar. Silakan coba lagi."]);
@@ -179,7 +178,7 @@ class DonationController extends Controller
             return redirect()->back()->with('status', "Komentar berhasil dihapus");
         } catch (\Exception $e) {
             // Log error untuk debugging
-            \Log::error($e->getMessage());
+            Log::error($e->getMessage());
 
             // Redirect kembali dengan pesan error
             return back()->withErrors(['error' => "Terjadi kesalahan saat menghapus komentar. Silakan coba lagi."]);
