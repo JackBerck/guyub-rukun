@@ -12,6 +12,7 @@ use Illuminate\Http\Request;
 use Illuminate\Pagination\CursorPaginator;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
+use Inertia\Inertia;
 
 class ForumController extends Controller
 {
@@ -25,7 +26,7 @@ class ForumController extends Controller
 
     public function create()
     {
-        // return inertia
+        return Inertia::render('forum/create');
     }
 
     public function search()

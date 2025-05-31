@@ -21,34 +21,37 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('dashboard', function () {
         return Inertia::render('dashboard');
     })->name('dashboard');
-  
-    Route::get('/donasikan', function () {
-        return Inertia::render('donation/create');
-    })->name('donation.create');
-    Route::get('/buka-forum', function () {
-        return Inertia::render('forum/create');
-    })->name('forum.create');
-    Route::get('/butuh-bantuan', function () {
-        return Inertia::render('request/create');
-    })->name('request.create');
-    Route::get('/sebar-acara', function () {
-        return Inertia::render('affair/create');
-    })->name('affair.create');
+
+    // Route::get('/donasikan', function () {
+    //     return Inertia::render('donation/create');
+    // })->name('donation.create');
+
+    // Route::get('/buka-forum', function () {
+    //     return Inertia::render('forum/create');
+    // })->name('forum.create');
+
+    // Route::get('/butuh-bantuan', function () {
+    //     return Inertia::render('request/create');
+    // })->name('request.create');
+
+    // Route::get('/sebar-acara', function () {
+    //     return Inertia::render('affair/create');
+    // })->name('affair.create');
 
     // Route Donate and help
-    Route::get("donate")->name("donation.donate.create");
-    Route::get("donate/{donation:slug}/view")->name("donation.donate.create");
-    Route::post("donate", [DonationController::class, "storeDonate"])->name("donation.donate.store");
+    Route::get("donate", [DonationController::class, "createDonate"])->name("donation.donate.create");
+    Route::get("donate/{donation:slug}/view")->name("donation.donate.view");
     Route::get("donate/{donation:slug}/edit", [DonationController::class, "editDonate"])->name("donation.donate.edit");
+    Route::post("donate", [DonationController::class, "storeDonate"])->name("donation.donate.store");
     Route::put("donate/{donation:slug}/edit", [DonationController::class, "update"])->name("donation.donate.update");
 
-    Route::get("help")->name("donation.help.create");
-    Route::get("help/{donation:slug}/view")->name("donation.donate.create");
+    Route::get("help",[DonationController::class,"createHelp"])->name("donation.help.create");
+    Route::get("help/{donation:slug}/view")->name("donation.help.view");
     Route::get("help/{donation:slug}/edit", [DonationController::class, "editHelp"])->name("donation.help.edit");
     Route::post("help", [DonationController::class, "storeHelp"])->name("donation.help.store");
     Route::put("help/{donation:slug}/edit", [DonationController::class, "update"])->name("donation.help.update");
 
-    Route::delete("donation/{donation:slug}", [DonationController::class, ""])->name("donation.remove");
+    Route::delete("donation/{donation:slug}", [DonationController::class, "remove"])->name("donation.remove");
 
     Route::post("donation/{donation:slug}/comment", [DonationController::class, "comment"])->name("donation.comment.create");
     Route::delete("donation/{donation:slug}/{comment}", [DonationController::class, "removeComment"])->name("donation.comment.delete");
@@ -73,7 +76,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::post("affair", [AffairController::class, "store"])->name("affair.store");
     Route::put("affair/{affair:slug}", [AffairController::class, "update"])->name("affair.update");
     Route::delete("affair/{affair:slug}", [AffairController::class, "remove"])->name("affair.remove");
-  
+
 });
 
 require __DIR__ . '/settings.php';

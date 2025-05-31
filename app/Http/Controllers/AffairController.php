@@ -7,6 +7,7 @@ use App\Http\Requests\UpdateAffairRequest;
 use App\Models\Affair;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Inertia\Inertia;
 
 class AffairController extends Controller
 {
@@ -20,7 +21,7 @@ class AffairController extends Controller
 
     public function create()
     {
-        // return inertia 
+        return Inertia::render('affair/create');
     }
 
     public function search()
