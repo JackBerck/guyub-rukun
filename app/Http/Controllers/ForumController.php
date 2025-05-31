@@ -26,7 +26,11 @@ class ForumController extends Controller
 
     public function create()
     {
-        return Inertia::render('forum/create');
+        $forumCategories = \App\Models\ForumCategory::all();
+        
+        return Inertia::render('forum/create', [
+            'forumCategories' => $forumCategories,
+        ]);
     }
 
     public function search()
@@ -123,7 +127,7 @@ class ForumController extends Controller
             $user->forums()->create($data);
 
             // Redirect ke halaman forum dengan pesan sukses
-            return redirect()->route('forum.create')->with("status", "Forum baru berhasil dibuat");
+            return redirect()->route('home')->with("status", "Forum baru berhasil dibuat");
         } catch (\Exception $e) {
             // Log error untuk debugging
             \Log::error($e->getMessage());

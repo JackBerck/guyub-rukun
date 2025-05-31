@@ -16,14 +16,20 @@ type CreateForumForm = {
     thumbnail: File | null;
 };
 
-export default function CreateForumPage() {
+type ForumCategory = {
+    id: number;
+    name: string;
+    slug: string;
+};
+
+export default function CreateForumPage({ forumCategories }: { forumCategories: ForumCategory[] }) {
     const [thumbnailPreview, setThumbnailPreview] = useState<string | null>(null);
     const fileInputRef = useRef<HTMLInputElement>(null);
 
     const { data, setData, post, processing, errors, reset } = useForm<CreateForumForm>({
         title: '',
         description: '',
-        forum_category_id: 1,
+        forum_category_id: 0,
         thumbnail: null,
     });
 
@@ -41,10 +47,11 @@ export default function CreateForumPage() {
         post(route('forum.store'), {
             onSuccess: () => {
                 reset();
+                localStorage.removeItem('forum_draft');
                 setThumbnailPreview(null);
             },
             onError: () => {
-                // Error akan ditangani oleh state errors dari useForm
+                console.error('Error creating forum:', errors);
             },
         });
     };
@@ -177,20 +184,17 @@ export default function CreateForumPage() {
                                     </Label>
                                     <Select
                                         disabled={processing}
-                                        value={data.forum_category_id.toString()}
                                         onValueChange={(value) => setData('forum_category_id', Number.parseInt(value))}
                                     >
-                                        <SelectTrigger id="category" className={errors.forum_category_id ? 'border-red-500' : ''}>
+                                        <SelectTrigger id="category">
                                             <SelectValue placeholder="Pilih kategori forum" />
                                         </SelectTrigger>
                                         <SelectContent className="bg-white text-gray-900">
-                                            <SelectItem value="1">Tips & Trik</SelectItem>
-                                            <SelectItem value="2">Diskusi Umum</SelectItem>
-                                            <SelectItem value="3">Tanya Jawab</SelectItem>
-                                            <SelectItem value="4">Berbagi Pengalaman</SelectItem>
-                                            <SelectItem value="5">Resep Makanan</SelectItem>
-                                            <SelectItem value="6">Edukasi Gizi</SelectItem>
-                                            <SelectItem value="7">Lainnya</SelectItem>
+                                            {forumCategories.map((category) => (
+                                                <SelectItem key={category.id} value={String(category.id)}>
+                                                    {category.name}
+                                                </SelectItem>
+                                            ))}
                                         </SelectContent>
                                     </Select>
                                     {errors.forum_category_id && <p className="text-sm text-red-600">{errors.forum_category_id}</p>}
@@ -215,7 +219,7 @@ export default function CreateForumPage() {
 
                                 {/* Upload Thumbnail */}
                                 <div className="space-y-2 md:col-span-2">
-                                    <Label>Thumbnail Forum (Opsional)</Label>
+                                    <Label>Thumbnail Forum *</Label>
                                     <input
                                         type="file"
                                         ref={fileInputRef}

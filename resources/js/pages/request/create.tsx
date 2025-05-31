@@ -2,12 +2,11 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Textarea } from '@/components/ui/textarea';
 import Layout from '@/layouts/layout';
 import { Head, Link, useForm } from '@inertiajs/react';
-import { ArrowLeft, Camera, Clock, Loader2, MapPin, X } from 'lucide-react';
+import { ArrowLeft, Camera, Loader2, MapPin, X } from 'lucide-react';
 import { useEffect, useRef, useState } from 'react';
 
 type CreateRequestForm = {
@@ -16,62 +15,49 @@ type CreateRequestForm = {
     urgency: string;
     phone_number: string;
     address: string;
-    deadline: string;
     status: boolean;
     type: string;
     is_popular: boolean;
-    request_category_id: number;
+    donation_category_id: number;
     images: File[];
 };
 
-export default function CreateRequestPage() {
+type DonationCategory = {
+    id: number;
+    name: string;
+    slug: string;
+};
+
+export default function CreateRequestPage({ donationCategories }: { donationCategories: DonationCategory[] }) {
     const [imagesPreviews, setImagesPreviews] = useState<string[]>([]);
     const fileInputRef = useRef<HTMLInputElement>(null);
 
     const { data, setData, post, processing, errors, reset } = useForm<CreateRequestForm>({
         title: '',
         description: '',
-        urgency: 'sedang',
+        urgency: 'low',
         phone_number: '',
         address: '',
-        deadline: '',
         status: false,
         type: 'request',
         is_popular: false,
-        request_category_id: 1,
+        donation_category_id: 0,
         images: [],
     });
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
 
-        // Validasi client-side
-        if (!data.title.trim()) {
-            alert('Judul permintaan wajib diisi');
-            return;
-        }
-        if (!data.description.trim()) {
-            alert('Deskripsi permintaan wajib diisi');
-            return;
-        }
-        if (!data.address.trim()) {
-            alert('Lokasi wajib diisi');
-            return;
-        }
-        if (data.request_category_id === 0) {
-            alert('Kategori bantuan wajib dipilih');
-            return;
-        }
+        console.log('Submitting request with data:', data);
 
-        post(route('request.store'), {
+        post(route('donation.help.store'), {
             onSuccess: () => {
                 reset();
                 setImagesPreviews([]);
-                // Clear localStorage draft
                 localStorage.removeItem('request_draft');
             },
             onError: () => {
-                // Error akan ditangani oleh state errors dari useForm
+                console.error('Error submitting request:', errors);
             },
         });
     };
@@ -161,11 +147,10 @@ export default function CreateRequestPage() {
                     urgency: parsedDraft.urgency || 'sedang',
                     phone_number: parsedDraft.phone_number || '',
                     address: parsedDraft.address || '',
-                    deadline: parsedDraft.deadline || '',
                     status: parsedDraft.status || false,
                     type: parsedDraft.type || 'request',
                     is_popular: parsedDraft.is_popular || false,
-                    request_category_id: parsedDraft.request_category_id || 1,
+                    donation_category_id: parsedDraft.donation_category_id || 1,
                     images: parsedDraft.images || [],
                 });
 
@@ -252,26 +237,20 @@ export default function CreateRequestPage() {
 
                                 {/* Kategori */}
                                 <div className="space-y-2">
-                                    <Label htmlFor="category" className={errors.request_category_id ? 'text-red-600' : ''}>
-                                        Kategori *
-                                    </Label>
-                                    <Select
-                                        disabled={processing}
-                                        value={data.request_category_id.toString()}
-                                        onValueChange={(value) => setData('request_category_id', parseInt(value))}
-                                    >
-                                        <SelectTrigger id="category" className={errors.request_category_id ? 'border-red-500' : ''}>
+                                    <Label htmlFor="category">Kategori *</Label>
+                                    <Select disabled={processing} onValueChange={(value) => setData('donation_category_id', parseInt(value))}>
+                                        <SelectTrigger id="category">
                                             <SelectValue placeholder="Pilih kategori bantuan" />
                                         </SelectTrigger>
                                         <SelectContent className="bg-white text-gray-900">
-                                            <SelectItem value="1">Makanan</SelectItem>
-                                            <SelectItem value="2">Sembako</SelectItem>
-                                            <SelectItem value="3">Pakaian</SelectItem>
-                                            <SelectItem value="4">Obat-obatan</SelectItem>
-                                            <SelectItem value="5">Lainnya</SelectItem>
+                                            {donationCategories.map((category) => (
+                                                <SelectItem key={category.id} value={category.id.toString()}>
+                                                    {category.name}
+                                                </SelectItem>
+                                            ))}
                                         </SelectContent>
                                     </Select>
-                                    {errors.request_category_id && <p className="text-sm text-red-600">{errors.request_category_id}</p>}
+                                    {errors.donation_category_id && <p className="text-sm text-red-600">{errors.donation_category_id}</p>}
                                 </div>
 
                                 {/* Deskripsi */}
@@ -294,31 +273,58 @@ export default function CreateRequestPage() {
                                 {/* Tingkat Urgensi */}
                                 <div className="space-y-2 md:col-span-2">
                                     <Label className={errors.urgency ? 'text-red-600' : ''}>Tingkat Urgensi *</Label>
-                                    <RadioGroup
-                                        value={data.urgency}
-                                        className="flex space-x-4"
-                                        disabled={processing}
-                                        onValueChange={(value) => setData('urgency', value)}
-                                    >
-                                        <div className="flex items-center space-x-2">
-                                            <RadioGroupItem value="mendesak" id="mendesak" />
-                                            <Label htmlFor="mendesak" className="text-red-600">
-                                                Mendesak
-                                            </Label>
+
+                                    <div className="flex flex-wrap gap-4">
+                                        <div
+                                            className={`flex cursor-pointer items-center space-x-2 rounded-lg border-2 p-3 transition-all ${
+                                                data.urgency === 'high' ? 'border-red-500 bg-red-50' : 'border-gray-200 hover:border-red-300'
+                                            }`}
+                                            onClick={() => !processing && setData('urgency', 'high')}
+                                        >
+                                            <div
+                                                className={`flex h-4 w-4 items-center justify-center rounded-full border-2 ${
+                                                    data.urgency === 'high' ? 'border-red-500 bg-red-500' : 'border-gray-300'
+                                                }`}
+                                            >
+                                                {data.urgency === 'high' && <div className="h-2 w-2 rounded-full bg-white"></div>}
+                                            </div>
+                                            <Label className="cursor-pointer font-medium text-red-600">Mendesak</Label>
                                         </div>
-                                        <div className="flex items-center space-x-2">
-                                            <RadioGroupItem value="sedang" id="sedang" />
-                                            <Label htmlFor="sedang" className="text-yellow-600">
-                                                Sedang
-                                            </Label>
+
+                                        <div
+                                            className={`flex cursor-pointer items-center space-x-2 rounded-lg border-2 p-3 transition-all ${
+                                                data.urgency === 'medium'
+                                                    ? 'border-yellow-500 bg-yellow-50'
+                                                    : 'border-gray-200 hover:border-yellow-300'
+                                            }`}
+                                            onClick={() => !processing && setData('urgency', 'medium')}
+                                        >
+                                            <div
+                                                className={`flex h-4 w-4 items-center justify-center rounded-full border-2 ${
+                                                    data.urgency === 'medium' ? 'border-yellow-500 bg-yellow-500' : 'border-gray-300'
+                                                }`}
+                                            >
+                                                {data.urgency === 'medium' && <div className="h-2 w-2 rounded-full bg-white"></div>}
+                                            </div>
+                                            <Label className="cursor-pointer font-medium text-yellow-600">Sedang</Label>
                                         </div>
-                                        <div className="flex items-center space-x-2">
-                                            <RadioGroupItem value="rendah" id="rendah" />
-                                            <Label htmlFor="rendah" className="text-green-600">
-                                                Rendah
-                                            </Label>
+
+                                        <div
+                                            className={`flex cursor-pointer items-center space-x-2 rounded-lg border-2 p-3 transition-all ${
+                                                data.urgency === 'low' ? 'border-green-500 bg-green-50' : 'border-gray-200 hover:border-green-300'
+                                            }`}
+                                            onClick={() => !processing && setData('urgency', 'low')}
+                                        >
+                                            <div
+                                                className={`flex h-4 w-4 items-center justify-center rounded-full border-2 ${
+                                                    data.urgency === 'low' ? 'border-green-500 bg-green-500' : 'border-gray-300'
+                                                }`}
+                                            >
+                                                {data.urgency === 'low' && <div className="h-2 w-2 rounded-full bg-white"></div>}
+                                            </div>
+                                            <Label className="cursor-pointer font-medium text-green-600">Rendah</Label>
                                         </div>
-                                    </RadioGroup>
+                                    </div>
                                     {errors.urgency && <p className="text-sm text-red-600">{errors.urgency}</p>}
                                 </div>
 
@@ -341,27 +347,8 @@ export default function CreateRequestPage() {
                                     {errors.address && <p className="text-sm text-red-600">{errors.address}</p>}
                                 </div>
 
-                                {/* Batas Waktu */}
-                                <div className="space-y-2">
-                                    <Label htmlFor="deadline" className={errors.deadline ? 'text-red-600' : ''}>
-                                        Batas Waktu
-                                    </Label>
-                                    <div className="relative">
-                                        <Clock className="absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2 text-gray-400" />
-                                        <Input
-                                            id="deadline"
-                                            value={data.deadline}
-                                            onChange={(e) => setData('deadline', e.target.value)}
-                                            disabled={processing}
-                                            className={`pl-10 ${errors.deadline ? 'border-red-500 focus:border-red-500' : ''}`}
-                                            placeholder="Contoh: Dalam 3 hari ke depan"
-                                        />
-                                    </div>
-                                    {errors.deadline && <p className="text-sm text-red-600">{errors.deadline}</p>}
-                                </div>
-
                                 {/* Nomor Telepon */}
-                                <div className="space-y-2 md:col-span-2">
+                                <div className="space-y-2">
                                     <Label htmlFor="phone_number" className={errors.phone_number ? 'text-red-600' : ''}>
                                         Nomor Telepon (Opsional)
                                     </Label>
@@ -428,7 +415,7 @@ export default function CreateRequestPage() {
                                 <Button
                                     type="submit"
                                     disabled={processing || !data.title.trim() || !data.description.trim() || !data.address.trim()}
-                                    className="w-full bg-emerald-600 hover:bg-emerald-700 disabled:opacity-50 text-light-base"
+                                    className="text-light-base w-full bg-emerald-600 hover:bg-emerald-700 disabled:opacity-50"
                                 >
                                     {processing ? (
                                         <>
@@ -439,7 +426,13 @@ export default function CreateRequestPage() {
                                         'Publikasikan Permintaan'
                                     )}
                                 </Button>
-                                <Button type="button" variant="outline" className="w-full text-light-base" onClick={saveForDraft} disabled={processing}>
+                                <Button
+                                    type="button"
+                                    variant="outline"
+                                    className="text-light-base w-full"
+                                    onClick={saveForDraft}
+                                    disabled={processing}
+                                >
                                     Simpan sebagai Draft
                                 </Button>
                             </CardFooter>

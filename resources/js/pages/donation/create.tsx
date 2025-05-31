@@ -25,7 +25,13 @@ type CreateDonationForm = {
     images: File[];
 };
 
-export default function CreateDonationPage() {
+type DonationCategory = {
+    id: number;
+    name: string;
+    slug: string;
+};
+
+export default function CreateDonationPage({ donationCategories }: { donationCategories: DonationCategory[] }) {
     const [imagesPreviews, setImagesPreviews] = useState<string[]>([]);
     const fileInputRef = useRef<HTMLInputElement>(null);
     const { data, setData, post, processing, errors, reset } = useForm<CreateDonationForm>({
@@ -43,9 +49,11 @@ export default function CreateDonationPage() {
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
 
-        post(route('donation.create'), {
-            onFinish: () => {
+        post(route('donation.donate.store'), {
+            onSuccess: () => {
                 reset();
+                setImagesPreviews([]);
+                localStorage.removeItem('donation_draft');
             },
         });
     };
@@ -80,13 +88,13 @@ export default function CreateDonationPage() {
     };
 
     const saveForDraft = () => {
-        localStorage.setItem('affair_draft', JSON.stringify(data));
+        localStorage.setItem('donation_draft', JSON.stringify(data));
 
         alert('Acara berhasil disimpan sebagai draft');
     };
 
     useEffect(() => {
-        const draftKey = 'affair_draft';
+        const draftKey = 'donation_draft';
         const draft = localStorage.getItem(draftKey);
 
         if (draft) {
@@ -102,7 +110,7 @@ export default function CreateDonationPage() {
                 donation_category_id: parsedDraft.donation_category_id || 0,
                 images: parsedDraft.images || [],
             });
-            
+
             const existingPreviews = parsedDraft.images.map((file: File) => URL.createObjectURL(file));
             setImagesPreviews(existingPreviews);
         }
@@ -151,11 +159,11 @@ export default function CreateDonationPage() {
                                             <SelectValue placeholder="Pilih kategori donasi" />
                                         </SelectTrigger>
                                         <SelectContent className="bg-white text-gray-900">
-                                            <SelectItem value="1">Makanan</SelectItem>
-                                            <SelectItem value="2">Sembako</SelectItem>
-                                            <SelectItem value="3">Pakaian</SelectItem>
-                                            <SelectItem value="4">Obat-obatan</SelectItem>
-                                            <SelectItem value="5">Lainnya</SelectItem>
+                                            {donationCategories.map((category) => (
+                                                <SelectItem key={category.id} value={String(category.id)}>
+                                                    {category.name}
+                                                </SelectItem>
+                                            ))}
                                         </SelectContent>
                                     </Select>
                                     {errors.donation_category_id && <p className="text-sm text-red-600">{errors.donation_category_id}</p>}

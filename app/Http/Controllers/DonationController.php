@@ -25,7 +25,11 @@ class DonationController extends Controller
 
     public function createDonate()
     {
-        return Inertia::render('donation/create');
+        $donationCategories = \App\Models\DonationCategory::all();
+
+        return Inertia::render('donation/create', [
+            'donationCategories' => $donationCategories,
+        ]);
     }
 
     public function storeDonate(CreateDonateRequest $request): RedirectResponse
@@ -41,12 +45,13 @@ class DonationController extends Controller
             if (isset($data['images']) && is_array($data['images'])) {
                 foreach ($data['images'] as $image) {
                     $path = $image->store('donation-images', 'public');
-                    $donation->donationImages()->create(['path' => $path]);
+                    Log::info("Image stored at: $path");
+                    $donation->donationImages()->create(['image' => $path]);
                 }
             }
 
             // You can return JSON or redirect as needed
-            return redirect()->route('donations.index')
+            return redirect()->route('home')
                 ->with('status', "Postingan $donation->title berhasil dibuat");
         } catch (\Exception $e) {
             // Log the error or handle as needed
@@ -57,7 +62,11 @@ class DonationController extends Controller
 
     public function createHelp()
     {
-        return Inertia::render('request/create');
+        $donationCategories = \App\Models\DonationCategory::all();
+
+        return Inertia::render('request/create', [
+            'donationCategories' => $donationCategories,
+        ]);
     }
 
     public function storeHelp(CreateHelpRequest $request)
@@ -79,7 +88,7 @@ class DonationController extends Controller
             }
 
             // You can return JSON or redirect as needed
-            return redirect()->route('donations.index')
+            return redirect()->route('home')
                 ->with('status', "Postingan $help->title berhasil dibuat");
         } catch (\Exception $e) {
             Log::error($e->getMessage()); // Log error untuk debugging

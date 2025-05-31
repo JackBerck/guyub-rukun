@@ -22,12 +22,12 @@ class CreateAffairRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'thumbnail' => 'required|image|mimes:jpg,jpeg,png|max:2048', // Thumbnail opsional, harus berupa gambar dengan ukuran maksimal 2MB
             'title' => 'required|string|max:255', // Judul wajib, berupa string, maksimal 255 karakter
             'description' => 'required|string', // Deskripsi wajib, berupa string, maksimal 1000 karakter
             'date' => 'required|date|after_or_equal:today', // Tanggal wajib, harus berupa tanggal, dan tidak boleh sebelum hari ini
-            'time' => 'required|date_format', // Waktu wajib, harus sesuai format HH:mm
+            'time' => 'required|date_format:H:i', // Waktu wajib, harus sesuai format HH:mm
             'location' => 'required|string|max:255', // Lokasi wajib, berupa string, maksimal 255 karakter
+            'thumbnail' => 'required|image|mimes:jpg,jpeg,png|max:2048', // Thumbnail opsional, harus berupa gambar dengan ukuran maksimal 2MB
             'affair_category_id' => 'required|exists:affair_categories,id', // ID kategori wajib, harus ada di tabel affair_categories
         ];
     }

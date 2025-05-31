@@ -21,7 +21,11 @@ class AffairController extends Controller
 
     public function create()
     {
-        return Inertia::render('affair/create');
+        $affairCategories = \App\Models\AffairCategory::all();
+
+        return Inertia::render('affair/create', [
+            'affairCategories' => $affairCategories,
+        ]);
     }
 
     public function search()
@@ -57,7 +61,7 @@ class AffairController extends Controller
             $user->affairs()->create($data);
 
             // Redirect ke halaman acara dengan pesan sukses
-            return redirect()->route('forum.create')->with("status", "Acara baru berhasil dibuat");
+            return redirect()->route('home')->with("status", "Acara baru berhasil dibuat");
         } catch (\Exception $e) {
             // Log error untuk debugging
             \Log::error($e->getMessage());
