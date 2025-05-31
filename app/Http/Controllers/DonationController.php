@@ -25,7 +25,7 @@ class DonationController extends Controller
 
     public function createDonate()
     {
-        // return inertia
+        return Inertia::render('donation/create');
     }
 
     public function storeDonate(CreateDonateRequest $request): RedirectResponse
@@ -57,7 +57,7 @@ class DonationController extends Controller
 
     public function createHelp()
     {
-        // return inertia
+        return Inertia::render('request/create');
     }
 
     public function storeHelp(CreateHelpRequest $request)
@@ -90,12 +90,12 @@ class DonationController extends Controller
 
     public function editDonate(Donation $donation)
     {
-        // return Inertia::render()
+        return Inertia::render("");
     }
 
     public function editHelp(Donation $donation)
     {
-        // return Inertia::render()
+        return Inertia::render("");
     }
 
     public function update(UpdateDonationRequest $request, Donation $donation): RedirectResponse
