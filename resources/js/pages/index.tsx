@@ -85,7 +85,7 @@ export default function Home() {
                                                 size="sm"
                                                 className="hover:text-light-base w-full text-emerald-600 transition duration-100 hover:bg-emerald-600"
                                             >
-                                                Lihat Profil Lengkap
+                                                <Link href="/profil">Lihat Profil Lengkap</Link>
                                             </Button>
                                         </CardFooter>
                                     </Card>

@@ -9,17 +9,16 @@ import {
     DropdownMenuSeparator,
     DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-import { Input } from '@/components/ui/input';
 import navigations from '@/data/navigations';
 import { SharedData } from '@/types';
 import { Link, usePage } from '@inertiajs/react';
-import { Bell, Menu, Search, User, X } from 'lucide-react';
+import { Menu, User, X } from 'lucide-react';
 import { useState } from 'react';
 
 export default function Navbar() {
     const { auth } = usePage<SharedData>().props;
 
-    const [isSearchOpen, setIsSearchOpen] = useState(false);
+    // const [isSearchOpen, setIsSearchOpen] = useState(false);
     const [isMenuOpen, setIsMenuOpen] = useState(false);
 
     return (
@@ -42,7 +41,7 @@ export default function Navbar() {
                     </nav>
                 </div>
                 <div className="flex items-center gap-2">
-                    {isSearchOpen ? (
+                    {/* {isSearchOpen ? (
                         <div className="relative flex items-center md:w-40 lg:w-64">
                             <Input type="search" placeholder="Cari..." className="pr-8" />
                             <Button variant="ghost" size="icon" className="absolute top-0 right-0" onClick={() => setIsSearchOpen(false)}>
@@ -55,13 +54,13 @@ export default function Navbar() {
                             <Search className="h-5 w-5" />
                             <span className="sr-only">Search</span>
                         </Button>
-                    )}
+                    )} */}
                     {auth.user && (
                         <>
-                            <Button variant="ghost" size="icon">
+                            {/* <Button variant="ghost" size="icon">
                                 <Bell className="h-5 w-5" />
                                 <span className="sr-only">Notifications</span>
-                            </Button>
+                            </Button> */}
                             <DropdownMenu>
                                 <DropdownMenuTrigger asChild>
                                     <Button variant="ghost" size="icon">
@@ -73,11 +72,11 @@ export default function Navbar() {
                                     <DropdownMenuLabel>Akun Saya</DropdownMenuLabel>
                                     <DropdownMenuSeparator />
                                     <DropdownMenuItem>
-                                        <Link href="/profile" className="flex w-full">
+                                        <Link href="/profil" className="flex w-full">
                                             Profil
                                         </Link>
                                     </DropdownMenuItem>
-                                    <DropdownMenuItem>
+                                    {/* <DropdownMenuItem>
                                         <Link href="/my-donations" className="flex w-full">
                                             Donasi Saya
                                         </Link>
@@ -86,10 +85,10 @@ export default function Navbar() {
                                         <Link href="/settings" className="flex w-full">
                                             Pengaturan
                                         </Link>
-                                    </DropdownMenuItem>
+                                    </DropdownMenuItem> */}
                                     <DropdownMenuSeparator />
                                     <DropdownMenuItem className="bg-red-base text-light-base hover:bg-red-700">
-                                        <Link href="/logout" className="flex w-full">
+                                        <Link href="/keluar" className="flex w-full">
                                             Keluar
                                         </Link>
                                     </DropdownMenuItem>
