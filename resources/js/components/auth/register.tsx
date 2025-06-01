@@ -1,10 +1,10 @@
 import { Link, useForm } from '@inertiajs/react';
 import { UserPlus } from 'lucide-react';
+import { useState } from 'react';
 import { Button } from '../ui/button';
 import { Input } from '../ui/input';
 import { Label } from '../ui/label';
 import { Separator } from '../ui/separator';
-import { useState } from 'react';
 
 type RegisterForm = {
     name: string;
@@ -29,7 +29,7 @@ export default function RegisterForm() {
             alert('Anda harus menyetujui syarat dan ketentuan sebelum mendaftar.');
             return;
         }
-        post(route('daftar'), {
+        post(route('register'), {
             onFinish: () => {
                 reset();
             },
@@ -195,7 +195,7 @@ export default function RegisterForm() {
 
                 <p className="text-center text-sm">
                     Sudah memiliki akun?{' '}
-                    <Link href="/masuk" className="font-medium text-emerald-600 hover:underline">
+                    <Link href="/login" className="font-medium text-emerald-600 hover:underline">
                         Masuk sekarang
                     </Link>
                 </p>

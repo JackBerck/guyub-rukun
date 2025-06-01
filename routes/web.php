@@ -9,11 +9,11 @@ use Inertia\Inertia;
 Route::get('/', [\App\Http\Controllers\HomeController::class, 'index'])
     ->name('home');
 
-Route::get('/tentang-kami', function () {
+Route::get('/about-us', function () {
     return Inertia::render('about');
 })->name('about');
 
-Route::get('/kontak', function () {
+Route::get('/contact', function () {
     return Inertia::render('contact');
 })->name('contact');
 
@@ -23,44 +23,43 @@ Route::middleware(['auth', 'verified'])->group(function () {
     })->name('dashboard');
 
     // Route Donate and help
-    Route::get("donasikan", [DonationController::class, "createDonate"])->name("donation.donate.create");
-    Route::get("donate/{donation:slug}/view")->name("donation.donate.view");
+    Route::get("donate", [DonationController::class, "createDonate"])->name("donation.donate.create");
+    Route::get("donation/{donation:slug}", [DonationController::class, "viewDonate"])->name("donation.donate.view");
     Route::get("donate/{donation:slug}/edit", [DonationController::class, "editDonate"])->name("donation.donate.edit");
-    Route::post("donasikan", [DonationController::class, "storeDonate"])->name("donation.donate.store");
+    Route::post("donate", [DonationController::class, "storeDonate"])->name("donation.donate.store");
     Route::put("donate/{donation:slug}/edit", [DonationController::class, "update"])->name("donation.donate.update");
 
-    Route::get("butuh-bantuan",[DonationController::class,"createHelp"])->name("donation.help.create");
-    Route::get("help/{donation:slug}/view")->name("donation.help.view");
+    Route::get("need-help",[DonationController::class,"createHelp"])->name("donation.help.create");
+    Route::get("help/{donation:slug}", [DonationController::class,"viewHelp"])->name("donation.help.view");
     Route::get("help/{donation:slug}/edit", [DonationController::class, "editHelp"])->name("donation.help.edit");
-    Route::post("butuh-bantuan", [DonationController::class, "storeHelp"])->name("donation.help.store");
+    Route::post("need-help", [DonationController::class, "storeHelp"])->name("donation.help.store");
     Route::put("help/{donation:slug}/edit", [DonationController::class, "update"])->name("donation.help.update");
 
     Route::delete("donation/{donation:slug}", [DonationController::class, "remove"])->name("donation.remove");
 
     Route::post("donation/{donation:slug}/comment", [DonationController::class, "comment"])->name("donation.comment.create");
-    Route::delete("donation/{donation:slug}/{comment}", [DonationController::class, "removeComment"])->name("donation.comment.delete");
+    Route::delete("donation/comment/{comment}", [DonationController::class, "removeComment"])->name("donation.comment.delete");
 
     // Route Forum
-    Route::get("buka-forum", [ForumController::class, "create"])->name("forum.create");
+    Route::get("open-forum", [ForumController::class, "create"])->name("forum.create");
     Route::get("forum/search", [ForumController::class, "search"])->name("forum.search");
     Route::get("forum/{forum:slug}/edit", [ForumController::class, "edit"])->name("forum.edit");
-    Route::get("forum/{forum:slug}/view", [ForumController::class, "view"])->name("forum.detail");
+    Route::get("forum/{forum:slug}", [ForumController::class, "view"])->name("forum.detail");
     Route::post("forum/{forum}/like", [ForumController::class, "like"])->name("forum.like");
     Route::post("forum/{forum:slug}/comment", [ForumController::class, "comment"])->name("forum.comment.create");
-    Route::post("buka-forum", [ForumController::class, "store"])->name("forum.store");
+    Route::post("open-forum", [ForumController::class, "store"])->name("forum.store");
     Route::put("forum/{forum:slug}", [ForumController::class, "update"])->name("forum.update");
     Route::delete("forum/{forum:slug}", [ForumController::class, "remove"])->name("forum.delete");
     Route::delete("forum/{forum:slug}/{comment}", [ForumController::class, "removeComment"])->name("forum.comment.delete");
 
     // route Affair
-    Route::get("sebar-acara", [AffairController::class, "create"])->name("affair.create");
+    Route::get("share-affair", [AffairController::class, "create"])->name("affair.create");
     Route::get("affair/search", [AffairController::class, "search"])->name("affair.search");
     Route::get("affair/{affair:slug}", [AffairController::class, "edit"])->name("affair.edit");
     Route::get("affair/{affair:slug}", [AffairController::class, "view"])->name("affair.view");
-    Route::post("sebar-acara", [AffairController::class, "store"])->name("affair.store");
+    Route::post("share-affair", [AffairController::class, "store"])->name("affair.store");
     Route::put("affair/{affair:slug}", [AffairController::class, "update"])->name("affair.update");
     Route::delete("affair/{affair:slug}", [AffairController::class, "remove"])->name("affair.remove");
-
 });
 
 require __DIR__ . '/settings.php';

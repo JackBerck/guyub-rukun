@@ -98,11 +98,11 @@ export default function Navbar() {
                     )}
                     {!auth.user ? (
                         <Button className="text-light-base hidden bg-emerald-600 transition duration-100 hover:bg-emerald-700 md:inline-flex">
-                            <Link href="/masuk">Donasikan Sekarang</Link>
+                            <Link href="/login">Donasikan Sekarang</Link>
                         </Button>
                     ) : (
                         <Button className="text-light-base hidden bg-emerald-600 transition duration-100 hover:bg-emerald-700 md:inline-flex">
-                            <Link href="/donasikan">Donasikan Sekarang</Link>
+                            <Link href="/donate">Donasikan Sekarang</Link>
                         </Button>
                     )}
                     {/* Hamburger menu with dropdown from top */}

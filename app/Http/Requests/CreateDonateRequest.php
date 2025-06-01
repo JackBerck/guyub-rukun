@@ -28,7 +28,7 @@ class CreateDonateRequest extends FormRequest
             'address' => 'required|string|max:255',
             'donation_category_id' => 'required|exists:donation_categories,id',
             'images' => 'required|array',
-            'images.*' => 'file|mimes:jpg,jpeg,png|max:2048',
+            'images.*' => 'image|mimes:jpg,jpeg,png|max:2048',
         ];
     }
 }

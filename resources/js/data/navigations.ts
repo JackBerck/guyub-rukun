@@ -7,11 +7,11 @@ const navigations: NavigationItem[] = [
     },
     {
         title: 'Tentang Kami',
-        path: '/tentang-kami',
+        path: '/about-us',
     },
     {
         title: 'Kontak',
-        path: '/kontak',
+        path: '/contact',
     },
 ];
 

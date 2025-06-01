@@ -23,7 +23,7 @@ export default function LoginForm() {
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
 
-        post(route('masuk'), {
+        post(route('login'), {
             onFinish: () => {
                 reset();
             },
@@ -189,7 +189,7 @@ export default function LoginForm() {
 
                 <p className="text-center text-sm">
                     Belum memiliki akun?{' '}
-                    <Link href="/daftar" className="font-medium text-emerald-600 hover:underline">
+                    <Link href="/register" className="font-medium text-emerald-600 hover:underline">
                         Daftar sekarang
                     </Link>
                 </p>

@@ -40,6 +40,7 @@ class DonationController extends Controller
             $data["type"] = "donation";
 
             $donation = $user->donations()->create($data);
+            Log::info('Data images:', $data['images']);
 
             // Simpan setiap file gambar ke relasi donationImages
             if (isset($data['images']) && is_array($data['images'])) {
@@ -58,6 +59,18 @@ class DonationController extends Controller
             return back()->withErrors(['error' => "Postingan gagal dibuat"])
                 ->withInput();
         }
+    }
+
+    public function viewDonate(Donation $donation)
+    {
+        return Inertia::render('donation/detail', [
+            'donation' => $donation->load([
+                'donationImages',
+                'user',
+                'comments.user',
+                'donationCategory',
+            ]),
+        ]);
     }
 
     public function createHelp()
@@ -94,6 +107,18 @@ class DonationController extends Controller
             Log::error($e->getMessage()); // Log error untuk debugging
             return back()->withErrors(['error' => "Postingan gagal dibuat"])->withInput();
         }
+    }
+
+    public function viewHelp(Donation $donation)
+    {
+        return Inertia::render('request/detail', [
+            'donation' => $donation->load([
+                'donationImages',
+                'user',
+                'comments.user',
+                'donationCategory',
+            ]),
+        ]);
     }
 
     public function editDonate(Donation $donation)

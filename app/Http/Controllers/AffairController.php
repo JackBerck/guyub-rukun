@@ -40,7 +40,14 @@ class AffairController extends Controller
 
     public function view(Affair $affair)
     {
-        // return inertia 
+        // Cek apakah acara ini sudah lewat
+        // if ($affair->date < now()) {
+        //     return redirect()->route('home')->withErrors(['error' => "Acara ini sudah lewat."]);
+        // }
+
+        return Inertia::render('affair/detail', [
+            'affair' => $affair->load(['user', 'affairCategory']),
+        ]);
     }
 
     public function store(CreateAffairRequest $request)
@@ -103,5 +110,4 @@ class AffairController extends Controller
             return back()->withErrors(['error' => "Acara gagal dihapus"]);
         }
     }
-
 }

@@ -1,14 +1,32 @@
-import Layout from '@/layouts/layout';
-import { Head, Link } from '@inertiajs/react';
-import { BadgeCheck, Calendar, Clock, Heart, MessageSquare, TrendingUpIcon as Trending, UserPlus } from 'lucide-react';
-
 import DonationFeeds from '@/components/feeds/donation';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Separator } from '@/components/ui/separator';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import Layout from '@/layouts/layout';
+import apiClient from '@/services/api-service';
+import { Head, Link } from '@inertiajs/react';
+import { BadgeCheck, Calendar, Clock, Heart, MessageSquare, TrendingUpIcon as Trending, UserPlus } from 'lucide-react';
+import { useEffect, useState } from 'react';
+
+const fetchDonation = async () => {
+    const response = await apiClient.get('/donations');
+    return response.data.data;
+};
 
 export default function Home() {
+    const [donations, setDonations] = useState([]);
+
+    useEffect(() => {
+        const loadDonations = async () => {
+            const data = await fetchDonation();
+            setDonations(data);
+        };
+        
+        loadDonations();
+    }, []);
+    
+    console.log(donations);
     return (
         <Layout>
             <Head title="Beranda" />
@@ -42,7 +60,7 @@ export default function Home() {
                                                     size="sm"
                                                     className="text-dark-base bg-light-base hover:text-dark-base border-pink-500 transition duration-100 hover:bg-pink-100"
                                                 >
-                                                    <Link href="/donasikan" className="flex items-center justify-start gap-2">
+                                                    <Link href="/donate" className="flex items-center justify-start gap-2">
                                                         <Heart className="h-4 w-4 text-pink-500" />
                                                         <span>Donasi</span>
                                                     </Link>
@@ -52,7 +70,7 @@ export default function Home() {
                                                     size="sm"
                                                     className="text-dark-base bg-light-base hover:text-dark-base border-blue-500 transition duration-100 hover:bg-blue-100"
                                                 >
-                                                    <Link href="/buka-forum" className="flex items-center justify-start gap-2">
+                                                    <Link href="/open-forum" className="flex items-center justify-start gap-2">
                                                         <MessageSquare className="h-4 w-4 text-blue-500" />
                                                         <span>Forum</span>
                                                     </Link>
@@ -62,7 +80,7 @@ export default function Home() {
                                                     size="sm"
                                                     className="text-dark-base bg-light-base hover:text-dark-base border-emerald-500 transition duration-100 hover:bg-emerald-100"
                                                 >
-                                                    <Link href="/butuh-bantuan" className="flex items-center justify-start gap-2">
+                                                    <Link href="/need-help" className="flex items-center justify-start gap-2">
                                                         <BadgeCheck className="h-4 w-4 text-emerald-500" />
                                                         <span>Butuh Bantuan</span>
                                                     </Link>
@@ -72,7 +90,7 @@ export default function Home() {
                                                     size="sm"
                                                     className="text-dark-base bg-light-base hover:text-dark-base border-purple-500 transition duration-100 hover:bg-purple-100"
                                                 >
-                                                    <Link href="/sebar-acara" className="flex items-center justify-start gap-2">
+                                                    <Link href="/share-affair" className="flex items-center justify-start gap-2">
                                                         <Calendar className="h-4 w-4 text-purple-500" />
                                                         <span>Event</span>
                                                     </Link>
@@ -172,7 +190,7 @@ export default function Home() {
                                                         size="sm"
                                                         className="text-dark-base bg-light-base hover:text-dark-base flex items-center justify-start gap-2 border-pink-500 transition duration-100 hover:bg-pink-100"
                                                     >
-                                                        <Link href="/donasikan" className="flex items-center justify-start gap-2">
+                                                        <Link href="/donate" className="flex items-center justify-start gap-2">
                                                             <Heart className="h-4 w-4 text-pink-500" />
                                                             <span>Donasi</span>
                                                         </Link>
@@ -182,7 +200,7 @@ export default function Home() {
                                                         size="sm"
                                                         className="text-dark-base bg-light-base hover:text-dark-base flex items-center justify-start gap-2 border-blue-500 transition duration-100 hover:bg-blue-100"
                                                     >
-                                                        <Link href="/buka-forum" className="flex items-center justify-start gap-2">
+                                                        <Link href="/open-forum" className="flex items-center justify-start gap-2">
                                                             <MessageSquare className="h-4 w-4 text-blue-500" />
                                                             <span>Forum</span>
                                                         </Link>
@@ -192,7 +210,7 @@ export default function Home() {
                                                         size="sm"
                                                         className="text-dark-base bg-light-base hover:text-dark-base flex items-center justify-start gap-2 border-emerald-500 transition duration-100 hover:bg-emerald-100"
                                                     >
-                                                        <Link href="/butuh-bantuan" className="flex items-center justify-start gap-2">
+                                                        <Link href="/need-help" className="flex items-center justify-start gap-2">
                                                             <BadgeCheck className="h-4 w-4 text-emerald-500" />
                                                             <span>Butuh Bantuan</span>
                                                         </Link>
@@ -202,7 +220,7 @@ export default function Home() {
                                                         size="sm"
                                                         className="text-dark-base bg-light-base hover:text-dark-base flex items-center justify-start gap-2 border-purple-500 transition duration-100 hover:bg-purple-100"
                                                     >
-                                                        <Link href="/sebar-acara" className="flex items-center justify-start gap-2">
+                                                        <Link href="/share-affair" className="flex items-center justify-start gap-2">
                                                             <Calendar className="h-4 w-4 text-purple-500" />
                                                             <span>Event</span>
                                                         </Link>

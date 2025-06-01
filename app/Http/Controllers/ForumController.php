@@ -45,7 +45,14 @@ class ForumController extends Controller
 
     public function view(Forum $forum)
     {
-        // return inertia 
+        return Inertia::render('forum/detail', [
+            'forum' => $forum->load([
+                'user',
+                'forumCategory',
+                'comments',
+                'likedByUsers'
+            ]),
+        ]);
     }
 
     public function like(Forum $forum): RedirectResponse
