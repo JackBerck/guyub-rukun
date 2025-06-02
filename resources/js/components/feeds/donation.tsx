@@ -207,13 +207,11 @@ export default function DonationFeeds() {
                         {/* Post Content */}
                         <div className="flex-1 space-y-2">
                             {/* Post Header */}
-                            <div className="flex items-center justify-between">
-                                <span>
-                                    <Link href={`/user/${donation.user?.id}`} className="small-font-size line-clamp-1 font-medium hover:underline">
-                                        {donation.user?.name || 'Unknown User'}
-                                    </Link>
-                                    <span className="extra-small-font-size text-gray-500"> • {formatDate(donation.created_at)}</span>
-                                </span>
+                            <div className="flex items-center gap-2">
+                                <Link href={`/user/${donation.user?.id}`} className="small-font-size line-clamp-1 font-medium hover:underline">
+                                    {donation.user?.name || 'Unknown User'}
+                                </Link>
+                                <span className="text-xs text-gray-500"> • {formatDate(donation.created_at)}</span>
                             </div>
 
                             {/* Post Title & Description */}

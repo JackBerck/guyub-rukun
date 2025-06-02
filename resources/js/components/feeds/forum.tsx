@@ -1,11 +1,10 @@
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 import apiClient from '@/services/api-service';
 import { Forum } from '@/types';
 import { Link } from '@inertiajs/react';
-import { BookmarkPlus, Heart, Loader2, MessageSquare, MoreHorizontal, Share2 } from 'lucide-react';
+import { BookmarkPlus, Heart, Loader2, MessageSquare, Share2 } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { toast } from 'sonner';
 
@@ -157,22 +156,10 @@ export function ForumFeeds() {
                                     </Link>
                                     <span className="text-xs text-gray-500">• {formatDate(forum.created_at)}</span>
                                 </div>
-                                <DropdownMenu>
-                                    <DropdownMenuTrigger asChild>
-                                        <Button variant="ghost" size="sm" className="h-8 w-8 rounded-full p-0">
-                                            <MoreHorizontal className="h-4 w-4" />
-                                        </Button>
-                                    </DropdownMenuTrigger>
-                                    <DropdownMenuContent align="end">
-                                        <DropdownMenuItem>Simpan</DropdownMenuItem>
-                                        <DropdownMenuItem>Laporkan</DropdownMenuItem>
-                                        <DropdownMenuItem>Sembunyikan</DropdownMenuItem>
-                                    </DropdownMenuContent>
-                                </DropdownMenu>
                             </div>
                             {/* Forum Title & Description */}
                             <div>
-                                <Link href={`/forums/${forum.slug}`}>
+                                <Link href={`/forum/${forum.slug}`}>
                                     <h3 className="cursor-pointer text-lg font-bold hover:text-emerald-600">{forum.title}</h3>
                                 </Link>
                                 <p className="mt-1 line-clamp-3 text-gray-600">{forum.description}</p>

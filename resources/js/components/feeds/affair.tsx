@@ -1,12 +1,11 @@
 'use client';
 
-import { Calendar, Clock, Loader2, MapPin, MoreHorizontal, Share2 } from 'lucide-react';
+import { Calendar, Clock, Loader2, MapPin, Share2 } from 'lucide-react';
 import { useEffect, useState } from 'react';
 
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 import apiClient from '@/services/api-service';
 import { Affair } from '@/types';
 import { Link } from '@inertiajs/react';
@@ -203,18 +202,6 @@ export function AffairFeeds() {
                                     {/* <BadgeCheck className="h-4 w-4 text-blue-500" /> */}
                                     <span className="text-xs text-gray-500">• {formatDate(affair.created_at)}</span>
                                 </div>
-                                <DropdownMenu>
-                                    <DropdownMenuTrigger asChild>
-                                        <Button variant="ghost" size="sm" className="h-8 w-8 rounded-full p-0">
-                                            <MoreHorizontal className="h-4 w-4" />
-                                        </Button>
-                                    </DropdownMenuTrigger>
-                                    <DropdownMenuContent align="end">
-                                        <DropdownMenuItem>Simpan</DropdownMenuItem>
-                                        <DropdownMenuItem>Laporkan</DropdownMenuItem>
-                                        <DropdownMenuItem>Sembunyikan</DropdownMenuItem>
-                                    </DropdownMenuContent>
-                                </DropdownMenu>
                             </div>
 
                             {/* Post Title & Description */}
@@ -226,7 +213,7 @@ export function AffairFeeds() {
                             </div>
 
                             {/* Event Details */}
-                            <div className="space-y-2 rounded-lg bg-gray-50 p-3">
+                            <div className="space-y-2 rounded-lg bg-gray-50">
                                 <div className="flex items-center gap-2 text-sm text-gray-600">
                                     <Calendar className="h-4 w-4" />
                                     <span>{formatEventDate(affair.date)}</span>
