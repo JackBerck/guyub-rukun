@@ -11,6 +11,7 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Pagination\CursorPaginator;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 use Inertia\Inertia;
 
@@ -88,7 +89,7 @@ class ForumController extends Controller
             return redirect()->back()->with('status', 'Komentar berhasil ditambahkan');
         } catch (\Exception $e) {
             // Log error untuk debugging
-            \Log::error($e->getMessage());
+            Log::error($e->getMessage());
 
             // Redirect kembali dengan pesan error
             return back()->withErrors(['error' => "Terjadi kesalahan saat menambahkan komentar. Silakan coba lagi."]);

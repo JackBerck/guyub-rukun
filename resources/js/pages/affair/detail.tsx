@@ -5,10 +5,9 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import Layout from '@/layouts/layout';
-import { AffairDetailPageProps } from '@/types';
-import { Head, usePage } from '@inertiajs/react';
-import { Calendar, Clock, Heart, MapPin, Share2 } from 'lucide-react';
-import { useState } from 'react';
+import { AffairDetailPageProps, User } from '@/types';
+import { Head, Link, usePage } from '@inertiajs/react';
+import { Calendar, Clock, MapPin, Share2 } from 'lucide-react';
 
 const relatedAffairs = [
     {
@@ -30,20 +29,7 @@ const relatedAffairs = [
 ];
 
 export default function AffairDetail() {
-    const { affair } = usePage<AffairDetailPageProps>().props;
-    const [isLiked, setIsLiked] = useState(false);
-    const [likes, setLikes] = useState(67);
-    const [isRegistered, setIsRegistered] = useState(false);
-    console.log('Affair Detail:', affair);
-
-    const handleLike = () => {
-        setIsLiked(!isLiked);
-        setLikes(isLiked ? likes - 1 : likes + 1);
-    };
-
-    const handleRegister = () => {
-        setIsRegistered(!isRegistered);
-    };
+    const { affair, auth } = usePage<AffairDetailPageProps & { auth: { user: User | null } }>().props;
 
     const formatDate = (dateString: string) => {
         return new Date(dateString).toLocaleDateString('id-ID', {
@@ -71,7 +57,7 @@ export default function AffairDetail() {
     return (
         <Layout>
             <Head title={`${affair.title} - Detail Acara`} />
-            <div className="container mx-auto max-w-screen-xl px-4 py-8">
+            <div className="container mx-auto max-w-screen-xl py-8">
                 <div className="grid grid-cols-1 gap-8 lg:grid-cols-3">
                     {/* Main Content */}
                     <div className="space-y-6 lg:col-span-2">
@@ -119,27 +105,18 @@ export default function AffairDetail() {
                                 <div className="border-t pt-4">
                                     <div className="flex flex-wrap items-center justify-between">
                                         <div className="flex items-center space-x-4">
-                                            <Button
-                                                variant="ghost"
-                                                onClick={handleLike}
-                                                className={`hover:bg-transparent hover:text-red-600 ${isLiked ? 'text-red-500 hover:text-red-600' : ''}`}
-                                            >
-                                                <Heart className={`mr-2 h-4 w-4 ${isLiked ? 'fill-current' : ''}`} />
-                                                {likes}
-                                            </Button>
                                             <Button variant="ghost" className="hover:bg-transparent hover:text-gray-600">
                                                 <Share2 className="mr-2 h-4 w-4" />
                                                 Bagikan
                                             </Button>
                                         </div>
-                                        <Button
-                                            onClick={handleRegister}
-                                            className={`text-light-base ${
-                                                isRegistered ? 'bg-green-600 hover:bg-green-700' : 'bg-blue-600 hover:bg-blue-700'
-                                            }`}
+                                        <Link
+                                            href={auth.user?.phone_number ? `https://wa.me/${auth.user?.phone_number}` : '#'}
+                                            className="focus-visible:border-ring focus-visible:ring-ring/50 aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive text-light-base inline-flex h-9 items-center justify-center gap-2 rounded-md bg-blue-600 px-4 py-2 text-sm font-medium whitespace-nowrap transition-[color,box-shadow] outline-none hover:bg-blue-700 hover:text-white focus-visible:ring-[3px] disabled:pointer-events-none disabled:opacity-50 has-[>svg]:px-3 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4"
+                                            target="_blank"
                                         >
-                                            {isRegistered ? 'Terdaftar ✓' : 'Daftar Sekarang'}
-                                        </Button>
+                                            Daftar Sekarang
+                                        </Link>
                                     </div>
                                 </div>
                             </CardContent>

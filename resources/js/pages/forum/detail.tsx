@@ -1,15 +1,17 @@
 'use client';
 
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from '@/components/ui/alert-dialog';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Textarea } from '@/components/ui/textarea';
 import Layout from '@/layouts/layout';
-import { ForumDetailPageProps } from '@/types';
-import { Head, usePage } from '@inertiajs/react';
-import { Clock, MessageCircle, Share2, ThumbsUp } from 'lucide-react';
+import { ForumDetailPageProps, User } from '@/types';
+import { Head, router, useForm, usePage } from '@inertiajs/react';
+import { Clock, MessageCircle, Share2, ThumbsUp, Trash2 } from 'lucide-react';
 import { useState } from 'react';
+import { toast } from 'sonner';
 
 const relatedTopics = [
     {
@@ -28,24 +30,58 @@ const relatedTopics = [
     },
 ];
 
+type CreateComment = {
+    body: string;
+    image?: null;
+};
+
 export default function ForumDetail() {
-    const { forum } = usePage<ForumDetailPageProps>().props;
+    const { forum, auth } = usePage<ForumDetailPageProps & { auth: { user: User | null } }>().props;
     const [isLiked, setIsLiked] = useState(false);
     const [likes, setLikes] = useState(42);
-    const [reply, setReply] = useState('');
-
-    console.log('Forum Detail Page Props:', forum);
+    const { data, setData, post, processing, errors, reset } = useForm<CreateComment>({
+        body: '',
+        image: null,
+    });
+    const [commentToDelete, setCommentToDelete] = useState<number | null>(null);
 
     const handleLike = () => {
         setIsLiked(!isLiked);
         setLikes(isLiked ? likes - 1 : likes + 1);
     };
 
-    const handleReply = () => {
-        if (reply.trim()) {
-            console.log('New reply:', reply);
-            setReply('');
+    const handleComment = () => {
+        if (data.body.trim()) {
+            // Submit form when comment button is clicked
+            post(route('forum.comment.create', forum.slug), {
+                onFinish: () => {
+                    reset();
+                },
+            });
         }
+    };
+
+    const handleDeleteComment = (commentId: number) => {
+        router.delete(route('donation.comment.delete', [commentId]), {
+            onSuccess: () => {
+                toast.success('Komentar berhasil dihapus');
+                setCommentToDelete(null);
+            },
+            onError: () => {
+                toast.error('Gagal menghapus komentar');
+                setCommentToDelete(null);
+            },
+        });
+    };
+
+    const handleSubmit = (e: React.FormEvent) => {
+        e.preventDefault();
+
+        post(route('donation.comment.create', forum.slug), {
+            onFinish: () => {
+                reset();
+            },
+        });
     };
 
     const formatDate = (dateString: string) => {
@@ -58,6 +94,8 @@ export default function ForumDetail() {
         });
     };
 
+    console.log('Forum Detail Page Loaded', forum);
+    console.log('Auth User', auth.user);
     // ...existing code...
     return (
         <Layout>
@@ -145,36 +183,57 @@ export default function ForumDetail() {
                                 <CardTitle>Balasan ({forum.comments?.length || 0})</CardTitle>
                             </CardHeader>
                             <CardContent>
-                                <div className="mb-4">
+                                <form onSubmit={handleSubmit} className="mb-4">
                                     <Textarea
                                         placeholder="Tulis balasan..."
-                                        value={reply}
-                                        onChange={(e) => setReply(e.target.value)}
+                                        value={data.body}
+                                        onChange={(e) => setData('body', e.target.value)}
                                         className="mb-2"
+                                        rows={3}
+                                        disabled={processing}
                                     />
-                                    <Button onClick={handleReply} disabled={!reply.trim()} className="text-light-base bg-blue-600 hover:bg-blue-700">
+                                    {errors.body && <p className="mb-2 text-sm text-red-500">{errors.body}</p>}
+                                    <Button
+                                        onClick={handleComment}
+                                        disabled={!data.body.trim() || processing}
+                                        className="text-light-base bg-blue-600 hover:bg-blue-700"
+                                    >
                                         Kirim Balasan
                                     </Button>
-                                </div>
+                                </form>
 
                                 <div className="space-y-4">
-                                    {forum.comments?.map((comment) => (
-                                        <div key={comment.id} className="flex space-x-3">
-                                            <Avatar className="text-light-base h-8 w-8">
-                                                <AvatarImage src={comment.user?.image || '/placeholder.svg'} />
-                                                <AvatarFallback>{comment.user?.name?.[0] || 'U'}</AvatarFallback>
-                                            </Avatar>
-                                            <div className="flex-1">
-                                                <div className="rounded-lg bg-gray-50 p-3">
-                                                    <div className="mb-1 flex items-center space-x-2">
-                                                        <span className="text-sm font-medium">{comment.user?.name || 'Unknown User'}</span>
-                                                        <span className="text-xs text-gray-500">{formatDate(comment.created_at)}</span>
+                                    {forum.comments && forum.comments.length > 0 ? (
+                                        forum.comments.map((comment) => (
+                                            <div key={comment.id} className="flex space-x-3">
+                                                <Avatar className="text-light-base h-8 w-8">
+                                                    <AvatarImage src={comment.user?.image || '/placeholder.svg'} />
+                                                    <AvatarFallback>{comment.user?.name?.[0] || 'U'}</AvatarFallback>
+                                                </Avatar>
+                                                <div className="flex-1">
+                                                    <div className="rounded-lg bg-gray-50 p-3">
+                                                        <div className="mb-1 flex items-center space-x-2">
+                                                            <span className="text-sm font-medium">{comment.user?.name || 'Unknown User'}</span>
+                                                            <span className="text-xs text-gray-500">{formatDate(comment.created_at)}</span>
+                                                        </div>
+                                                        <p className="text-sm">{comment.body}</p>
                                                     </div>
-                                                    <p className="text-sm">{comment.body}</p>
                                                 </div>
+                                                {auth.user?.id === comment.user_id && (
+                                                    <Button
+                                                        variant="ghost"
+                                                        size="sm"
+                                                        className="text-red-500 hover:bg-red-50 hover:text-red-700"
+                                                        onClick={() => setCommentToDelete(comment.id)}
+                                                    >
+                                                        <Trash2 className="h-4 w-4" />
+                                                    </Button>
+                                                )}
                                             </div>
-                                        </div>
-                                    )) || <p className="py-4 text-center text-gray-500">Belum ada balasan</p>}
+                                        ))
+                                    ) : (
+                                        <p className="py-4 text-center text-gray-500">Belum ada balasan</p>
+                                    )}
                                 </div>
                             </CardContent>
                         </Card>
@@ -250,6 +309,25 @@ export default function ForumDetail() {
                     </div>
                 </div>
             </div>
+            <AlertDialog open={commentToDelete !== null} onOpenChange={() => setCommentToDelete(null)}>
+                <AlertDialogContent className="bg-light-base text-dark-base">
+                    <AlertDialogHeader>
+                        <AlertDialogTitle>Hapus Komentar</AlertDialogTitle>
+                        <AlertDialogDescription>
+                            Apakah Anda yakin ingin menghapus komentar ini? Tindakan ini tidak dapat dibatalkan.
+                        </AlertDialogDescription>
+                    </AlertDialogHeader>
+                    <AlertDialogFooter>
+                        <AlertDialogCancel className="text-light-base">Batal</AlertDialogCancel>
+                        <AlertDialogAction
+                            onClick={() => commentToDelete && handleDeleteComment(commentToDelete)}
+                            className="bg-red-500 text-white hover:bg-red-600"
+                        >
+                            Hapus
+                        </AlertDialogAction>
+                    </AlertDialogFooter>
+                </AlertDialogContent>
+            </AlertDialog>
         </Layout>
     );
     // ...existing code...

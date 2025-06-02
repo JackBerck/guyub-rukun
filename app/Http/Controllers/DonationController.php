@@ -16,11 +16,20 @@ use Inertia\Inertia;
 
 class DonationController extends Controller
 {
-    public function index()
+    public function getDonation()
     {
-        return Donation::with(["donationCategory", "donationImages", "user"])
+        return Donation::with(["donationCategory", "donationImages", "user", "comments.user"])
             ->latest()
-            ->cursorPaginate(16);
+            ->where('type', 'donation')
+            ->cursorPaginate(4);
+    }
+
+    public function getHelp()
+    {
+        return Donation::with(["donationCategory", "donationImages", "user", "comments.user"])
+            ->latest()
+            ->where('type', 'request')
+            ->cursorPaginate(4);
     }
 
     public function createDonate()

@@ -1,5 +1,6 @@
 'use client';
 
+import { ImageGallery } from '@/components/image-gallery';
 import {
     AlertDialog,
     AlertDialogAction,
@@ -54,6 +55,17 @@ export default function RequestDetail() {
     });
 
     const [commentToDelete, setCommentToDelete] = useState<number | null>(null);
+
+    const handleComment = () => {
+        if (data.body.trim()) {
+            // Submit form when comment button is clicked
+            post(route('donation.comment.create', donation.slug), {
+                onFinish: () => {
+                    reset();
+                },
+            });
+        }
+    };
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
@@ -164,90 +176,7 @@ export default function RequestDetail() {
                             </CardHeader>
                             <CardContent className="space-y-6">
                                 {/* Images */}
-                                {donation.donation_images && donation.donation_images.length > 0 ? (
-                                    <div className="overflow-hidden rounded-lg">
-                                        {donation.donation_images.length === 1 ? (
-                                            // Single image layout - full width
-                                            <img
-                                                src={`/storage/${donation.donation_images[0].image}`}
-                                                alt={`${donation.title} 1`}
-                                                className="h-[400px] w-full cursor-pointer object-cover transition-transform duration-200 hover:scale-105"
-                                                onClick={() => window.open(`/storage/${donation.donation_images[0].image}`, '_blank')}
-                                            />
-                                        ) : donation.donation_images.length === 2 ? (
-                                            // Two images layout - side by side
-                                            <div className="grid h-[320px] grid-cols-2 gap-1">
-                                                {donation.donation_images.map((image, index) => (
-                                                    <img
-                                                        key={image.id}
-                                                        src={`/storage/${image.image}`}
-                                                        alt={`${donation.title} ${index + 1}`}
-                                                        className="h-full w-full cursor-pointer object-cover transition-transform duration-200 hover:scale-105"
-                                                        onClick={() => window.open(`/storage/${image.image}`, '_blank')}
-                                                    />
-                                                ))}
-                                            </div>
-                                        ) : donation.donation_images.length === 3 ? (
-                                            // Three images layout - one large, two small
-                                            <div className="grid h-[320px] grid-cols-2 gap-1">
-                                                <img
-                                                    src={`/storage/${donation.donation_images[0].image}`}
-                                                    alt={`${donation.title} 1`}
-                                                    className="h-full w-full cursor-pointer object-cover transition-transform duration-200 hover:scale-105"
-                                                    onClick={() => window.open(`/storage/${donation.donation_images[0].image}`, '_blank')}
-                                                />
-                                                <div className="grid h-full grid-rows-2 gap-1">
-                                                    {donation.donation_images.slice(1, 3).map((image, index) => (
-                                                        <img
-                                                            key={image.id}
-                                                            src={`/storage/${image.image}`}
-                                                            alt={`${donation.title} ${index + 2}`}
-                                                            className="h-full w-full cursor-pointer object-cover transition-transform duration-200 hover:scale-105"
-                                                            onClick={() => window.open(`/storage/${image.image}`, '_blank')}
-                                                        />
-                                                    ))}
-                                                </div>
-                                            </div>
-                                        ) : (
-                                            // Four or more images layout - grid with overlay for additional images
-                                            <div className="grid h-[320px] grid-cols-2 gap-1">
-                                                <img
-                                                    src={`/storage/${donation.donation_images[0].image}`}
-                                                    alt={`${donation.title} 1`}
-                                                    className="h-full w-full cursor-pointer object-cover transition-transform duration-200 hover:scale-105"
-                                                    onClick={() => window.open(`/storage/${donation.donation_images[0].image}`, '_blank')}
-                                                />
-                                                <div className="grid h-full grid-rows-2 gap-1">
-                                                    {donation.donation_images.slice(1, 3).map((image, index) => (
-                                                        <div key={image.id} className="relative h-full w-full">
-                                                            <img
-                                                                src={`/storage/${image.image}`}
-                                                                alt={`${donation.title} ${index + 2}`}
-                                                                className="h-full w-full cursor-pointer object-cover transition-transform duration-200 hover:scale-105"
-                                                                onClick={() => window.open(`/storage/${image.image}`, '_blank')}
-                                                            />
-                                                            {index === 1 && donation.donation_images.length > 3 && (
-                                                                <div 
-                                                                    className="absolute inset-0 flex cursor-pointer items-center justify-center bg-black/60 text-white transition-transform duration-200 hover:scale-105"
-                                                                    onClick={() => window.open(`/storage/${donation.donation_images[3].image}`, '_blank')}
-                                                                >
-                                                                    <span className="text-2xl font-semibold">+{donation.donation_images.length - 3}</span>
-                                                                </div>
-                                                            )}
-                                                        </div>
-                                                    ))}
-                                                </div>
-                                            </div>
-                                        )}
-                                    </div>
-                                ) : (
-                                    <div className="flex h-64 w-full items-center justify-center rounded-lg bg-gray-100">
-                                        <div className="text-center">
-                                            <p className="mb-2 text-gray-500">Tidak ada gambar untuk permintaan ini</p>
-                                            <p className="text-xs text-gray-400">Gambar akan ditampilkan jika tersedia</p>
-                                        </div>
-                                    </div>
-                                )}
+                                <ImageGallery images={donation.donation_images} title={donation.title} />
 
                                 {/* Description */}
                                 <div>
@@ -298,43 +227,47 @@ export default function RequestDetail() {
                                     {errors.body && <p className="mb-2 text-sm text-red-500">{errors.body}</p>}
                                     <div className="flex space-x-2">
                                         <Button
-                                            type="submit"
-                                            disabled={!data.body.trim() || processing}
+                                            onClick={handleComment}
+                                            disabled={!data.body.trim()}
                                             className="text-light-base bg-blue-600 hover:bg-blue-700"
                                         >
-                                            {processing ? 'Mengirim...' : 'Kirim Komentar'}
+                                            Kirim Komentar
                                         </Button>
                                     </div>
                                 </form>
 
                                 <div className="space-y-4">
-                                    {donation.comments?.map((comment) => (
-                                        <div key={comment.id} className="relative flex space-x-3">
-                                            <Avatar className="text-light-base h-8 w-8">
-                                                <AvatarImage src={comment.user.image || '/placeholder.svg'} />
-                                                <AvatarFallback>{comment.user.name[0]}</AvatarFallback>
-                                            </Avatar>
-                                            <div className="flex-1">
-                                                <div className="rounded-lg bg-gray-50">
-                                                    <div className="mb-1 flex items-center space-x-2">
-                                                        <span className="text-sm font-medium">{comment.user.name}</span>
-                                                        <span className="text-xs text-gray-500">{formatDate(comment.created_at)}</span>
+                                    {donation.comments && donation.comments.length > 0 ? (
+                                        donation.comments.map((comment) => (
+                                            <div key={comment.id} className="relative flex space-x-3">
+                                                <Avatar className="text-light-base h-8 w-8">
+                                                    <AvatarImage src={comment.user.image || '/placeholder.svg'} />
+                                                    <AvatarFallback>{comment.user.name[0]}</AvatarFallback>
+                                                </Avatar>
+                                                <div className="flex-1">
+                                                    <div className="rounded-lg bg-gray-50">
+                                                        <div className="mb-1 flex items-center space-x-2">
+                                                            <span className="text-sm font-medium">{comment.user.name}</span>
+                                                            <span className="text-xs text-gray-500">{formatDate(comment.created_at)}</span>
+                                                        </div>
+                                                        <p className="text-sm">{comment.body}</p>
                                                     </div>
-                                                    <p className="text-sm">{comment.body}</p>
                                                 </div>
+                                                {auth.user?.id === comment.user.id && (
+                                                    <Button
+                                                        variant="ghost"
+                                                        size="sm"
+                                                        className="text-red-500 hover:bg-red-50 hover:text-red-700"
+                                                        onClick={() => setCommentToDelete(comment.id)}
+                                                    >
+                                                        <Trash2 className="h-4 w-4" />
+                                                    </Button>
+                                                )}
                                             </div>
-                                            {auth.user?.id === comment.user.id && (
-                                                <Button
-                                                    variant="ghost"
-                                                    size="sm"
-                                                    className="text-red-500 hover:bg-red-50 hover:text-red-700"
-                                                    onClick={() => setCommentToDelete(comment.id)}
-                                                >
-                                                    <Trash2 className="h-4 w-4" />
-                                                </Button>
-                                            )}
-                                        </div>
-                                    )) || <p className="py-4 text-center text-gray-500">Belum ada komentar</p>}
+                                        ))
+                                    ) : (
+                                        <p className="py-4 text-center text-gray-500">Belum ada komentar</p>
+                                    )}
                                 </div>
                             </CardContent>
                         </Card>

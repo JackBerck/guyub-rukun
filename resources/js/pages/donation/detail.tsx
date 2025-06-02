@@ -1,13 +1,24 @@
 'use client';
 
+import {
+    AlertDialog,
+    AlertDialogAction,
+    AlertDialogCancel,
+    AlertDialogContent,
+    AlertDialogDescription,
+    AlertDialogFooter,
+    AlertDialogHeader,
+    AlertDialogTitle,
+} from '@/components/ui/alert-dialog';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Textarea } from '@/components/ui/textarea';
 import Layout from '@/layouts/layout';
-import { DonationDetailPageProps } from '@/types';
-import { Head, useForm, usePage } from '@inertiajs/react';
-import { Clock, MapPin, MessageCircle, Phone, Share2 } from 'lucide-react';
+import { DonationDetailPageProps, User } from '@/types';
+import { Head, router, useForm, usePage } from '@inertiajs/react';
+import { Clock, MapPin, MessageCircle, Phone, Share2, Trash2 } from 'lucide-react';
+import { useState } from 'react';
 import { toast } from 'sonner';
 
 const top_post = [
@@ -33,11 +44,14 @@ type CreateComment = {
 };
 
 export default function DonationDetail() {
-    const { donation } = usePage<DonationDetailPageProps>().props;
+    const { donation, auth } = usePage<DonationDetailPageProps & { auth: { user: User | null } }>().props;
     const { data, setData, post, processing, errors, reset } = useForm<CreateComment>({
         body: '',
         image: null,
     });
+
+    const [commentToDelete, setCommentToDelete] = useState<number | null>(null);
+
     const handleComment = () => {
         if (data.body.trim()) {
             // Submit form when comment button is clicked
@@ -47,6 +61,19 @@ export default function DonationDetail() {
                 },
             });
         }
+    };
+
+    const handleDeleteComment = (commentId: number) => {
+        router.delete(route('donation.comment.delete', [commentId]), {
+            onSuccess: () => {
+                toast.success('Komentar berhasil dihapus');
+                setCommentToDelete(null);
+            },
+            onError: () => {
+                toast.error('Gagal menghapus komentar');
+                setCommentToDelete(null);
+            },
+        });
     };
 
     const handleSubmit = (e: React.FormEvent) => {
@@ -156,7 +183,12 @@ export default function DonationDetail() {
                                                 <MessageCircle className="mr-2 h-4 w-4" />
                                                 {donation.comments?.length || 0}
                                             </Button>
-                                            <Button onClick={handleShare} type='button' variant="ghost" className="hover:bg-transparent hover:text-gray-600">
+                                            <Button
+                                                onClick={handleShare}
+                                                type="button"
+                                                variant="ghost"
+                                                className="hover:bg-transparent hover:text-gray-600"
+                                            >
                                                 <Share2 className="mr-2 h-4 w-4" />
                                                 Bagikan
                                             </Button>
@@ -199,23 +231,37 @@ export default function DonationDetail() {
                                 </form>
 
                                 <div className="space-y-4">
-                                    {donation.comments?.map((comment) => (
-                                        <div key={comment.id} className="flex space-x-3">
-                                            <Avatar className="text-light-base h-8 w-8">
-                                                <AvatarImage src={comment.user?.image || '/placeholder.svg'} />
-                                                <AvatarFallback>{comment.user?.name?.[0] || 'U'}</AvatarFallback>
-                                            </Avatar>
-                                            <div className="flex-1">
-                                                <div className="rounded-lg bg-gray-50">
-                                                    <div className="mb-1 flex items-center space-x-2">
-                                                        <span className="text-sm font-medium">{comment.user?.name || 'Unknown User'}</span>
-                                                        <span className="text-xs text-gray-500">{formatDate(comment.created_at)}</span>
+                                    {donation.comments && donation.comments.length > 0 ? (
+                                        donation.comments.map((comment) => (
+                                            <div key={comment.id} className="flex space-x-3">
+                                                <Avatar className="text-light-base h-8 w-8">
+                                                    <AvatarImage src={comment.user?.image || '/placeholder.svg'} />
+                                                    <AvatarFallback>{comment.user?.name?.[0] || 'U'}</AvatarFallback>
+                                                </Avatar>
+                                                <div className="flex-1">
+                                                    <div className="rounded-lg bg-gray-50">
+                                                        <div className="mb-1 flex items-center space-x-2">
+                                                            <span className="text-sm font-medium">{comment.user?.name || 'Unknown User'}</span>
+                                                            <span className="text-xs text-gray-500">{formatDate(comment.created_at)}</span>
+                                                        </div>
+                                                        <p className="text-sm">{comment.body}</p>
                                                     </div>
-                                                    <p className="text-sm">{comment.body}</p>
                                                 </div>
+                                                {auth.user?.id === comment.user.id && (
+                                                    <Button
+                                                        variant="ghost"
+                                                        size="sm"
+                                                        className="text-red-500 hover:bg-red-50 hover:text-red-700"
+                                                        onClick={() => setCommentToDelete(comment.id)}
+                                                    >
+                                                        <Trash2 className="h-4 w-4" />
+                                                    </Button>
+                                                )}
                                             </div>
-                                        </div>
-                                    )) || <p className="py-4 text-center text-gray-500">Belum ada komentar</p>}
+                                        ))
+                                    ) : (
+                                        <p className="py-4 text-center text-gray-500">Belum ada komentar</p>
+                                    )}
                                 </div>
                             </CardContent>
                         </Card>
@@ -291,6 +337,25 @@ export default function DonationDetail() {
                     </div>
                 </div>
             </div>
+            <AlertDialog open={commentToDelete !== null} onOpenChange={() => setCommentToDelete(null)}>
+                <AlertDialogContent className="bg-light-base text-dark-base">
+                    <AlertDialogHeader>
+                        <AlertDialogTitle>Hapus Komentar</AlertDialogTitle>
+                        <AlertDialogDescription>
+                            Apakah Anda yakin ingin menghapus komentar ini? Tindakan ini tidak dapat dibatalkan.
+                        </AlertDialogDescription>
+                    </AlertDialogHeader>
+                    <AlertDialogFooter>
+                        <AlertDialogCancel className="text-light-base">Batal</AlertDialogCancel>
+                        <AlertDialogAction
+                            onClick={() => commentToDelete && handleDeleteComment(commentToDelete)}
+                            className="bg-red-500 text-white hover:bg-red-600"
+                        >
+                            Hapus
+                        </AlertDialogAction>
+                    </AlertDialogFooter>
+                </AlertDialogContent>
+            </AlertDialog>
         </Layout>
     );
 }
