@@ -1,12 +1,14 @@
-import Layout from '@/layouts/layout';
-import { Head, Link } from '@inertiajs/react';
-import { BadgeCheck, Calendar, Clock, Heart, MessageSquare, TrendingUpIcon as Trending, UserPlus } from 'lucide-react';
-
+import { AffairFeeds } from '@/components/feeds/affair';
 import DonationFeeds from '@/components/feeds/donation';
+import { ForumFeeds } from '@/components/feeds/forum';
+import { RequestFeeds } from '@/components/feeds/request';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Separator } from '@/components/ui/separator';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import Layout from '@/layouts/layout';
+import { Head, Link } from '@inertiajs/react';
+import { BadgeCheck, Calendar, Clock, Heart, MessageSquare, UserPlus } from 'lucide-react';
 
 export default function Home() {
     return (
@@ -42,7 +44,7 @@ export default function Home() {
                                                     size="sm"
                                                     className="text-dark-base bg-light-base hover:text-dark-base border-pink-500 transition duration-100 hover:bg-pink-100"
                                                 >
-                                                    <Link href="/donasikan" className="flex items-center justify-start gap-2">
+                                                    <Link href="/donate" className="flex items-center justify-start gap-2">
                                                         <Heart className="h-4 w-4 text-pink-500" />
                                                         <span>Donasi</span>
                                                     </Link>
@@ -52,7 +54,7 @@ export default function Home() {
                                                     size="sm"
                                                     className="text-dark-base bg-light-base hover:text-dark-base border-blue-500 transition duration-100 hover:bg-blue-100"
                                                 >
-                                                    <Link href="/buka-forum" className="flex items-center justify-start gap-2">
+                                                    <Link href="/open-forum" className="flex items-center justify-start gap-2">
                                                         <MessageSquare className="h-4 w-4 text-blue-500" />
                                                         <span>Forum</span>
                                                     </Link>
@@ -62,7 +64,7 @@ export default function Home() {
                                                     size="sm"
                                                     className="text-dark-base bg-light-base hover:text-dark-base border-emerald-500 transition duration-100 hover:bg-emerald-100"
                                                 >
-                                                    <Link href="/butuh-bantuan" className="flex items-center justify-start gap-2">
+                                                    <Link href="/need-help" className="flex items-center justify-start gap-2">
                                                         <BadgeCheck className="h-4 w-4 text-emerald-500" />
                                                         <span>Butuh Bantuan</span>
                                                     </Link>
@@ -72,7 +74,7 @@ export default function Home() {
                                                     size="sm"
                                                     className="text-dark-base bg-light-base hover:text-dark-base border-purple-500 transition duration-100 hover:bg-purple-100"
                                                 >
-                                                    <Link href="/sebar-acara" className="flex items-center justify-start gap-2">
+                                                    <Link href="/share-affair" className="flex items-center justify-start gap-2">
                                                         <Calendar className="h-4 w-4 text-purple-500" />
                                                         <span>Event</span>
                                                     </Link>
@@ -85,13 +87,13 @@ export default function Home() {
                                                 size="sm"
                                                 className="hover:text-light-base w-full text-emerald-600 transition duration-100 hover:bg-emerald-600"
                                             >
-                                                Lihat Profil Lengkap
+                                                <Link href="/profil">Lihat Profil Lengkap</Link>
                                             </Button>
                                         </CardFooter>
                                     </Card>
 
                                     {/* Main Menu */}
-                                    <Card className="bg-light-base text-dark-base gap-2 p-2">
+                                    {/* <Card className="bg-light-base text-dark-base gap-2 p-2">
                                         <CardContent className="p-0">
                                             <nav className="space-y-2">
                                                 <Link
@@ -141,7 +143,7 @@ export default function Home() {
                                                 </Link>
                                             </nav>
                                         </CardContent>
-                                    </Card>
+                                    </Card> */}
                                 </div>
                             </aside>
 
@@ -172,7 +174,7 @@ export default function Home() {
                                                         size="sm"
                                                         className="text-dark-base bg-light-base hover:text-dark-base flex items-center justify-start gap-2 border-pink-500 transition duration-100 hover:bg-pink-100"
                                                     >
-                                                        <Link href="/donasikan" className="flex items-center justify-start gap-2">
+                                                        <Link href="/donate" className="flex items-center justify-start gap-2">
                                                             <Heart className="h-4 w-4 text-pink-500" />
                                                             <span>Donasi</span>
                                                         </Link>
@@ -182,7 +184,7 @@ export default function Home() {
                                                         size="sm"
                                                         className="text-dark-base bg-light-base hover:text-dark-base flex items-center justify-start gap-2 border-blue-500 transition duration-100 hover:bg-blue-100"
                                                     >
-                                                        <Link href="/buka-forum" className="flex items-center justify-start gap-2">
+                                                        <Link href="/open-forum" className="flex items-center justify-start gap-2">
                                                             <MessageSquare className="h-4 w-4 text-blue-500" />
                                                             <span>Forum</span>
                                                         </Link>
@@ -192,7 +194,7 @@ export default function Home() {
                                                         size="sm"
                                                         className="text-dark-base bg-light-base hover:text-dark-base flex items-center justify-start gap-2 border-emerald-500 transition duration-100 hover:bg-emerald-100"
                                                     >
-                                                        <Link href="/butuh-bantuan" className="flex items-center justify-start gap-2">
+                                                        <Link href="/need-help" className="flex items-center justify-start gap-2">
                                                             <BadgeCheck className="h-4 w-4 text-emerald-500" />
                                                             <span>Butuh Bantuan</span>
                                                         </Link>
@@ -202,7 +204,7 @@ export default function Home() {
                                                         size="sm"
                                                         className="text-dark-base bg-light-base hover:text-dark-base flex items-center justify-start gap-2 border-purple-500 transition duration-100 hover:bg-purple-100"
                                                     >
-                                                        <Link href="/sebar-acara" className="flex items-center justify-start gap-2">
+                                                        <Link href="/share-affair" className="flex items-center justify-start gap-2">
                                                             <Calendar className="h-4 w-4 text-purple-500" />
                                                             <span>Event</span>
                                                         </Link>
@@ -223,16 +225,16 @@ export default function Home() {
                                 </aside>
                                 {/* Feed Tabs */}
                                 <Card className="bg-light-base text-dark-base mb-4 overflow-hidden p-0">
-                                    <Tabs defaultValue="all">
+                                    <Tabs defaultValue="donations">
                                         <div className="border-b">
                                             <div className="flex items-center px-4">
-                                                <TabsList className="h-10 w-full justify-start rounded-none border-b-0 bg-white p-0">
-                                                    <TabsTrigger
+                                                <TabsList className="h-10 w-full justify-start rounded-none border-b-0 bg-white p-0 overflow-x-auto no-scrollbar">
+                                                    {/* <TabsTrigger
                                                         value="all"
                                                         className="rounded-none border-b-2 border-transparent px-4 py-2 data-[state=active]:border-emerald-600 data-[state=active]:bg-transparent data-[state=active]:text-gray-700 data-[state=active]:shadow-none"
                                                     >
                                                         Semua
-                                                    </TabsTrigger>
+                                                    </TabsTrigger> */}
                                                     <TabsTrigger
                                                         value="donations"
                                                         className="rounded-none border-b-2 border-transparent px-4 py-2 data-[state=active]:border-emerald-600 data-[state=active]:bg-transparent data-[state=active]:text-gray-700 data-[state=active]:shadow-none"
@@ -240,10 +242,10 @@ export default function Home() {
                                                         Donasi
                                                     </TabsTrigger>
                                                     <TabsTrigger
-                                                        value="stories"
+                                                        value="request"
                                                         className="rounded-none border-b-2 border-transparent px-4 py-2 data-[state=active]:border-emerald-600 data-[state=active]:bg-transparent data-[state=active]:text-gray-700 data-[state=active]:shadow-none"
                                                     >
-                                                        Cerita
+                                                        Butuh Bantuan
                                                     </TabsTrigger>
                                                     <TabsTrigger
                                                         value="forums"
@@ -251,24 +253,33 @@ export default function Home() {
                                                     >
                                                         Forum
                                                     </TabsTrigger>
+                                                    <TabsTrigger
+                                                        value="affairs"
+                                                        className="rounded-none border-b-2 border-transparent px-4 py-2 data-[state=active]:border-emerald-600 data-[state=active]:bg-transparent data-[state=active]:text-gray-700 data-[state=active]:shadow-none"
+                                                    >
+                                                        Acara
+                                                    </TabsTrigger>
                                                 </TabsList>
                                             </div>
                                         </div>
 
                                         {/* All Tab Content */}
-                                        <TabsContent value="all" className="m-0">
+                                        {/* <TabsContent value="all" className="m-0">
                                             <DonationFeeds />
-                                        </TabsContent>
+                                        </TabsContent> */}
 
                                         {/* Other tabs would have similar content */}
                                         <TabsContent value="donations" className="m-0">
                                             <DonationFeeds />
                                         </TabsContent>
-                                        <TabsContent value="stories" className="m-0">
-                                            <DonationFeeds />
+                                        <TabsContent value="request" className="m-0">
+                                            <RequestFeeds />
                                         </TabsContent>
                                         <TabsContent value="forums" className="m-0">
-                                            <DonationFeeds />
+                                            <ForumFeeds />
+                                        </TabsContent>
+                                        <TabsContent value="affairs" className="m-0">
+                                            <AffairFeeds />
                                         </TabsContent>
                                     </Tabs>
                                 </Card>

@@ -2,11 +2,11 @@
 
 namespace Database\Seeders;
 
-use App\Models\DonationCategory;
+use App\Models\AffairCategory;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
-class DonationCategorySeeder extends Seeder
+class AffairCategorySeeder extends Seeder
 {
     /**
      * Run the database seeds.
@@ -14,19 +14,13 @@ class DonationCategorySeeder extends Seeder
     public function run(): void
     {
         $categories = [
-            'Elektronik',
-            'Kendaraan',
-            'Pakaian',
-            'Makanan dan Minuman',
-            'Rumah',
-            'Jasa',
-            'Hewan',
-            'Hobi',
-            'Lainnya'
+            'Musik',
+            'Pertunjukan',
+            'Olahraga',
         ];
 
         foreach ($categories as $category) {
-            DonationCategory::firstOrCreate([
+            AffairCategory::firstOrCreate([
                 'name' => $category,
             ]);
         }

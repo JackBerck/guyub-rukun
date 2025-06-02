@@ -11,6 +11,7 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Pagination\CursorPaginator;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 use Inertia\Inertia;
 
@@ -26,7 +27,11 @@ class ForumController extends Controller
 
     public function create()
     {
-        return Inertia::render('forum/create');
+        $forumCategories = \App\Models\ForumCategory::all();
+        
+        return Inertia::render('forum/create', [
+            'forumCategories' => $forumCategories,
+        ]);
     }
 
     public function search()
@@ -41,7 +46,14 @@ class ForumController extends Controller
 
     public function view(Forum $forum)
     {
-        // return inertia 
+        return Inertia::render('forum/detail', [
+            'forum' => $forum->load([
+                'user',
+                'forumCategory',
+                'comments',
+                'likedByUsers'
+            ]),
+        ]);
     }
 
     public function like(Forum $forum): RedirectResponse
@@ -77,7 +89,7 @@ class ForumController extends Controller
             return redirect()->back()->with('status', 'Komentar berhasil ditambahkan');
         } catch (\Exception $e) {
             // Log error untuk debugging
-            \Log::error($e->getMessage());
+            Log::error($e->getMessage());
 
             // Redirect kembali dengan pesan error
             return back()->withErrors(['error' => "Terjadi kesalahan saat menambahkan komentar. Silakan coba lagi."]);
@@ -123,7 +135,7 @@ class ForumController extends Controller
             $user->forums()->create($data);
 
             // Redirect ke halaman forum dengan pesan sukses
-            return redirect()->route('forum.create')->with("status", "Forum baru berhasil dibuat");
+            return redirect()->route('home')->with("status", "Forum baru berhasil dibuat");
         } catch (\Exception $e) {
             // Log error untuk debugging
             \Log::error($e->getMessage());

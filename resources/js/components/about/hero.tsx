@@ -19,7 +19,7 @@ export default function HeroAbout() {
                             untuk mendapatkan makanan yang layak dan bergizi.
                         </p>
                         <Button className="bg-emerald-600 text-white hover:bg-emerald-700">
-                            <Link href="/masuk">Gabung Sekarang</Link>
+                            <Link href="/login">Gabung Sekarang</Link>
                         </Button>
                     </div>
                     <div className="mt-8 w-full lg:mt-0 lg:w-1/2">

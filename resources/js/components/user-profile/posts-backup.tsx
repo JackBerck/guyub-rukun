@@ -1,0 +1,349 @@
+"use client"
+
+import { useState, useEffect } from "react"
+import { Heart, MessageSquare, Share2, MapPin, Clock, Calendar } from "lucide-react"
+
+import { Button } from "@/components/ui/button"
+import { Card, CardContent, CardHeader } from "@/components/ui/card"
+import { Badge } from "@/components/ui/badge"
+import { Link } from "@inertiajs/react"
+import { UserProfile, Donation, Forum, Affair } from "@/types"
+
+interface Post {
+  id: number
+  type: "donation" | "request" | "forum" | "affair"
+  title: string
+  description: string
+  image?: string
+  category: string
+  location?: string
+  urgency?: "low" | "medium" | "high"
+  date?: string
+  time?: string
+  createdAt: string
+  likes: number
+  comments: number
+  isLiked: boolean
+  slug?: string
+}
+
+interface UserPostsGridProps {
+  userId: number
+  type: "all" | "donations" | "requests" | "forums" | "events"
+  userData: UserProfile
+}
+
+export function UserPostsGrid({ userId, type, userData }: UserPostsGridProps) {
+  const [posts, setPosts] = useState<Post[]>([])
+  const [isLoading, setIsLoading] = useState(true)
+
+  useEffect(() => {
+    const transformDataToPosts = () => {
+      setIsLoading(true)
+      
+      let allPosts: Post[] = []
+      
+      // Transform donations to posts
+      if (userData.donations) {
+        const donationPosts = userData.donations.map((donation: Donation): Post => ({
+          id: donation.id,
+          type: donation.type === 'request' ? 'request' : 'donation',
+          title: donation.title,
+          description: donation.description,
+          image: donation.donation_images && donation.donation_images.length > 0 
+            ? `/storage/${donation.donation_images[0].image}` 
+            : undefined,
+          category: donation.donation_category?.name || 'Kategori',
+          location: donation.address,
+          urgency: donation.urgency as "low" | "medium" | "high" | undefined,
+          createdAt: new Date(donation.created_at).toLocaleDateString('id-ID'),
+          likes: 0, // Not available in current API
+          comments: donation.comments?.length || 0,
+          isLiked: false,
+          slug: donation.slug,
+        }))
+        allPosts = [...allPosts, ...donationPosts]
+      }
+      
+      // Transform forums to posts
+      if (userData.forums) {
+        const forumPosts = userData.forums.map((forum: Forum): Post => ({
+          id: forum.id,
+          type: 'forum',
+          title: forum.title,
+          description: forum.description,
+          image: forum.thumbnail ? `/storage/${forum.thumbnail}` : undefined,
+          category: forum.forum_category?.name || 'Forum',
+          createdAt: new Date(forum.created_at).toLocaleDateString('id-ID'),
+          likes: forum.liked_by_users?.length || 0,
+          comments: forum.comments?.length || 0,
+          isLiked: false,
+          slug: forum.slug,
+        }))
+        allPosts = [...allPosts, ...forumPosts]
+      }
+      
+      // Transform affairs to posts
+      if (userData.affairs) {
+        const affairPosts = userData.affairs.map((affair: Affair): Post => ({
+          id: affair.id,
+          type: 'affair',
+          title: affair.title,
+          description: affair.description,
+          image: affair.thumbnail ? `/storage/${affair.thumbnail}` : undefined,
+          category: affair.affair_category?.name || 'Acara',
+          location: affair.location,
+          date: affair.date,
+          time: affair.time,
+          createdAt: new Date(affair.created_at).toLocaleDateString('id-ID'),
+          likes: 0, // Not available in current API
+          comments: 0, // Not available in current API
+          isLiked: false,
+          slug: affair.slug,
+        }))
+        allPosts = [...allPosts, ...affairPosts]
+      }
+
+      // Filter posts based on type
+      let filteredPosts = allPosts
+      if (type !== "all") {
+        const typeMap = {
+          donations: "donation",
+          requests: "request", 
+          forums: "forum",
+          events: "affair", // affairs are events
+        }
+        filteredPosts = allPosts.filter((post) => post.type === typeMap[type])
+      }
+
+      // Sort by creation date (newest first)
+      filteredPosts.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
+
+      setPosts(filteredPosts)
+      setIsLoading(false)
+    }
+
+    transformDataToPosts()
+  }, [userData, type])
+            title: "Sembako untuk Keluarga Terdampak",
+            description: "Kami menyediakan paket sembako berisi beras 5kg, minyak goreng 2L, gula 1kg.",
+            category: "Sembako",
+            location: "Bandung",
+            createdAt: "1 minggu yang lalu",
+            likes: 32,
+            comments: 15,
+            isLiked: false,
+          },
+          {
+            id: 6,
+            type: "forum",
+            title: "Resep Makanan Bergizi dengan Bahan Sederhana",
+            description:
+              "Sharing resep makanan bergizi yang bisa dibuat dengan bahan-bahan sederhana dan mudah didapat.",
+            category: "Resep Makanan",
+            createdAt: "2 minggu yang lalu",
+            likes: 28,
+            comments: 19,
+            isLiked: false,
+          },
+        ]
+
+        // Filter posts based on type
+        let filteredPosts = allPosts
+        if (type !== "all") {
+          const typeMap = {
+            donations: "donation",
+            requests: "request",
+            forums: "forum",
+            events: "event",
+          }
+          filteredPosts = allPosts.filter((post) => post.type === typeMap[type])
+        }
+
+        setPosts(filteredPosts)
+        setIsLoading(false)
+      }, 800)
+    }
+
+    fetchPosts()
+  }, [userId, type])
+
+  const handleLike = (postId: number) => {
+    setPosts(
+      posts.map((post) =>
+        post.id === postId
+          ? {
+              ...post,
+              isLiked: !post.isLiked,
+              likes: post.isLiked ? post.likes - 1 : post.likes + 1,
+            }
+          : post,
+      ),
+    )
+  }
+
+  const getTypeColor = (postType: string) => {
+    switch (postType) {
+      case "donation":
+        return "bg-emerald-100 text-emerald-800"
+      case "request":
+        return "bg-orange-100 text-orange-800"
+      case "forum":
+        return "bg-blue-100 text-blue-800"
+      case "event":
+        return "bg-purple-100 text-purple-800"
+      default:
+        return "bg-gray-100 text-gray-800"
+    }
+  }
+
+  const getUrgencyColor = (urgency?: string) => {
+    switch (urgency) {
+      case "high":
+        return "bg-red-100 text-red-800"
+      case "medium":
+        return "bg-yellow-100 text-yellow-800"
+      case "low":
+        return "bg-green-100 text-green-800"
+      default:
+        return "bg-gray-100 text-gray-800"
+    }
+  }
+
+  const getDetailLink = (post: Post) => {
+    switch (post.type) {
+      case "donation":
+        return `/donations/${post.id}`
+      case "request":
+        return `/requests/${post.id}`
+      case "forum":
+        return `/forums/${post.id}`
+      case "event":
+        return `/events/${post.id}`
+      default:
+        return "#"
+    }
+  }
+
+  if (isLoading) {
+    return (
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        {[...Array(6)].map((_, i) => (
+          <Card key={i} className="animate-pulse">
+            <div className="h-48 bg-gray-200 rounded-t-lg"></div>
+            <CardContent className="p-4 space-y-3">
+              <div className="h-4 bg-gray-200 rounded w-3/4"></div>
+              <div className="h-3 bg-gray-200 rounded w-full"></div>
+              <div className="h-3 bg-gray-200 rounded w-2/3"></div>
+            </CardContent>
+          </Card>
+        ))}
+      </div>
+    )
+  }
+
+  if (posts.length === 0) {
+    return (
+      <div className="text-center py-12">
+        <p className="text-gray-500 mb-4">
+          {type === "all" ? "Pengguna ini belum membuat postingan apapun" : `Pengguna ini belum membuat ${type} apapun`}
+        </p>
+      </div>
+    )
+  }
+
+  return (
+    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      {posts.map((post) => (
+        <Card key={post.id} className="group hover:shadow-lg transition-shadow">
+          <CardHeader className="pb-3">
+            <div className="flex items-start justify-between">
+              <div className="flex-1">
+                <div className="flex items-center gap-2 mb-2">
+                  <Badge className={getTypeColor(post.type)}>{post.category}</Badge>
+                  {post.urgency && (
+                    <Badge className={getUrgencyColor(post.urgency)}>
+                      {post.urgency === "high" ? "Mendesak" : post.urgency === "medium" ? "Sedang" : "Rendah"}
+                    </Badge>
+                  )}
+                </div>
+                <Link href={getDetailLink(post)}>
+                  <h3 className="text-lg font-semibold line-clamp-2 group-hover:text-emerald-600 transition-colors">
+                    {post.title}
+                  </h3>
+                </Link>
+                <div className="flex items-center gap-4 mt-2 text-sm text-gray-500">
+                  <div className="flex items-center gap-1">
+                    <Clock className="h-3 w-3" />
+                    <span>{post.createdAt}</span>
+                  </div>
+                  {post.location && (
+                    <div className="flex items-center gap-1">
+                      <MapPin className="h-3 w-3" />
+                      <span className="truncate">{post.location}</span>
+                    </div>
+                  )}
+                </div>
+              </div>
+            </div>
+          </CardHeader>
+
+          <CardContent className="space-y-4">
+            {post.image && (
+              <div className="aspect-video overflow-hidden rounded-lg bg-gray-100">
+                <img
+                  src={post.image || "/placeholder.svg"}
+                  alt={post.title}
+                  className="h-full w-full object-cover group-hover:scale-105 transition-transform duration-300"
+                />
+              </div>
+            )}
+
+            <p className="text-sm text-gray-600 line-clamp-3">{post.description}</p>
+
+            {(post.date || post.time) && (
+              <div className="flex items-center gap-4 text-sm text-gray-500 bg-gray-50 p-2 rounded">
+                {post.date && (
+                  <div className="flex items-center gap-1">
+                    <Calendar className="h-3 w-3" />
+                    <span>{post.date}</span>
+                  </div>
+                )}
+                {post.time && (
+                  <div className="flex items-center gap-1">
+                    <Clock className="h-3 w-3" />
+                    <span>{post.time}</span>
+                  </div>
+                )}
+              </div>
+            )}
+
+            {/* Interaction Buttons */}
+            <div className="flex items-center justify-between pt-2 border-t">
+              <div className="flex items-center gap-4">
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => handleLike(post.id)}
+                  className={`gap-1 ${post.isLiked ? "text-red-600" : "text-gray-500"}`}
+                >
+                  <Heart className={`h-4 w-4 ${post.isLiked ? "fill-current" : ""}`} />
+                  <span>{post.likes}</span>
+                </Button>
+
+                <Button variant="ghost" size="sm" className="gap-1 text-gray-500">
+                  <MessageSquare className="h-4 w-4" />
+                  <span>{post.comments}</span>
+                </Button>
+              </div>
+
+              <Button variant="ghost" size="sm" className="text-gray-500">
+                <Share2 className="h-4 w-4" />
+              </Button>
+            </div>
+          </CardContent>
+        </Card>
+      ))}
+    </div>
+  )
+}

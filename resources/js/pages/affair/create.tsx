@@ -20,11 +20,17 @@ type CreateAffairForm = {
     date: string;
     time: string;
     location: string;
-    event_category_id: number;
+    affair_category_id: number;
     thumbnail: File | null;
 };
 
-export default function CreateEventPage() {
+type AffairCategory = {
+    id: number;
+    name: string;
+    slug: string;
+};
+
+export default function CreateEventPage({ affairCategories }: { affairCategories: AffairCategory[] }) {
     const [thumbnailPreview, setThumbnailPreview] = useState<string | null>(null);
     const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -34,7 +40,7 @@ export default function CreateEventPage() {
         date: '',
         time: '',
         location: '',
-        event_category_id: 1,
+        affair_category_id: 1,
         thumbnail: null,
     });
 
@@ -42,18 +48,37 @@ export default function CreateEventPage() {
         e.preventDefault();
 
         if (!data.title.trim()) {
+            alert('Judul acara wajib diisi');
             return;
         }
         if (!data.description.trim()) {
+            alert('Deskripsi acara wajib diisi');
+            return;
+        }
+        if (!data.date) {
+            alert('Tanggal acara wajib diisi');
+            return;
+        }
+        if (!data.time) {
+            alert('Waktu acara wajib diisi');
+            return;
+        }
+        if (!data.location.trim()) {
+            alert('Lokasi acara wajib diisi');
             return;
         }
 
-        post(route('forum.store'), {
+        console.log('Submitting affair data:', data);
+
+        post(route('affair.store'), {
             onSuccess: () => {
                 reset();
+                localStorage.removeItem('affair_draft');
                 setThumbnailPreview(null);
             },
-            onError: () => {},
+            onError: () => {
+                console.error('Error creating affair:', errors);
+            },
         });
     };
 
@@ -118,7 +143,7 @@ export default function CreateEventPage() {
                 date: parsedDraft.date || '',
                 time: parsedDraft.time || '',
                 location: parsedDraft.location || '',
-                event_category_id: parsedDraft.event_category_id || 1,
+                affair_category_id: parsedDraft.affair_category_id || 1,
                 thumbnail: null,
             });
 
@@ -157,7 +182,7 @@ export default function CreateEventPage() {
                             <CardContent className="grid grid-cols-1 gap-4 md:grid-cols-2">
                                 {/* Judul Acara */}
                                 <div className="space-y-2">
-                                    <Label htmlFor="title">Judul Acara</Label>
+                                    <Label htmlFor="title">Judul Acara *</Label>
                                     <Input
                                         id="title"
                                         value={data.title}
@@ -170,29 +195,28 @@ export default function CreateEventPage() {
 
                                 {/* Kategori Acara */}
                                 <div className="space-y-2">
-                                    <Label htmlFor="category">Kategori Acara</Label>
+                                    <Label htmlFor="category">Kategori Acara *</Label>
                                     <Select
                                         disabled={processing}
-                                        onValueChange={(value) => setData({ ...data, event_category_id: Number.parseInt(value) })}
+                                        onValueChange={(value) => setData({ ...data, affair_category_id: Number.parseInt(value) })}
                                     >
                                         <SelectTrigger id="category">
                                             <SelectValue placeholder="Pilih kategori acara" />
                                         </SelectTrigger>
                                         <SelectContent className="bg-white text-gray-900">
-                                            <SelectItem value="1">Berbagi Makanan</SelectItem>
-                                            <SelectItem value="2">Bakti Sosial</SelectItem>
-                                            <SelectItem value="3">Edukasi</SelectItem>
-                                            <SelectItem value="4">Workshop</SelectItem>
-                                            <SelectItem value="5">Fundraising</SelectItem>
-                                            <SelectItem value="6">Lainnya</SelectItem>
+                                            {affairCategories.map((category) => (
+                                                <SelectItem key={category.id} value={String(category.id)}>
+                                                    {category.name}
+                                                </SelectItem>
+                                            ))}
                                         </SelectContent>
                                     </Select>
-                                    {errors.event_category_id && <p className="text-sm text-red-600">{errors.event_category_id}</p>}
+                                    {errors.affair_category_id && <p className="text-sm text-red-600">{errors.affair_category_id}</p>}
                                 </div>
 
                                 {/* Deskripsi */}
                                 <div className="space-y-2 md:col-span-2">
-                                    <Label htmlFor="description">Deskripsi Acara</Label>
+                                    <Label htmlFor="description">Deskripsi Acara *</Label>
                                     <Textarea
                                         id="description"
                                         value={data.description}
@@ -206,16 +230,19 @@ export default function CreateEventPage() {
 
                                 {/* Tanggal Acara */}
                                 <div className="space-y-2">
-                                    <Label htmlFor="date">Tanggal Acara</Label>
+                                    <Label htmlFor="date" className={errors.date ? 'text-red-600' : ''}>
+                                        Tanggal Acara *
+                                    </Label>
                                     <div className="relative">
                                         <Calendar className="absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2 text-gray-400" />
                                         <Input
                                             id="date"
                                             type="date"
                                             value={data.date}
-                                            onChange={(e) => setData({ ...data, date: e.target.value })}
+                                            onChange={(e) => setData('date', e.target.value)}
                                             disabled={processing}
-                                            className="pl-10"
+                                            className={`pl-10 ${errors.date ? 'border-red-500 focus:border-red-500' : ''}`}
+                                            min={new Date().toISOString().split('T')[0]} // Tidak bisa pilih tanggal lampau
                                         />
                                     </div>
                                     {errors.date && <p className="text-sm text-red-600">{errors.date}</p>}
@@ -223,16 +250,18 @@ export default function CreateEventPage() {
 
                                 {/* Waktu Acara */}
                                 <div className="space-y-2">
-                                    <Label htmlFor="time">Waktu Acara</Label>
+                                    <Label htmlFor="time" className={errors.time ? 'text-red-600' : ''}>
+                                        Waktu Acara *
+                                    </Label>
                                     <div className="relative">
                                         <Clock className="absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2 text-gray-400" />
                                         <Input
                                             id="time"
                                             type="time"
                                             value={data.time}
-                                            onChange={(e) => setData({ ...data, time: e.target.value })}
+                                            onChange={(e) => setData('time', e.target.value)}
                                             disabled={processing}
-                                            className="pl-10"
+                                            className={`pl-10 ${errors.time ? 'border-red-500 focus:border-red-500' : ''}`}
                                         />
                                     </div>
                                     {errors.time && <p className="text-sm text-red-600">{errors.time}</p>}
@@ -240,7 +269,7 @@ export default function CreateEventPage() {
 
                                 {/* Lokasi */}
                                 <div className="space-y-2 md:col-span-2">
-                                    <Label htmlFor="location">Lokasi Acara</Label>
+                                    <Label htmlFor="location">Lokasi Acara *</Label>
                                     <div className="relative">
                                         <MapPin className="absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2 text-gray-400" />
                                         <Input
@@ -257,7 +286,7 @@ export default function CreateEventPage() {
 
                                 {/* Upload Thumbnail */}
                                 <div className="space-y-2 md:col-span-2">
-                                    <Label>Thumbnail Acara</Label>
+                                    <Label>Thumbnail Acara *</Label>
                                     <input type="file" ref={fileInputRef} onChange={handleThumbnailUpload} accept="image/*" className="hidden" />
                                     <div className="flex gap-4">
                                         {thumbnailPreview ? (

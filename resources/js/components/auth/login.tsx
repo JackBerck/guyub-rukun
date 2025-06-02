@@ -23,7 +23,7 @@ export default function LoginForm() {
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
 
-        post(route('masuk'), {
+        post(route('login'), {
             onFinish: () => {
                 reset();
             },

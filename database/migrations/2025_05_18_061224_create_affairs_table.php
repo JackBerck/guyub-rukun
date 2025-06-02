@@ -12,13 +12,13 @@ return new class extends Migration {
     {
         Schema::create('affairs', function (Blueprint $table) {
             $table->id();
-            $table->string('thumbnail');
             $table->string('title');
             $table->string('slug')->unique();
             $table->text('description')->nullable();
             $table->date('date')->nullable();
             $table->time('time')->nullable();
             $table->string('location')->nullable();
+            $table->string('thumbnail');
             $table->foreignId('user_id')->constrained()->cascadeOnDelete();
             $table->timestamps();
             $table->softDeletes();

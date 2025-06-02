@@ -14,14 +14,18 @@ class AffairController extends Controller
     public function index()
     {
         return Affair::with(["user", "affairCategory"])
-            ->whereDate('date', '>=', now())
+            // ->whereDate('date', '>=', now())
             ->latest()
             ->cursorPaginate(16);
     }
 
     public function create()
     {
-        return Inertia::render('affair/create');
+        $affairCategories = \App\Models\AffairCategory::all();
+
+        return Inertia::render('affair/create', [
+            'affairCategories' => $affairCategories,
+        ]);
     }
 
     public function search()
@@ -36,7 +40,14 @@ class AffairController extends Controller
 
     public function view(Affair $affair)
     {
-        // return inertia 
+        // Cek apakah acara ini sudah lewat
+        // if ($affair->date < now()) {
+        //     return redirect()->route('home')->withErrors(['error' => "Acara ini sudah lewat."]);
+        // }
+
+        return Inertia::render('affair/detail', [
+            'affair' => $affair->load(['user', 'affairCategory']),
+        ]);
     }
 
     public function store(CreateAffairRequest $request)
@@ -57,7 +68,7 @@ class AffairController extends Controller
             $user->affairs()->create($data);
 
             // Redirect ke halaman acara dengan pesan sukses
-            return redirect()->route('forum.create')->with("status", "Acara baru berhasil dibuat");
+            return redirect()->route('home')->with("status", "Acara baru berhasil dibuat");
         } catch (\Exception $e) {
             // Log error untuk debugging
             \Log::error($e->getMessage());
@@ -99,5 +110,4 @@ class AffairController extends Controller
             return back()->withErrors(['error' => "Acara gagal dihapus"]);
         }
     }
-
 }
