@@ -18,6 +18,7 @@ class DatabaseSeeder extends Seeder
         $this->call([
             DonationCategorySeeder::class,
             ForumCategorySeeder::class,
+            RoleSeeder::class
             // UserSeeder::class,
         ]);
 
@@ -25,9 +26,6 @@ class DatabaseSeeder extends Seeder
             'name' => 'Test User',
             'email' => 'test@example.com',
         ]);
-
-        Role::create(['name' => 'admin']);
-        Role::create(['name' => 'user']);
 
         $admin = User::create([
             'name' => 'admin',
