@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AffairController;
+use App\Http\Controllers\DetailUserController;
 use App\Http\Controllers\DonationController;
 use App\Http\Controllers\ForumController;
 use Illuminate\Support\Facades\Route;
@@ -18,9 +19,7 @@ Route::get('/contact', function () {
 })->name('contact');
 
 // Route General
-Route::get("user", function () {
-    return Inertia::render('user/index');
-})->name("user.index");
+Route::get("user/{user:id}", [DetailUserController::class, "detailUser"])->name("user.detail");
 Route::get("donation/{donation:slug}", [DonationController::class, "viewDonate"])->name("donation.donate.view");
 Route::get("forum/{forum:slug}", [ForumController::class, "view"])->name("forum.detail");
 Route::get("affair/{affair:slug}", [AffairController::class, "view"])->name("affair.view");

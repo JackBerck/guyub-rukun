@@ -44,6 +44,13 @@ export interface User {
     [key: string]: unknown;
 }
 
+// User with nested relations for profile page
+export interface UserProfile extends User {
+    donations: Donation[];
+    forums: Forum[];
+    affairs: Affair[];
+}
+
 export interface NavigationItem {
     title: string;
     path: string;
@@ -169,3 +176,10 @@ export interface PageProps {
     [key: string]: unknown;
 }
 
+export interface ForumCategory {
+    id: number;
+    name: string;
+    slug: string;
+    created_at: string;
+    updated_at: string;
+}
