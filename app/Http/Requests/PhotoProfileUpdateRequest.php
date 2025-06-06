@@ -18,7 +18,7 @@ class PhotoProfileUpdateRequest extends FormRequest
                 'required',
                 'image',
                 'mimes:jpeg,png,jpg,gif,webp',
-                'max:5120',
+                'max:4096', // 4MB
             ]
         ];
     }

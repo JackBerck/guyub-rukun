@@ -32,4 +32,14 @@ class ProfileUpdateRequest extends FormRequest
             'address' => ["nullable", "string", "max:512"],
         ];
     }
+
+    public function messages(): array
+    {
+        return [
+            'name.required' => 'Nama wajib diisi',
+            'email.required' => 'Email wajib diisi',
+            'email.email' => 'Format email tidak valid',
+            'email.unique' => 'Email sudah digunakan',
+        ];
+    }
 }

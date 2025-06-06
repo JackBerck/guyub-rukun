@@ -72,7 +72,7 @@ export default function Navbar() {
                                     <DropdownMenuLabel>Akun Saya</DropdownMenuLabel>
                                     <DropdownMenuSeparator />
                                     <DropdownMenuItem>
-                                        <Link href="/profil" className="flex w-full">
+                                        <Link href="/settings" className="flex w-full">
                                             Profil
                                         </Link>
                                     </DropdownMenuItem>

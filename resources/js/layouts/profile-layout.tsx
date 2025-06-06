@@ -9,14 +9,22 @@ import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
+import { Auth, PageProps } from '@/types';
 import { usePage } from '@inertiajs/react';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 
 interface ProfileLayoutProps {
     children: React.ReactNode;
 }
 
+interface ProfilePageProps extends PageProps {
+    auth: Auth;
+    url: string | URL;
+}
+
 export function ProfileLayout({ children }: ProfileLayoutProps) {
-    const { url } = usePage().props;
+    const { auth, url } = usePage<ProfilePageProps>().props;
+    const user = auth.user;
     const pathname = typeof url === 'string' ? url : '';
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
@@ -79,15 +87,14 @@ export function ProfileLayout({ children }: ProfileLayoutProps) {
             {/* Profile Info */}
             <Card className="bg-light-base text-dark-base shadow-none">
                 <CardContent className="p-4">
-                    <div className="flex gap-2 flex-row lg:flex-col xl:flex-row items-center text-left lg:text-center xl:text-left">
-                        <img
-                            src="/img/avatars/default.jpg"
-                            alt="Profile"
-                            className="aspect-square h-12 w-12 rounded-full bg-emerald-100 object-cover"
-                        />
+                    <div className="flex flex-row items-center gap-2 text-left lg:flex-col lg:text-center xl:flex-row xl:text-left">
+                        <Avatar className="h-12 w-12 shrink-0 large-font-size">
+                            <AvatarImage src={user.image ? `/storage/${user.image}` : '/img/avatars/default.jpg'} alt={user.name} className='object-cover' />
+                            <AvatarFallback>{user.name?.[0] || 'U'}</AvatarFallback>
+                        </Avatar>
                         <div>
-                            <h3 className="font-semibold">Ahmad Rizki</h3>
-                            <p className="text-sm text-gray-500">ahmad.rizki@email.com</p>
+                            <h3 className="line-clamp-1 font-semibold">{user.name}</h3>
+                            <p className="line-clamp-1 text-sm text-gray-500">{user.email}</p>
                         </div>
                     </div>
                 </CardContent>
@@ -138,12 +145,12 @@ export function ProfileLayout({ children }: ProfileLayoutProps) {
                         <div className="mb-6 flex items-center justify-between">
                             <h1 className="text-2xl font-bold">Profil Saya</h1>
                             <Sheet open={isMobileMenuOpen} onOpenChange={setIsMobileMenuOpen}>
-                                <SheetTrigger asChild className='bg-light-base text-dark-base'>
+                                <SheetTrigger asChild className="bg-light-base text-dark-base">
                                     <Button variant="outline" size="icon">
                                         <Menu className="h-5 w-5" />
                                     </Button>
                                 </SheetTrigger>
-                                <SheetContent side="left" className="w-80 bg-light-base text-dark-base">
+                                <SheetContent side="left" className="bg-light-base text-dark-base w-80">
                                     <div className="mt-6">
                                         <NavigationContent />
                                     </div>
