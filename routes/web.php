@@ -21,7 +21,7 @@ Route::get('/contact', function () {
 // Route General
 Route::get("user/{user:id}", [DetailUserController::class, "detailUser"])->name("user.detail");
 Route::get("donation/{donation:slug}", [DonationController::class, "viewDonate"])->name("donation.donate.view");
-Route::get("forum/{forum:slug}", [ForumController::class, "view"])->name("forum.detail");
+Route::get("forum/{forum:slug}", [ForumController::class, "view"])->name("forum.view");
 Route::get("affair/{affair:slug}", [AffairController::class, "view"])->name("affair.view");
 
 Route::middleware(['auth', 'verified'])->group(function () {

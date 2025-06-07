@@ -11,7 +11,7 @@ import {
 } from '@/components/ui/dropdown-menu';
 import navigations from '@/data/navigations';
 import { SharedData } from '@/types';
-import { Link, usePage } from '@inertiajs/react';
+import { Link, router, usePage } from '@inertiajs/react';
 import { Menu, User, X } from 'lucide-react';
 import { useState } from 'react';
 
@@ -20,6 +20,10 @@ export default function Navbar() {
 
     // const [isSearchOpen, setIsSearchOpen] = useState(false);
     const [isMenuOpen, setIsMenuOpen] = useState(false);
+
+    const handleLogout = () => {
+        router.post('/logout');
+    };
 
     return (
         <header className="section-padding-x sticky top-0 z-50 w-full border-b bg-gray-50">
@@ -88,9 +92,9 @@ export default function Navbar() {
                                     </DropdownMenuItem> */}
                                     <DropdownMenuSeparator />
                                     <DropdownMenuItem className="bg-red-base text-light-base hover:bg-red-700">
-                                        <Link href="/keluar" className="flex w-full">
+                                        <button onClick={handleLogout}>
                                             Keluar
-                                        </Link>
+                                        </button>
                                     </DropdownMenuItem>
                                 </DropdownMenuContent>
                             </DropdownMenu>

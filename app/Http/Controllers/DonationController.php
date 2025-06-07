@@ -132,7 +132,10 @@ class DonationController extends Controller
 
     public function editDonate(Donation $donation)
     {
-        return Inertia::render("");
+        return Inertia::render("donation/edit", [
+            'donation' => $donation->load(['donationImages']),
+            'donationCategories' => \App\Models\DonationCategory::all(),
+        ]);
     }
 
     public function editHelp(Donation $donation)
@@ -154,7 +157,7 @@ class DonationController extends Controller
             // Update donation data
             $donation->update($data);
 
-            return redirect()->route('donations.index')
+            return redirect()->route('profile.donations')
                 ->with('status', "Postingan $donation->title berhasil diperbarui");
         } catch (\Exception $e) {
             Log::error($e->getMessage()); // Log error untuk debugging

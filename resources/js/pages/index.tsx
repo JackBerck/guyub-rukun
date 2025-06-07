@@ -39,56 +39,58 @@ export default function Home() {
                                         </CardHeader>
                                         <CardContent className="p-0">
                                             <div className="grid grid-cols-2 gap-2">
-                                                <Button
-                                                    variant="outline"
-                                                    size="sm"
-                                                    className="text-dark-base bg-light-base hover:text-dark-base border-pink-500 transition duration-100 hover:bg-pink-100"
-                                                >
-                                                    <Link href="/donate" className="flex items-center justify-start gap-2">
+                                                <Link href="/donate">
+                                                    <Button
+                                                        variant="outline"
+                                                        size="sm"
+                                                        className="text-dark-base bg-light-base hover:text-dark-base flex w-full items-center justify-center gap-2 border-pink-500 transition duration-100 hover:bg-pink-100"
+                                                    >
                                                         <Heart className="h-4 w-4 text-pink-500" />
                                                         <span>Donasi</span>
-                                                    </Link>
-                                                </Button>
-                                                <Button
-                                                    variant="outline"
-                                                    size="sm"
-                                                    className="text-dark-base bg-light-base hover:text-dark-base border-blue-500 transition duration-100 hover:bg-blue-100"
-                                                >
-                                                    <Link href="/open-forum" className="flex items-center justify-start gap-2">
+                                                    </Button>
+                                                </Link>
+                                                <Link href="/open-forum">
+                                                    <Button
+                                                        variant="outline"
+                                                        size="sm"
+                                                        className="text-dark-base bg-light-base hover:text-dark-base flex w-full items-center justify-center gap-2 border-blue-500 transition duration-100 hover:bg-blue-100"
+                                                    >
                                                         <MessageSquare className="h-4 w-4 text-blue-500" />
                                                         <span>Forum</span>
-                                                    </Link>
-                                                </Button>
-                                                <Button
-                                                    variant="outline"
-                                                    size="sm"
-                                                    className="text-dark-base bg-light-base hover:text-dark-base border-emerald-500 transition duration-100 hover:bg-emerald-100"
-                                                >
-                                                    <Link href="/need-help" className="flex items-center justify-start gap-2">
+                                                    </Button>
+                                                </Link>
+                                                <Link href="/need-help">
+                                                    <Button
+                                                        variant="outline"
+                                                        size="sm"
+                                                        className="text-dark-base bg-light-base hover:text-dark-base flex w-full items-center justify-center gap-2 border-emerald-500 transition duration-100 hover:bg-emerald-100"
+                                                    >
                                                         <BadgeCheck className="h-4 w-4 text-emerald-500" />
                                                         <span>Butuh Bantuan</span>
-                                                    </Link>
-                                                </Button>
-                                                <Button
-                                                    variant="outline"
-                                                    size="sm"
-                                                    className="text-dark-base bg-light-base hover:text-dark-base border-purple-500 transition duration-100 hover:bg-purple-100"
-                                                >
-                                                    <Link href="/share-affair" className="flex items-center justify-start gap-2">
+                                                    </Button>
+                                                </Link>
+                                                <Link href="/share-affair">
+                                                    <Button
+                                                        variant="outline"
+                                                        size="sm"
+                                                        className="text-dark-base bg-light-base hover:text-dark-base flex w-full items-center justify-center gap-2 border-purple-500 transition duration-100 hover:bg-purple-100"
+                                                    >
                                                         <Calendar className="h-4 w-4 text-purple-500" />
                                                         <span>Event</span>
-                                                    </Link>
-                                                </Button>
+                                                    </Button>
+                                                </Link>
                                             </div>
                                         </CardContent>
                                         <CardFooter className="p-0">
-                                            <Button
-                                                variant="ghost"
-                                                size="sm"
-                                                className="hover:text-light-base w-full text-emerald-600 transition duration-100 hover:bg-emerald-600"
-                                            >
-                                                <Link href="/profil">Lihat Profil Lengkap</Link>
-                                            </Button>
+                                            <Link href="/settings" className="w-full">
+                                                <Button
+                                                    variant="ghost"
+                                                    size="sm"
+                                                    className="hover:text-light-base w-full text-emerald-600 transition duration-100 hover:bg-emerald-600"
+                                                >
+                                                    Lihat Profil Lengkap
+                                                </Button>
+                                            </Link>
                                         </CardFooter>
                                     </Card>
 
@@ -169,16 +171,16 @@ export default function Home() {
                                             </CardHeader>
                                             <CardContent className="p-0">
                                                 <div className="grid grid-cols-2 gap-2">
-                                                    <Button
-                                                        variant="outline"
-                                                        size="sm"
-                                                        className="text-dark-base bg-light-base hover:text-dark-base flex items-center justify-start gap-2 border-pink-500 transition duration-100 hover:bg-pink-100"
-                                                    >
-                                                        <Link href="/donate" className="flex items-center justify-start gap-2">
+                                                    <Link href="/donate">
+                                                        <Button
+                                                            variant="outline"
+                                                            size="sm"
+                                                            className="text-dark-base w-full bg-light-base hover:text-dark-base flex items-center justify-start gap-2 border-pink-500 transition duration-100 hover:bg-pink-100"
+                                                        >
                                                             <Heart className="h-4 w-4 text-pink-500" />
                                                             <span>Donasi</span>
-                                                        </Link>
-                                                    </Button>
+                                                        </Button>
+                                                    </Link>
                                                     <Button
                                                         variant="outline"
                                                         size="sm"
@@ -228,7 +230,7 @@ export default function Home() {
                                     <Tabs defaultValue="donations">
                                         <div className="border-b">
                                             <div className="flex items-center px-4">
-                                                <TabsList className="h-10 w-full justify-start rounded-none border-b-0 bg-white p-0 overflow-x-auto no-scrollbar">
+                                                <TabsList className="no-scrollbar h-10 w-full justify-start overflow-x-auto rounded-none border-b-0 bg-white p-0">
                                                     {/* <TabsTrigger
                                                         value="all"
                                                         className="rounded-none border-b-2 border-transparent px-4 py-2 data-[state=active]:border-emerald-600 data-[state=active]:bg-transparent data-[state=active]:text-gray-700 data-[state=active]:shadow-none"

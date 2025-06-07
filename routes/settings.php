@@ -8,6 +8,7 @@ use Inertia\Inertia;
 Route::middleware('auth')->group(function () {
     Route::redirect('settings', 'settings/profile');
 
+    // Settings routes
     Route::get('settings/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('settings/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::post('settings/profile', [ProfileController::class, 'updateImage'])->name('profile.update.image');
@@ -19,4 +20,13 @@ Route::middleware('auth')->group(function () {
     Route::get('settings/appearance', function () {
         return Inertia::render('settings/appearance');
     })->name('appearance');
+
+    // Settings for liked posts
+    Route::get('settings/liked-posts', [ProfileController::class, 'likedPost'])->name('profile.liked-posts');
+
+    // Settings for donations
+    Route::get('settings/donations', [ProfileController::class, 'donations'])->name('profile.donations');
+
+    // Settings for forums
+    Route::get('settings/forums', [ProfileController::class, 'forums'])->name('profile.forums');
 });

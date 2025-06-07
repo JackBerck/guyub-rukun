@@ -3,15 +3,15 @@
 import type React from 'react';
 
 import { Link } from '@inertiajs/react';
-import { Calendar, Gift, Heart, HelpCircle, LogOut, Menu, MessageSquare, User, Users } from 'lucide-react';
+import { Calendar, Gift, HelpCircle, LogOut, Menu, User, Users } from 'lucide-react';
 import { useState } from 'react';
 
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
 import { Auth, PageProps } from '@/types';
 import { usePage } from '@inertiajs/react';
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 
 interface ProfileLayoutProps {
     children: React.ReactNode;
@@ -30,38 +30,38 @@ export function ProfileLayout({ children }: ProfileLayoutProps) {
 
     const navigationItems = [
         {
-            href: '/profil',
+            href: '/settings/profile',
             label: 'Kelola Profil',
             icon: <User className="h-5 w-5" />,
             exact: true,
         },
+        // {
+        //     href: '/settings/liked-posts',
+        //     label: 'Postingan Disukai',
+        //     icon: <Heart className="h-5 w-5" />,
+        // },
+        // {
+        //     href: '/settings/commenteded-posts',
+        //     label: 'Postingan Dikomentari',
+        //     icon: <MessageSquare className="h-5 w-5" />,
+        // },
         {
-            href: '/profil/disukai',
-            label: 'Postingan Disukai',
-            icon: <Heart className="h-5 w-5" />,
-        },
-        {
-            href: '/profil/dikomentari',
-            label: 'Postingan Dikomentari',
-            icon: <MessageSquare className="h-5 w-5" />,
-        },
-        {
-            href: '/profil/donasi',
+            href: '/settings/donations',
             label: 'Kelola Donasi',
             icon: <Gift className="h-5 w-5" />,
         },
         {
-            href: '/profil/forum',
+            href: '/settings/forums',
             label: 'Kelola Forum',
             icon: <Users className="h-5 w-5" />,
         },
         {
-            href: '/profil/permintaan',
+            href: '/settings/helps',
             label: 'Kelola Butuh Bantuan',
             icon: <HelpCircle className="h-5 w-5" />,
         },
         {
-            href: '/profil/acara',
+            href: '/settings/events',
             label: 'Kelola Acara',
             icon: <Calendar className="h-5 w-5" />,
         },
@@ -88,8 +88,8 @@ export function ProfileLayout({ children }: ProfileLayoutProps) {
             <Card className="bg-light-base text-dark-base shadow-none">
                 <CardContent className="p-4">
                     <div className="flex flex-row items-center gap-2 text-left lg:flex-col lg:text-center xl:flex-row xl:text-left">
-                        <Avatar className="h-12 w-12 shrink-0 large-font-size">
-                            <AvatarImage src={user.image ? `/storage/${user.image}` : '/img/avatars/default.jpg'} alt={user.name} className='object-cover' />
+                        <Avatar className="large-font-size text-light-base h-12 w-12 shrink-0">
+                            <AvatarImage src={`/storage/${user.image}`} alt={user.name} className="object-cover" />
                             <AvatarFallback>{user.name?.[0] || 'U'}</AvatarFallback>
                         </Avatar>
                         <div>

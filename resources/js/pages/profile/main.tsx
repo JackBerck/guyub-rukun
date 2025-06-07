@@ -1,8 +1,9 @@
 'use client';
 
 import { Calendar, Camera, Edit, Mail, MapPin, Phone } from 'lucide-react';
-import { useState, useRef } from 'react';
+import { useRef, useState } from 'react';
 
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
@@ -10,17 +11,22 @@ import { Label } from '@/components/ui/label';
 import Layout from '@/layouts/layout';
 import { ProfileLayout } from '@/layouts/profile-layout';
 import { SharedData } from '@/types';
-import { Head, useForm, usePage, router } from '@inertiajs/react';
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { Head, router, useForm, usePage } from '@inertiajs/react';
 import { toast } from 'sonner';
 
 interface ProfilePageProps extends SharedData {
     mustVerifyEmail: boolean;
     status?: string;
+    currentUser: {
+        donations_count?: number;
+        forums_count?: number;
+        affairs_count?: number;
+        requests_count?: number;
+    };
 }
 
 export default function ProfilePage() {
-    const { auth, mustVerifyEmail, status } = usePage<ProfilePageProps>().props;
+    const { auth, mustVerifyEmail, status, currentUser } = usePage<ProfilePageProps>().props;
     const user = auth.user;
 
     const [isEditing, setIsEditing] = useState(false);
@@ -148,18 +154,15 @@ export default function ProfilePage() {
                             <div className="flex items-center gap-4">
                                 <div className="relative">
                                     <div className="h-20 w-20 overflow-hidden rounded-full bg-emerald-100">
-                                        <Avatar className="text-light-base h-full w-full shrink-0 large-font-size">
-                                            <AvatarImage 
-                                                src={user.image ? `/storage/${user.image}` : '/placeholder.svg'} 
-                                                alt={user.name} 
-                                            />
+                                        <Avatar className="text-light-base large-font-size h-full w-full shrink-0">
+                                            <AvatarImage src={user.image ? `/storage/${user.image}` : '/placeholder.svg'} alt={user.name} />
                                             <AvatarFallback>{user.name?.[0] || 'U'}</AvatarFallback>
                                         </Avatar>
                                     </div>
                                     {/* Camera overlay button */}
                                     <Button
                                         size="sm"
-                                        className="absolute -bottom-1 -right-1 h-6 w-6 rounded-full bg-emerald-600 p-0 hover:bg-emerald-700"
+                                        className="absolute -right-1 -bottom-1 h-6 w-6 rounded-full bg-emerald-600 p-0 hover:bg-emerald-700"
                                         onClick={triggerFileInput}
                                         disabled={isUploadingImage}
                                     >
@@ -168,17 +171,15 @@ export default function ProfilePage() {
                                 </div>
 
                                 <div className="flex flex-col gap-2">
-                                    <Button 
-                                        size="sm" 
+                                    <Button
+                                        size="sm"
                                         className="text-light-base bg-purple-600 hover:bg-purple-700"
                                         onClick={triggerFileInput}
                                         disabled={isUploadingImage}
                                     >
                                         {isUploadingImage ? 'Mengunggah...' : 'Ganti Foto'}
                                     </Button>
-                                    <p className="text-xs text-gray-500">
-                                        JPG, PNG, GIF hingga 2MB
-                                    </p>
+                                    <p className="text-xs text-gray-500">JPG, PNG, GIF hingga 2MB</p>
                                 </div>
 
                                 {/* Hidden file input */}
@@ -293,11 +294,7 @@ export default function ProfilePage() {
 
                                 {isEditing && (
                                     <div className="flex gap-2 pt-4">
-                                        <Button 
-                                            type="submit" 
-                                            disabled={processing} 
-                                            className="text-light-base bg-emerald-600 hover:bg-emerald-700"
-                                        >
+                                        <Button type="submit" disabled={processing} className="text-light-base bg-emerald-600 hover:bg-emerald-700">
                                             {processing ? 'Menyimpan...' : 'Simpan Perubahan'}
                                         </Button>
                                         <Button
@@ -323,19 +320,37 @@ export default function ProfilePage() {
                         <CardContent>
                             <div className="grid grid-cols-2 gap-4 md:grid-cols-4">
                                 <div className="text-center">
-                                    <div className="text-2xl font-bold text-emerald-600">-</div>
+                                    {currentUser?.donations_count || 0 > 0 ? (
+                                        <div className="text-2xl font-bold text-gray-900">{currentUser?.donations_count}</div>
+                                    ) : (
+                                        <div className="text-2xl font-bold text-emerald-600">-</div>
+                                    )}
                                     <div className="text-sm text-gray-500">Donasi</div>
                                 </div>
                                 <div className="text-center">
-                                    <div className="text-2xl font-bold text-blue-600">-</div>
+                                    {currentUser?.forums_count || 0 > 0 ? (
+                                        <div className="text-2xl font-bold text-gray-900">{currentUser?.forums_count}</div>
+                                    ) : (
+                                        <div className="text-2xl font-bold text-blue-600">-</div>
+                                    )}
                                     <div className="text-sm text-gray-500">Forum</div>
                                 </div>
                                 <div className="text-center">
-                                    <div className="text-2xl font-bold text-purple-600">-</div>
+                                    {currentUser?.affairs_count || 0 > 0 ? (
+                                        <div className="text-2xl font-bold text-gray-900">{currentUser?.affairs_count}</div>
+                                    ) : (
+                                        <div className="text-2xl font-bold text-purple-600">-</div>
+                                    )}
                                     <div className="text-sm text-gray-500">Acara</div>
                                 </div>
                                 <div className="text-center">
-                                    <div className="text-2xl font-bold text-orange-600">-</div>
+                                    {
+                                        currentUser?.requests_count || 0 > 0 ? (
+                                            <div className="text-2xl font-bold text-gray-900">{currentUser?.requests_count}</div>
+                                        ) : (
+                                            <div className="text-2xl font-bold text-orange-600">-</div>
+                                        )
+                                    }
                                     <div className="text-sm text-gray-500">Bantuan</div>
                                 </div>
                             </div>
