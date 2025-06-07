@@ -61,7 +61,7 @@ export function ProfileLayout({ children }: ProfileLayoutProps) {
             icon: <HelpCircle className="h-5 w-5" />,
         },
         {
-            href: '/settings/events',
+            href: '/settings/affairs',
             label: 'Kelola Acara',
             icon: <Calendar className="h-5 w-5" />,
         },

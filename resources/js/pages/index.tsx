@@ -2,15 +2,20 @@ import { AffairFeeds } from '@/components/feeds/affair';
 import DonationFeeds from '@/components/feeds/donation';
 import { ForumFeeds } from '@/components/feeds/forum';
 import { RequestFeeds } from '@/components/feeds/request';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Separator } from '@/components/ui/separator';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import Layout from '@/layouts/layout';
-import { Head, Link } from '@inertiajs/react';
+import { User } from '@/types';
+import { Head, Link, usePage } from '@inertiajs/react';
 import { BadgeCheck, Calendar, Clock, Heart, MessageSquare, UserPlus } from 'lucide-react';
 
 export default function Home() {
+    const { auth } = usePage<{ auth: { user: User } }>().props;
+    const user: User = auth?.user;
+
     return (
         <Layout>
             <Head title="Beranda" />
@@ -26,11 +31,10 @@ export default function Home() {
                                     <Card className="bg-light-base text-dark-base gap-2 p-2">
                                         <CardHeader className="p-0">
                                             <div className="flex items-start gap-2">
-                                                <img
-                                                    src="/img/avatars/default.jpg"
-                                                    alt="Profile"
-                                                    className="aspect-square w-12 overflow-hidden rounded-full object-cover"
-                                                />
+                                                <Avatar className="text-light-base large-font-size aspect-square h-12 w-12 shrink-0">
+                                                    <AvatarImage src={user?.image ? `/storage/${user.image}` : ''} alt={user?.name || 'User'} />
+                                                    <AvatarFallback>{user?.name?.[0]?.toUpperCase() || 'U'}</AvatarFallback>
+                                                </Avatar>
                                                 <div>
                                                     <CardTitle>Selamat datang!</CardTitle>
                                                     <CardDescription>Apa yang ingin Anda lakukan hari ini?</CardDescription>
@@ -158,11 +162,13 @@ export default function Home() {
                                         <Card className="bg-light-base text-dark-base gap-2 p-2">
                                             <CardHeader className="p-0">
                                                 <div className="flex items-start gap-2">
-                                                    <img
-                                                        src="/img/avatars/default.jpg"
-                                                        alt="Profile"
-                                                        className="aspect-square w-12 overflow-hidden rounded-full object-cover"
-                                                    />
+                                                    <Avatar className="text-light-base large-font-size aspect-square h-12 w-12 shrink-0">
+                                                        <AvatarImage
+                                                            src={user?.image ? `/storage/${user.image}` : '/placeholder.svg'}
+                                                            alt={user?.name || 'User'}
+                                                        />
+                                                        <AvatarFallback>{user?.name?.[0]?.toUpperCase() || 'U'}</AvatarFallback>
+                                                    </Avatar>
                                                     <div>
                                                         <CardTitle>Selamat datang!</CardTitle>
                                                         <CardDescription>Apa yang ingin Anda lakukan hari ini?</CardDescription>
@@ -175,7 +181,7 @@ export default function Home() {
                                                         <Button
                                                             variant="outline"
                                                             size="sm"
-                                                            className="text-dark-base w-full bg-light-base hover:text-dark-base flex items-center justify-start gap-2 border-pink-500 transition duration-100 hover:bg-pink-100"
+                                                            className="text-dark-base bg-light-base hover:text-dark-base flex w-full items-center justify-start gap-2 border-pink-500 transition duration-100 hover:bg-pink-100"
                                                         >
                                                             <Heart className="h-4 w-4 text-pink-500" />
                                                             <span>Donasi</span>

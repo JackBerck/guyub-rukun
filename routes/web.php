@@ -23,6 +23,7 @@ Route::get("user/{user:id}", [DetailUserController::class, "detailUser"])->name(
 Route::get("donation/{donation:slug}", [DonationController::class, "viewDonate"])->name("donation.donate.view");
 Route::get("forum/{forum:slug}", [ForumController::class, "view"])->name("forum.view");
 Route::get("affair/{affair:slug}", [AffairController::class, "view"])->name("affair.view");
+Route::get("help/{donation:slug}", [DonationController::class, "viewHelp"])->name("donation.help.view");
 
 Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('dashboard', function () {
@@ -36,7 +37,6 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::put("donate/{donation:slug}/edit", [DonationController::class, "update"])->name("donation.donate.update");
 
     Route::get("need-help", [DonationController::class, "createHelp"])->name("donation.help.create");
-    Route::get("help/{donation:slug}", [DonationController::class, "viewHelp"])->name("donation.help.view");
     Route::get("help/{donation:slug}/edit", [DonationController::class, "editHelp"])->name("donation.help.edit");
     Route::post("need-help", [DonationController::class, "storeHelp"])->name("donation.help.store");
     Route::put("help/{donation:slug}/edit", [DonationController::class, "update"])->name("donation.help.update");
@@ -53,16 +53,16 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::post("forum/{forum}/like", [ForumController::class, "like"])->name("forum.like");
     Route::post("forum/{forum:slug}/comment", [ForumController::class, "comment"])->name("forum.comment.create");
     Route::post("open-forum", [ForumController::class, "store"])->name("forum.store");
-    Route::put("forum/{forum:slug}", [ForumController::class, "update"])->name("forum.update");
+    Route::put("forum/{forum:slug}/edit", [ForumController::class, "update"])->name("forum.update");
     Route::delete("forum/{forum:slug}", [ForumController::class, "remove"])->name("forum.delete");
     Route::delete("forum/{forum:slug}/{comment}", [ForumController::class, "removeComment"])->name("forum.comment.delete");
 
-    // route Affair
+    // Route Affair
     Route::get("share-affair", [AffairController::class, "create"])->name("affair.create");
     Route::get("affair/search", [AffairController::class, "search"])->name("affair.search");
-    Route::get("affair/{affair:slug}", [AffairController::class, "edit"])->name("affair.edit");
+    Route::get("affair/{affair:slug}/edit", [AffairController::class, "edit"])->name("affair.edit");
     Route::post("share-affair", [AffairController::class, "store"])->name("affair.store");
-    Route::put("affair/{affair:slug}", [AffairController::class, "update"])->name("affair.update");
+    Route::put("affair/{affair:slug}/edit", [AffairController::class, "update"])->name("affair.update");
     Route::delete("affair/{affair:slug}", [AffairController::class, "remove"])->name("affair.remove");
 });
 

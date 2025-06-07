@@ -160,6 +160,7 @@ export interface Affair {
     updated_at: string;
     thumbnail?: string; // Ganti dari 'image' ke 'thumbnail' sesuai dengan database
     affair_category: AffairCategory;
+    affair_category_id?: number;
     user: User; // Relasi dengan User
 }
 

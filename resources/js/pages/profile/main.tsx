@@ -156,7 +156,7 @@ export default function ProfilePage() {
                                     <div className="h-20 w-20 overflow-hidden rounded-full bg-emerald-100">
                                         <Avatar className="text-light-base large-font-size h-full w-full shrink-0">
                                             <AvatarImage src={user.image ? `/storage/${user.image}` : '/placeholder.svg'} alt={user.name} />
-                                            <AvatarFallback>{user.name?.[0] || 'U'}</AvatarFallback>
+                                            <AvatarFallback>{user?.name?.[0] || 'U'}</AvatarFallback>
                                         </Avatar>
                                     </div>
                                     {/* Camera overlay button */}

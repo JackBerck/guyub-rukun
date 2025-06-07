@@ -44,6 +44,7 @@ type DonationsProps = {
 
 export default function ProfileDonationsPage() {
     const { donations } = usePage<DonationsProps>().props;
+    console.log('Donations Data:', donations);
 
     return (
         <Layout>

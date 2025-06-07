@@ -52,7 +52,7 @@ interface ForumsPageProps extends SharedData {
 export default function ProfileForumsPage() {
     const { forums } = usePage<ForumsPageProps>().props;
 
-    console.log('Forums data:', forums);
+    console.log('Forums Data:', forums);
 
     return (
         <Layout>
@@ -76,7 +76,7 @@ export default function ProfileForumsPage() {
                                     title={forum.title}
                                     slug={forum.slug}
                                     description={forum.description}
-                                    image={forum.image}
+                                    image={forum.thumbnail}
                                     category={forum.category}
                                     createdAt={forum.createdAt}
                                     type="forum"

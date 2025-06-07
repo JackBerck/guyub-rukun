@@ -136,8 +136,8 @@ class ProfileController extends Controller
                     'donation_images' => $donation->donation_images,
                     'user' => $donation->user,
                     // Additional data for UI
-                    'image' => $donation->donationImages->first() 
-                        ? '/storage/' . $donation->donationImages->first()->image 
+                    'image' => $donation->donationImages->first()
+                        ? '/storage/' . $donation->donationImages->first()->image
                         : null,
                     'category' => $donation->donationCategory->name,
                     'location' => $donation->address,
@@ -165,16 +165,20 @@ class ProfileController extends Controller
                     'title' => $forum->title,
                     'slug' => $forum->slug,
                     'description' => $forum->description,
-                    'thumbnail' => $forum->thumbnail 
-                        ? '/storage/' . $forum->thumbnail 
+                    'thumbnail' => $forum->thumbnail
+                        ? '/storage/' . $forum->thumbnail
                         : null,
                     'created_at' => $forum->created_at->format('d M Y'),
                     'updated_at' => $forum->updated_at,
-                    'forum_category' => $forum->forum_category,
+                    'forum_category' => $forum->forumCategory,
                     'user' => $forum->user,
                     // Additional data for UI
-                    'category' => $forum->forum_category->name ?? 'Forum',
+                    'category' => $forum->forumCategory->name,
                     'createdAt' => $forum->created_at->diffForHumans(),
+                    'stats' => [
+                        'likes' => $forum->likedByUsers->count(),
+                        'comments' => $forum->comments->count(),
+                    ],
                 ];
             });
 
@@ -184,108 +188,76 @@ class ProfileController extends Controller
     }
 
     /**
-     * Delete a donation
+     * Show the user's request posts.
      */
-    public function deleteDonation(Donation $donation): RedirectResponse
+    public function requests(): Response
     {
-        // Check if the donation belongs to the authenticated user
-        if ($donation->user_id !== Auth::id()) {
-            return back()->withErrors(['error' => 'Anda tidak memiliki akses untuk menghapus donasi ini.']);
-        }
+        $requests = Auth::user()->donations()
+            ->where('type', 'request')
+            ->with(['donationCategory', 'donationImages', 'user'])
+            ->orderBy('created_at', 'desc')
+            ->get()
+            ->map(function ($request) {
+                return [
+                    'id' => $request->id,
+                    'title' => $request->title,
+                    'slug' => $request->slug,
+                    'description' => $request->description,
+                    'urgency' => $request->urgency,
+                    'phone_number' => $request->phone_number,
+                    'address' => $request->address,
+                    'status' => $request->status,
+                    'type' => $request->type,
+                    'is_popular' => $request->is_popular,
+                    'created_at' => $request->created_at->format('d M Y'),
+                    'updated_at' => $request->updated_at,
+                    'donation_category' => $request->donation_category,
+                    'donation_images' => $request->donation_images,
+                    'user' => $request->user,
+                    // Additional data for UI
+                    'image' => $request->donationImages->first()
+                        ? '/storage/' . $request->donationImages->first()->image
+                        : null,
+                    'category' => $request->donationCategory->name,
+                    'location' => $request->address,
+                    'createdAt' => $request->created_at->diffForHumans(),
+                ];
+            });
 
-        try {
-            // Delete associated images from storage
-            foreach ($donation->donation_images as $image) {
-                if (Storage::disk('public')->exists($image->image)) {
-                    Storage::disk('public')->delete($image->image);
-                }
-            }
-
-            // Delete the donation (this will also delete related records due to cascade)
-            $donation->delete();
-
-            return back()->with('success', 'Donasi berhasil dihapus.');
-        } catch (\Exception $e) {
-            Log::error('Delete donation error: ' . $e->getMessage());
-            return back()->withErrors(['error' => 'Gagal menghapus donasi. Silakan coba lagi.']);
-        }
+        return Inertia::render('profile/requests', [
+            'requests' => $requests,
+        ]);
     }
 
     /**
-     * Show the user's liked posts settings page.
+     * Show the user's affairs posts.
      */
-    public function likedPost(): Response
+    public function affairs(): Response
     {
-        $user = Auth::user();
-
-        // Get liked donations and forums separately then combine
-        $likedDonations = $user->likedDonations()
+        $affairs = Auth::user()->affairs()
+            ->with(['affairCategory', 'user'])
+            ->orderBy('created_at', 'desc')
             ->get()
-            ->map(function ($donation) {
+            ->map(function ($affair) {
                 return [
-                    'id' => $donation->id,
-                    'type' => $donation->type, // 'donation' or 'request'
-                    'title' => $donation->title,
-                    'slug' => $donation->slug,
-                    'description' => $donation->description,
-                    'image' => $donation->donation_images->first()?->image 
-                        ? '/storage/' . $donation->donation_images->first()->image 
+                    'id' => $affair->id,
+                    'title' => $affair->title,
+                    'slug' => $affair->slug,
+                    'description' => $affair->description,
+                    'thumbnail' => $affair->thumbnail
+                        ? '/storage/' . $affair->thumbnail
                         : null,
-                    'category' => $donation->donation_category->name,
-                    'location' => $donation->address,
-                    'urgency' => $donation->urgency,
-                    'author' => $donation->user->name,
-                    'author_avatar' => $donation->user->image 
-                        ? '/storage/' . $donation->user->image 
-                        : null,
-                    'created_at' => $donation->created_at,
-                    'liked_at' => $donation->pivot->created_at ?? $donation->created_at,
-                    'stats' => [
-                        'likes' => 0, // You can implement this later
-                        'comments' => $donation->comments->count(),
-                        'shares' => 0, // You can implement this later
-                    ],
-                    'content_type' => 'donation'
+                    'created_at' => $affair->created_at->format('d M Y'),
+                    'updated_at' => $affair->updated_at,
+                    'user' => $affair->user,
+                    // Additional data for UI
+                    'category' => $affair->affairCategory->name,
+                    'createdAt' => $affair->created_at->diffForHumans(),
                 ];
             });
 
-        $likedForums = $user->likedForums()
-            ->get()
-            ->map(function ($forum) {
-                return [
-                    'id' => $forum->id,
-                    'type' => 'forum',
-                    'title' => $forum->title,
-                    'slug' => $forum->slug,
-                    'description' => $forum->description,
-                    'image' => $forum->thumbnail 
-                        ? '/storage/' . $forum->thumbnail 
-                        : null,
-                    'category' => $forum->forum_category->name ?? 'Forum',
-                    'location' => null,
-                    'urgency' => null,
-                    'author' => $forum->user->name,
-                    'author_avatar' => $forum->user->image 
-                        ? '/storage/' . $forum->user->image 
-                        : null,
-                    'created_at' => $forum->created_at,
-                    'liked_at' => $forum->pivot->created_at ?? $forum->created_at,
-                    'stats' => [
-                        'likes' => $forum->liked_by_users->count(),
-                        'comments' => $forum->comments->count(),
-                        'shares' => 0, // You can implement this later
-                    ],
-                    'content_type' => 'forum'
-                ];
-            });
-
-        // Combine and sort by liked_at
-        $allLikedPosts = $likedDonations->concat($likedForums)
-            ->sortByDesc('liked_at')
-            ->values();
-
-        return Inertia::render('profile/liked-posts', [
-            'likedPosts' => $allLikedPosts,
+        return Inertia::render('profile/affairs', [
+            'affairs' => $affairs,
         ]);
     }
 }

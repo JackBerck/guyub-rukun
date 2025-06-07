@@ -7,6 +7,7 @@ use App\Http\Requests\UpdateAffairRequest;
 use App\Models\Affair;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 use Inertia\Inertia;
 
 class AffairController extends Controller
@@ -35,7 +36,10 @@ class AffairController extends Controller
 
     public function edit(Affair $affair)
     {
-        // return inertia 
+        return Inertia::render("affair/edit", [
+            'affair' => $affair,
+            'affairCategories' => \App\Models\AffairCategory::all(),
+        ]);
     }
 
     public function view(Affair $affair)
@@ -71,7 +75,7 @@ class AffairController extends Controller
             return redirect()->route('home')->with("status", "Acara baru berhasil dibuat");
         } catch (\Exception $e) {
             // Log error untuk debugging
-            \Log::error($e->getMessage());
+            Log::error($e->getMessage());
 
             // Redirect kembali dengan pesan error
             return back()->withErrors(['error' => "Terjadi kesalahan saat membuat acara. Silakan coba lagi."]);
@@ -87,9 +91,10 @@ class AffairController extends Controller
 
             $affair->update($request->validated());
 
-            return back()->with("status", "Acara berhasil diperbarui");
+            return redirect()->route('profile.affairs')
+                ->with('status', "Postingan $affair->title berhasil diperbarui");
         } catch (\Exception $e) {
-            \Log::error($e->getMessage());
+            Log::error($e->getMessage());
             return back()->withErrors(['error' => "Terjadi kesalahan saat memperbarui acara. Silakan coba lagi."]);
         }
     }
@@ -106,7 +111,7 @@ class AffairController extends Controller
             return redirect()->route('donations.index')
                 ->with('status', "Acara $affair->title berhasil dihapus");
         } catch (\Exception $e) {
-            \Log::error($e->getMessage());
+            Log::error($e->getMessage());
             return back()->withErrors(['error' => "Acara gagal dihapus"]);
         }
     }

@@ -1,89 +1,95 @@
 'use client';
 
-import { Plus } from 'lucide-react';
-import { useState } from 'react';
+import { CircleHelp } from 'lucide-react';
 
 import { PostItem } from '@/components/profile/post-item';
 import { Button } from '@/components/ui/button';
 import Layout from '@/layouts/layout';
 import { ProfileLayout } from '@/layouts/profile-layout';
-import { Head, Link } from '@inertiajs/react';
+import { SharedData } from '@/types';
+import { Head, Link, usePage } from '@inertiajs/react';
 
-export default function ProfileRequestsPage() {
-    const [requests, setRequests] = useState([
-        {
-            id: 1,
-            title: 'Butuh Bantuan Makanan untuk 5 Keluarga',
-            description:
-                'Kami membutuhkan bantuan makanan untuk 5 keluarga yang terdampak bencana banjir. Bantuan berupa sembako atau makanan siap saji sangat dibutuhkan.',
-            image: '/img/posts/restoran.jpg',
-            location: 'Jakarta Timur',
-            category: 'Makanan',
-            urgency: 'mendesak',
-            createdAt: '1 hari yang lalu',
-        },
-        {
-            id: 2,
-            title: 'Permintaan Bantuan Sembako untuk Panti Asuhan',
-            description:
-                'Panti asuhan kami membutuhkan bantuan sembako untuk 30 anak asuh. Jika ada yang ingin menyumbangkan sembako, mohon hubungi kami.',
-            image: '/img/posts/komunitas.jpeg',
-            location: 'Bogor',
-            category: 'Sembako',
-            urgency: 'sedang',
-            createdAt: '3 hari yang lalu',
-        },
-        {
-            id: 3,
-            title: 'Butuh Bantuan Makanan untuk Lansia',
-            description:
-                'Komunitas kami membutuhkan bantuan makanan untuk para lansia yang tinggal sendiri di daerah kami. Bantuan berupa makanan bergizi sangat dibutuhkan.',
-            image: '/img/posts/rumah-makan.jpg',
-            location: 'Depok',
-            category: 'Makanan',
-            urgency: 'sedang',
-            createdAt: '1 minggu yang lalu',
-        },
-    ]);
-
-    const handleEdit = (id: number) => {
-        // Navigate to edit page
-        window.location.href = `/requests/${id}/edit`;
+interface RequestProps {
+    id: number;
+    title: string;
+    slug: string;
+    description: string;
+    urgency: string | undefined;
+    phone_number: string;
+    address: string;
+    status: number;
+    type: 'donation' | 'request';
+    is_popular: number;
+    created_at: string;
+    updated_at: string;
+    user: {
+        id: number;
+        name: string;
+        email: string;
+        phone_number: string | null;
+        image: string | null;
+        address: string | null;
+        email_verified_at: string;
+        created_at: string;
+        updated_at: string;
     };
+    // Additional UI data
+    image: string;
+    category: string;
+    location: string;
+    createdAt: string;
+}
 
-    const handleDelete = (id: number) => {
-        setRequests(requests.filter((request) => request.id !== id));
-    };
+interface RequestsPageProps extends SharedData {
+    requests: RequestProps[];
+}
+
+export default function ProfileRequetsPage() {
+    const { requests } = usePage<RequestsPageProps>().props;
+    console.log('Requests Data:', requests);
 
     return (
         <Layout>
-            <Head title="Kelola Butuh Bantuan" />
+            <Head title="Kelola Acara" />
             <ProfileLayout>
                 <div className="space-y-6">
-                    <div className="flex items-center justify-between">
+                    {/* <div className="flex items-center justify-between">
                         <div>
-                            <h1 className="text-2xl font-bold">Kelola Butuh Bantuan</h1>
-                            <p className="text-gray-600">Kelola semua permintaan bantuan yang telah Anda buat</p>
+                            <h1 className="text-2xl font-bold">Kelola Acara</h1>
+                            <p className="text-gray-600">Kelola semua acara yang telah Anda buat</p>
                         </div>
-                        <Button asChild className="gap-2">
-                            <Link href="/requests/create">
+                        <Button asChild className="gap-2 bg-purple-600 hover:bg-purple-700">
+                            <Link href={route('affair.create')}>
                                 <Plus className="h-4 w-4" />
-                                Buat Permintaan
+                                Buat Acara
                             </Link>
                         </Button>
-                    </div>
+                    </div> */}
 
                     {requests.length === 0 ? (
                         <div className="py-12 text-center">
-                            <p className="mb-4 text-gray-500">Anda belum membuat permintaan bantuan apapun</p>
+                            <CircleHelp className="mx-auto mb-4 h-12 w-12 text-gray-400" />
+                            <p className="mb-4 text-gray-500">Anda belum membuat permintaan apapun</p>
                             <Button asChild>
-                                <Link href="/requests/create">Buat Permintaan Pertama</Link>
+                                <Link href={route('affair.create')}>Buat Permintaan Pertama</Link>
                             </Button>
                         </div>
                     ) : (
                         <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
                             {requests.map((request) => (
-                                <PostItem key={request.id} {...request} type="request" onEdit={handleEdit} onDelete={handleDelete} />
+                                <PostItem
+                                    key={request.id}
+                                    id={request.id}
+                                    title={request.title}
+                                    slug={request.slug}
+                                    description={request.description}
+                                    image={request.image}
+                                    location={request.location}
+                                    category={request.category}
+                                    createdAt={request.createdAt}
+                                    urgency={request.urgency}
+                                    type="request"
+                                />
                             ))}
                         </div>
                     )}

@@ -140,7 +140,10 @@ class DonationController extends Controller
 
     public function editHelp(Donation $donation)
     {
-        return Inertia::render("");
+        return Inertia::render("request/edit", [
+            'help' => $donation->load(['donationImages']),
+            'donationCategories' => \App\Models\DonationCategory::all(),
+        ]);
     }
 
     public function update(UpdateDonationRequest $request, Donation $donation): RedirectResponse

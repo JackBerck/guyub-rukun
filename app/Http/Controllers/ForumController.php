@@ -28,7 +28,7 @@ class ForumController extends Controller
     public function create()
     {
         $forumCategories = \App\Models\ForumCategory::all();
-        
+
         return Inertia::render('forum/create', [
             'forumCategories' => $forumCategories,
         ]);
@@ -41,7 +41,10 @@ class ForumController extends Controller
 
     public function edit(Forum $forum)
     {
-        // return inertia 
+        return Inertia::render('forum/edit', [
+            'forum' => $forum->load(['forumCategory']),
+            'forumCategories' => \App\Models\ForumCategory::all(),
+        ]);
     }
 
     public function view(Forum $forum)
@@ -110,7 +113,7 @@ class ForumController extends Controller
             return redirect()->back()->with('status', "Komentar berhasil dihapus");
         } catch (\Exception $e) {
             // Log error untuk debugging
-            \Log::error($e->getMessage());
+            Log::error($e->getMessage());
 
             // Redirect kembali dengan pesan error
             return back()->withErrors(['error' => "Terjadi kesalahan saat menghapus komentar. Silakan coba lagi."]);
@@ -138,7 +141,7 @@ class ForumController extends Controller
             return redirect()->route('home')->with("status", "Forum baru berhasil dibuat");
         } catch (\Exception $e) {
             // Log error untuk debugging
-            \Log::error($e->getMessage());
+            Log::error($e->getMessage());
 
             // Redirect kembali dengan pesan error
             return back()->withErrors(['error' => "Terjadi kesalahan saat membuat forum. Silakan coba lagi."]);
@@ -154,9 +157,10 @@ class ForumController extends Controller
 
             $forum->update($request->validated());
 
-            return back()->with("status", "Forum baru berhasil diperbarui");
+            return redirect()->route('profile.forums')
+                ->with('status', "Postingan $request->title berhasil diperbarui");
         } catch (\Exception $e) {
-            \Log::error($e->getMessage());
+            Log::error($e->getMessage());
             return back()->withErrors(['error' => "Terjadi kesalahan saat memperbarui forum. Silakan coba lagi."]);
         }
     }
@@ -174,7 +178,7 @@ class ForumController extends Controller
             return redirect()->route('donations.index')
                 ->with('status', "Forum $forum->title berhasil dihapus");
         } catch (\Exception $e) {
-            \Log::error($e->getMessage());
+            Log::error($e->getMessage());
             return back()->withErrors(['error' => "Forum gagal dihapus"]);
         }
     }

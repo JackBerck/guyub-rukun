@@ -49,7 +49,6 @@ export default function EditDonationPage({ donation, donationCategories }: { don
         put(route('donation.donate.update', donation.slug), {
             onSuccess: () => {
                 reset();
-                localStorage.removeItem('donation_draft');
             },
         });
     };
@@ -164,7 +163,7 @@ export default function EditDonationPage({ donation, donationCategories }: { don
                                     disabled={processing}
                                     className="text-light-base w-full bg-emerald-600 py-4 hover:bg-emerald-700"
                                 >
-                                    {processing ? 'Memproses...' : 'Edit Donasi'}
+                                    {processing ? 'Memproses...' : 'Perbarui Donasi'}
                                 </Button>
                                 <Button disabled={processing} type="button" variant="destructive" className="text-light-base w-full" onClick={cancelChanges}>
                                     Batalkan Perubahan

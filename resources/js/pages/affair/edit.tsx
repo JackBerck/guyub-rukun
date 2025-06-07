@@ -2,8 +2,7 @@
 
 import type React from 'react';
 
-import { ArrowLeft, Calendar, Camera, Clock, MapPin, X } from 'lucide-react';
-import { useEffect, useRef, useState } from 'react';
+import { ArrowLeft, Calendar, Clock, MapPin } from 'lucide-react';
 
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
@@ -12,7 +11,8 @@ import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Textarea } from '@/components/ui/textarea';
 import Layout from '@/layouts/layout';
-import { Head, Link, useForm } from '@inertiajs/react';
+import { Affair } from '@/types';
+import { Head, Link, router, useForm } from '@inertiajs/react';
 
 type CreateAffairForm = {
     title: string;
@@ -21,7 +21,6 @@ type CreateAffairForm = {
     time: string;
     location: string;
     affair_category_id: number;
-    thumbnail: File | null;
 };
 
 type AffairCategory = {
@@ -30,151 +29,42 @@ type AffairCategory = {
     slug: string;
 };
 
-export default function CreateEventPage({ affairCategories }: { affairCategories: AffairCategory[] }) {
-    const [thumbnailPreview, setThumbnailPreview] = useState<string | null>(null);
-    const fileInputRef = useRef<HTMLInputElement>(null);
-
-    const { data, setData, post, processing, errors, reset } = useForm<CreateAffairForm>({
-        title: '',
-        description: '',
-        date: '',
-        time: '',
-        location: '',
-        affair_category_id: 1,
-        thumbnail: null,
+export default function EditAffairPage({ affair, affairCategories }: { affair: Affair; affairCategories: AffairCategory[] }) {
+    const { data, setData, put, processing, errors, reset } = useForm<CreateAffairForm>({
+        title: affair.title || '',
+        description: affair.description || '',
+        date: affair.date || '',
+        time: affair.time ? affair.time.slice(0, 5) : '',
+        location: affair.location || '',
+        affair_category_id: affair.affair_category_id || 1,
     });
+    const title = affair.title || 'Edit Acara';
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
 
-        if (!data.title.trim()) {
-            alert('Judul acara wajib diisi');
-            return;
-        }
-        if (!data.description.trim()) {
-            alert('Deskripsi acara wajib diisi');
-            return;
-        }
-        if (!data.date) {
-            alert('Tanggal acara wajib diisi');
-            return;
-        }
-        if (!data.time) {
-            alert('Waktu acara wajib diisi');
-            return;
-        }
-        if (!data.location.trim()) {
-            alert('Lokasi acara wajib diisi');
-            return;
-        }
-
-        console.log('Submitting affair data:', data);
-
-        post(route('affair.store'), {
+        put(route('affair.update', affair.slug), {
             onSuccess: () => {
                 reset();
-                localStorage.removeItem('affair_draft');
-                setThumbnailPreview(null);
-            },
-            onError: () => {
-                console.error('Error creating affair:', errors);
             },
         });
     };
 
-    const handleThumbnailUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
-        const file = e.target.files?.[0];
-
-        if (file) {
-            const maxSize = 5 * 1024 * 1024;
-            const allowedTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/webp'];
-
-            if (!allowedTypes.includes(file.type)) {
-                alert('Format file tidak didukung. Gunakan JPG, PNG, atau WebP');
-                return;
-            }
-
-            if (file.size > maxSize) {
-                alert('Ukuran file terlalu besar. Maksimal 5MB');
-                return;
-            }
-
-            if (thumbnailPreview) {
-                URL.revokeObjectURL(thumbnailPreview);
-            }
-
-            const preview = URL.createObjectURL(file);
-            setThumbnailPreview(preview);
-            setData('thumbnail', file);
-        }
+    const cancelChanges = () => {
+        router.get(route('profile.affairs'));
     };
 
-    const handleAddThumbnail = () => {
-        fileInputRef.current?.click();
-    };
-
-    const handleRemoveThumbnail = () => {
-        if (thumbnailPreview) {
-            URL.revokeObjectURL(thumbnailPreview);
-        }
-        setThumbnailPreview(null);
-        setData('thumbnail', null);
-
-        if (fileInputRef.current) {
-            fileInputRef.current.value = '';
-        }
-    };
-
-    const saveForDraft = () => {
-        localStorage.setItem('affair_draft', JSON.stringify(data));
-
-        alert('Acara berhasil disimpan sebagai draft');
-    };
-
-    useEffect(() => {
-        const draftKey = 'affair_draft';
-        const draft = localStorage.getItem(draftKey);
-
-        if (draft) {
-            const parsedDraft = JSON.parse(draft);
-            setData({
-                title: parsedDraft.title || '',
-                description: parsedDraft.description || '',
-                date: parsedDraft.date || '',
-                time: parsedDraft.time || '',
-                location: parsedDraft.location || '',
-                affair_category_id: parsedDraft.affair_category_id || 1,
-                thumbnail: null,
-            });
-
-            if (parsedDraft.thumbnailPreview) {
-                setThumbnailPreview(parsedDraft.thumbnailPreview);
-            }
-        }
-    }, [setData]);
-
-    useEffect(() => {
-        return () => {
-            if (thumbnailPreview) {
-                URL.revokeObjectURL(thumbnailPreview);
-            }
-        };
-    }, [thumbnailPreview]);
-
-    useEffect(() => {
-        console.log('Current affair data:', data);
-    }, [data]);
-
+    console.log(data);
     return (
         <Layout>
-            <Head title="Buat Acara Baru" />
+            <Head title={`Edit ${title}`} />
             <section className="section-padding-x pt-4 pb-8 md:pb-12 lg:pt-4">
                 <div className="container max-w-screen-xl">
                     <div className="mb-6 flex items-center">
                         <Link href="/" className="mr-4 flex h-8 w-8 items-center justify-center rounded-full bg-gray-100">
                             <ArrowLeft className="h-4 w-4" />
                         </Link>
-                        <h1 className="text-2xl font-bold">Buat Acara Baru</h1>
+                        <h1 className="text-2xl font-bold">Edit {title}</h1>
                     </div>
 
                     <form onSubmit={handleSubmit}>
@@ -201,6 +91,7 @@ export default function CreateEventPage({ affairCategories }: { affairCategories
                                 <div className="space-y-2">
                                     <Label htmlFor="category">Kategori Acara *</Label>
                                     <Select
+                                        value={String(data.affair_category_id)}
                                         disabled={processing}
                                         onValueChange={(value) => setData({ ...data, affair_category_id: Number.parseInt(value) })}
                                     >
@@ -242,8 +133,12 @@ export default function CreateEventPage({ affairCategories }: { affairCategories
                                         <Input
                                             id="date"
                                             type="date"
-                                            value={data.date}
-                                            onChange={(e) => setData('date', e.target.value)}
+                                            value={data.date ? new Date(data.date).toISOString().split('T')[0] : ''}
+                                            onChange={(e) => {
+                                                const selectedDate = e.target.value;
+                                                // Convert to Y-m-d format for Laravel
+                                                setData('date', selectedDate);
+                                            }}
                                             disabled={processing}
                                             className={`pl-10 ${errors.date ? 'border-red-500 focus:border-red-500' : ''}`}
                                             min={new Date().toISOString().split('T')[0]} // Tidak bisa pilih tanggal lampau
@@ -287,52 +182,19 @@ export default function CreateEventPage({ affairCategories }: { affairCategories
                                     </div>
                                     {errors.location && <p className="text-sm text-red-600">{errors.location}</p>}
                                 </div>
-
-                                {/* Upload Thumbnail */}
-                                <div className="space-y-2 md:col-span-2">
-                                    <Label>Thumbnail Acara *</Label>
-                                    <input type="file" ref={fileInputRef} onChange={handleThumbnailUpload} accept="image/*" className="hidden" />
-                                    <div className="flex gap-4">
-                                        {thumbnailPreview ? (
-                                            <div className="relative aspect-video w-64 overflow-hidden rounded-md bg-gray-100">
-                                                <img
-                                                    src={thumbnailPreview || '/placeholder.svg'}
-                                                    alt="Thumbnail Acara"
-                                                    className="h-full w-full object-cover"
-                                                />
-                                                <button
-                                                    type="button"
-                                                    onClick={handleRemoveThumbnail}
-                                                    className="absolute top-2 right-2 flex h-6 w-6 items-center justify-center rounded-full bg-red-500 text-white hover:bg-red-600"
-                                                >
-                                                    <X className="h-4 w-4" />
-                                                </button>
-                                            </div>
-                                        ) : (
-                                            <button
-                                                type="button"
-                                                onClick={handleAddThumbnail}
-                                                className="flex aspect-video w-64 items-center justify-center rounded-md border-2 border-dashed border-gray-300 bg-gray-50 hover:bg-gray-100"
-                                            >
-                                                <div className="flex flex-col items-center space-y-2">
-                                                    <Camera className="h-8 w-8 text-gray-400" />
-                                                    <span className="text-sm text-gray-500">Tambah Thumbnail</span>
-                                                </div>
-                                            </button>
-                                        )}
-                                    </div>
-                                    <p className="text-xs text-gray-500">
-                                        Tambahkan thumbnail acara untuk menarik minat peserta (format: JPG, PNG, maksimal 5MB)
-                                    </p>
-                                    {errors.thumbnail && <p className="text-sm text-red-600">{errors.thumbnail}</p>}
-                                </div>
                             </CardContent>
                             <CardFooter className="flex flex-col space-y-4 sm:flex-row sm:space-y-0 sm:space-x-4">
                                 <Button type="submit" disabled={processing} className="text-light-base w-full bg-emerald-600 hover:bg-emerald-700">
-                                    {processing ? 'Memproses...' : 'Publikasikan Acara'}
+                                    {processing ? 'Memproses...' : 'Perbarui Acara'}
                                 </Button>
-                                <Button type="button" variant="outline" className="text-light-base w-full" onClick={saveForDraft}>
-                                    Simpan sebagai Draft
+                                <Button
+                                    disabled={processing}
+                                    type="button"
+                                    variant="destructive"
+                                    className="text-light-base w-full"
+                                    onClick={cancelChanges}
+                                >
+                                    Batalkan Perubahan
                                 </Button>
                             </CardFooter>
                         </Card>

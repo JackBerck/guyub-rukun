@@ -1,6 +1,6 @@
 'use client';
 
-import { Clock, Edit, ExternalLink, MapPin, MoreHorizontal, Trash2 } from 'lucide-react';
+import { Clock, Edit, MapPin, MoreHorizontal, Trash2 } from 'lucide-react';
 import { useState } from 'react';
 
 import { Button } from '@/components/ui/button';
@@ -21,7 +21,7 @@ interface PostItemProps {
     date?: string;
     time?: string;
     createdAt: string;
-    type: 'donation' | 'forum' | 'request' | 'event';
+    type: 'donation' | 'forum' | 'request' | 'affair';
     stats?: {
         likes?: number;
         comments?: number;
@@ -30,21 +30,7 @@ interface PostItemProps {
     onDelete?: (id: number) => void;
 }
 
-export function PostItem({
-    id,
-    title,
-    slug,
-    description,
-    image,
-    location,
-    category,
-    urgency,
-    date,
-    time,
-    createdAt,
-    type,
-    stats,
-}: PostItemProps) {
+export function PostItem({ id, title, slug, description, image, location, category, urgency, date, time, createdAt, type, stats }: PostItemProps) {
     const [isDeleting, setIsDeleting] = useState(false);
 
     const handleEdit = () => {
@@ -54,7 +40,7 @@ export function PostItem({
             router.get(route('donation.help.edit', slug));
         } else if (type === 'forum') {
             router.get(route('forum.edit', slug));
-        } else if (type === 'event') {
+        } else if (type === 'affair') {
             router.get(route('affair.edit', slug));
         }
     };
@@ -68,7 +54,7 @@ export function PostItem({
 
         try {
             if (type === 'donation' || type === 'request') {
-                router.delete(route('profile.donations.delete', id), {
+                router.delete(route('donation.remove', slug), {
                     onSuccess: () => {
                         toast.success('Donasi berhasil dihapus');
                     },
@@ -81,7 +67,7 @@ export function PostItem({
                     },
                 });
             } else if (type === 'forum') {
-                router.delete(route('profile.forums.delete', id), {
+                router.delete(route('forum.delete', slug), {
                     onSuccess: () => {
                         toast.success('Forum berhasil dihapus');
                     },
@@ -93,8 +79,20 @@ export function PostItem({
                         setIsDeleting(false);
                     },
                 });
+            } else if (type === 'affair') {
+                router.delete(route('affair.remove', slug), {
+                    onSuccess: () => {
+                        toast.success('Acara berhasil dihapus');
+                    },
+                    onError: (errors) => {
+                        console.error('Delete error:', errors);
+                        toast.error('Gagal menghapus acara');
+                    },
+                    onFinish: () => {
+                        setIsDeleting(false);
+                    },
+                });
             }
-            // Add similar logic for other types
         } catch (error) {
             console.error('Delete error:', error);
             toast.error('Terjadi kesalahan saat menghapus');
@@ -110,7 +108,7 @@ export function PostItem({
                 return 'bg-blue-100 text-blue-800';
             case 'request':
                 return 'bg-orange-100 text-orange-800';
-            case 'event':
+            case 'affair':
                 return 'bg-purple-100 text-purple-800';
             default:
                 return 'bg-gray-100 text-gray-800';
@@ -147,32 +145,32 @@ export function PostItem({
         if (type === 'donation') {
             return route('donation.donate.view', slug);
         } else if (type === 'request') {
-            return route('donation.donate.view', slug);
+            return route('donation.help.view', slug);
         } else if (type === 'forum') {
             return route('forum.view', slug);
-        } else if (type === 'event') {
+        } else if (type === 'affair') {
             return route('affair.view', slug);
         }
         return '#';
     };
 
-    const getTypeText = () => {
-        switch (type) {
-            case 'donation':
-                return 'Donasi';
-            case 'request':
-                return 'Bantuan';
-            case 'forum':
-                return 'Forum';
-            case 'event':
-                return 'Acara';
-            default:
-                return type;
-        }
-    };
+    // const getTypeText = () => {
+    //     switch (type) {
+    //         case 'donation':
+    //             return 'Donasi';
+    //         case 'request':
+    //             return 'Bantuan';
+    //         case 'forum':
+    //             return 'Forum';
+    //         case 'affair':
+    //             return 'Acara';
+    //         default:
+    //             return type;
+    //     }
+    // };
 
     return (
-        <Card className="bg-light-base text-dark-base transition-shadow hover:shadow-md">
+        <Card className="bg-light-base text-dark-base transition-shadow hover:shadow-md gap-0">
             <CardHeader className="pb-3">
                 <div className="flex items-start justify-between">
                     <div className="flex-1">
@@ -185,9 +183,9 @@ export function PostItem({
                                     {getUrgencyText()}
                                 </span>
                             )}
-                            <span className="inline-flex items-center rounded-full bg-gray-100 px-2.5 py-0.5 text-xs font-medium text-gray-800">
+                            {/* <span className="inline-flex items-center rounded-full bg-gray-100 px-2.5 py-0.5 text-xs font-medium text-gray-800">
                                 {getTypeText()}
-                            </span>
+                            </span> */}
                         </div>
                         <Link href={getDetailUrl()}>
                             <h3 className="line-clamp-2 cursor-pointer text-lg font-semibold transition-colors hover:text-emerald-600">{title}</h3>
@@ -219,12 +217,12 @@ export function PostItem({
                             </Button>
                         </DropdownMenuTrigger>
                         <DropdownMenuContent align="end" className="bg-light-base text-dark-base">
-                            <DropdownMenuItem asChild>
+                            {/* <DropdownMenuItem asChild>
                                 <Link href={getDetailUrl()}>
                                     <ExternalLink className="mr-2 h-4 w-4" />
                                     Lihat Detail
                                 </Link>
-                            </DropdownMenuItem>
+                            </DropdownMenuItem> */}
                             <DropdownMenuItem onClick={handleEdit}>
                                 <Edit className="mr-2 h-4 w-4" />
                                 Edit
@@ -241,7 +239,7 @@ export function PostItem({
                 <div className="space-y-3">
                     {image && (
                         <Link href={getDetailUrl()}>
-                            <div className="aspect-video cursor-pointer overflow-hidden rounded-lg bg-gray-100 transition-opacity hover:opacity-90">
+                            <div className="aspect-video cursor-pointer overflow-hidden rounded-lg bg-gray-100 transition-opacity hover:opacity-90 mb-2">
                                 <img src={image} alt={title} className="h-full w-full object-cover" />
                             </div>
                         </Link>

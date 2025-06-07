@@ -29,4 +29,10 @@ Route::middleware('auth')->group(function () {
 
     // Settings for forums
     Route::get('settings/forums', [ProfileController::class, 'forums'])->name('profile.forums');
+
+    // Settings for requests
+    Route::get('settings/helps', [ProfileController::class, 'requests'])->name('profile.requests');
+
+    // Settings for requests
+    Route::get('settings/affairs', [ProfileController::class, 'affairs'])->name('profile.affairs');
 });
