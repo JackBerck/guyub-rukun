@@ -56,23 +56,24 @@ export default function RequestDetail() {
 
     const [commentToDelete, setCommentToDelete] = useState<number | null>(null);
 
-    const handleComment = () => {
-        if (data.body.trim()) {
-            // Submit form when comment button is clicked
-            post(route('donation.comment.create', donation.slug), {
-                onFinish: () => {
-                    reset();
-                },
-            });
-        }
-    };
-
+    // ✅ Satu handler untuk submit form
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
 
+        // Validasi jika komentar kosong
+        if (!data.body.trim()) {
+            toast.error('Komentar tidak boleh kosong');
+            return;
+        }
+
         post(route('donation.comment.create', donation.slug), {
-            onFinish: () => {
+            onSuccess: () => {
+                toast.success('Komentar berhasil dikirim');
                 reset();
+            },
+            onError: (errors) => {
+                console.error('Comment errors:', errors);
+                toast.error('Gagal mengirim komentar');
             },
         });
     };
@@ -99,7 +100,7 @@ export default function RequestDetail() {
             }
 
             toast.success('Berhasil menyalin link!', {
-                description: 'Link donasi telah disalin ke clipboard',
+                description: 'Link bantuan telah disalin ke clipboard',
                 duration: 3000,
             });
         } catch (err) {
@@ -215,6 +216,7 @@ export default function RequestDetail() {
                                 <CardTitle>Komentar & Penawaran ({donation.comments?.length || 0})</CardTitle>
                             </CardHeader>
                             <CardContent>
+                                {/* ✅ Form dengan satu handler saja */}
                                 <form onSubmit={handleSubmit} className="mb-4">
                                     <Textarea
                                         placeholder="Tulis komentar atau tawarkan bantuan..."
@@ -226,12 +228,13 @@ export default function RequestDetail() {
                                     />
                                     {errors.body && <p className="mb-2 text-sm text-red-500">{errors.body}</p>}
                                     <div className="flex space-x-2">
+                                        {/* ✅ Button type="submit" untuk trigger form submit */}
                                         <Button
-                                            onClick={handleComment}
-                                            disabled={!data.body.trim()}
+                                            type="submit"
+                                            disabled={!data.body.trim() || processing}
                                             className="text-light-base bg-blue-600 hover:bg-blue-700"
                                         >
-                                            Kirim Komentar
+                                            {processing ? 'Mengirim...' : 'Kirim Komentar'}
                                         </Button>
                                     </div>
                                 </form>

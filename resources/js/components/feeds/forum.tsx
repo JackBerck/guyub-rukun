@@ -4,7 +4,7 @@ import { Button } from '@/components/ui/button';
 import apiClient from '@/services/api-service';
 import { Forum } from '@/types';
 import { Link } from '@inertiajs/react';
-import { BookmarkPlus, Heart, Loader2, MessageSquare, Share2 } from 'lucide-react';
+import { Heart, Loader2, MessageSquare, Share2 } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { toast } from 'sonner';
 
@@ -22,7 +22,6 @@ const fetchForums = async (cursor?: string): Promise<CursorApiResponse> => {
     try {
         const url = cursor ? `/forums?cursor=${cursor}` : '/forums';
         const response = await apiClient.get(url);
-        console.log('Forum API Response:', response); // Debug log
         return response.data;
     } catch (error) {
         console.error('Forum API Error:', error);
@@ -43,18 +42,10 @@ export function ForumFeeds() {
             setError(null);
             const response = await fetchForums();
 
-            console.log('Initial Forum Response:', response); // Debug log
-
             if (response.data && Array.isArray(response.data)) {
                 setForums(response.data);
                 setNextCursor(response.next_cursor);
                 setHasMoreData(!!response.next_cursor);
-
-                console.log('Processed forum data:', {
-                    forumsCount: response.data.length,
-                    nextCursor: response.next_cursor,
-                    hasMore: !!response.next_cursor,
-                });
             } else {
                 throw new Error('Unexpected response format');
             }
@@ -74,8 +65,6 @@ export function ForumFeeds() {
             setLoadingMore(true);
             setError(null);
             const response = await fetchForums(nextCursor);
-
-            console.log('Load more forum response:', response); // Debug log
 
             if (response.data && Array.isArray(response.data)) {
                 const newForums = response.data;
@@ -187,24 +176,21 @@ export function ForumFeeds() {
                                 <div className="flex items-center space-x-4">
                                     <Button variant="ghost" size="sm" className="gap-1 text-gray-500 hover:text-red-500">
                                         <Heart className="h-4 w-4" />
-                                        <span>{Array.isArray(forum.liked_by_users) ? forum.liked_by_users.length : 0}</span>
+                                        <span>{forum.liked_by_users_count ? forum.liked_by_users_count : 0}</span>
                                     </Button>{' '}
                                     <Button variant="ghost" size="sm" className="gap-1 text-gray-500 hover:text-blue-500">
                                         <MessageSquare className="h-4 w-4" />
-                                        <span>{Array.isArray(forum.comments) ? forum.comments.length : 0}</span>
+                                        <span>{forum.comments_count ? forum.comments_count : 0}</span>
                                     </Button>
                                     <Button variant="ghost" size="sm" className="gap-1 text-gray-500 hover:text-green-500">
                                         <Share2 className="h-4 w-4" />
                                     </Button>
-                                    <Button variant="ghost" size="sm" className="gap-1 text-gray-500 hover:text-yellow-500">
-                                        <BookmarkPlus className="h-4 w-4" />
-                                    </Button>
                                 </div>
-                                <Link href={`/forums/${forum.slug}`}>
+                                {/* <Link href={`/forums/${forum.slug}`}>
                                     <Button size="sm" className="text-light-base bg-indigo-600 hover:bg-indigo-700">
                                         Baca Diskusi
                                     </Button>
-                                </Link>
+                                </Link> */}
                             </div>
                         </div>
                     </div>

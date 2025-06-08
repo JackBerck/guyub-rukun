@@ -50,17 +50,6 @@ export default function ForumDetail() {
         setLikes(isLiked ? likes - 1 : likes + 1);
     };
 
-    const handleComment = () => {
-        if (data.body.trim()) {
-            // Submit form when comment button is clicked
-            post(route('forum.comment.create', forum.slug), {
-                onFinish: () => {
-                    reset();
-                },
-            });
-        }
-    };
-
     const handleDeleteComment = (commentId: number) => {
         router.delete(route('donation.comment.delete', [commentId]), {
             onSuccess: () => {
@@ -77,7 +66,12 @@ export default function ForumDetail() {
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
 
-        post(route('donation.comment.create', forum.slug), {
+        if( !data.body.trim()) {
+            toast.error('Komentar tidak boleh kosong');
+            return;
+        }
+
+        post(route('forum.comment.create', forum.slug), {
             onFinish: () => {
                 reset();
             },
@@ -95,7 +89,6 @@ export default function ForumDetail() {
     };
 
     console.log('Forum Detail Page Loaded', forum);
-    console.log('Auth User', auth.user);
     // ...existing code...
     return (
         <Layout>
@@ -161,7 +154,7 @@ export default function ForumDetail() {
                                                 className={`hover:bg-transparent hover:text-blue-600 ${isLiked ? 'text-blue-500 hover:text-blue-600' : ''}`}
                                             >
                                                 <ThumbsUp className={`mr-2 h-4 w-4 ${isLiked ? 'fill-current' : ''}`} />
-                                                {likes}
+                                                {forum.liked_by_users_count || 0}
                                             </Button>
                                             <Button variant="ghost" className="hover:bg-transparent hover:text-gray-600">
                                                 <MessageCircle className="mr-2 h-4 w-4" />
@@ -194,7 +187,7 @@ export default function ForumDetail() {
                                     />
                                     {errors.body && <p className="mb-2 text-sm text-red-500">{errors.body}</p>}
                                     <Button
-                                        onClick={handleComment}
+                                        type="submit"
                                         disabled={!data.body.trim() || processing}
                                         className="text-light-base bg-blue-600 hover:bg-blue-700"
                                     >
@@ -211,7 +204,7 @@ export default function ForumDetail() {
                                                     <AvatarFallback>{comment.user?.name?.[0] || 'U'}</AvatarFallback>
                                                 </Avatar>
                                                 <div className="flex-1">
-                                                    <div className="rounded-lg bg-gray-50 p-3">
+                                                    <div className="rounded-lg bg-gray-50">
                                                         <div className="mb-1 flex items-center space-x-2">
                                                             <span className="text-sm font-medium">{comment.user?.name || 'Unknown User'}</span>
                                                             <span className="text-xs text-gray-500">{formatDate(comment.created_at)}</span>

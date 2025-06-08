@@ -129,7 +129,8 @@ export interface Forum {
     comments: Comment[];
     thumbnail?: string; // Ganti dari 'image' ke 'thumbnail' sesuai dengan database
     forum_category: ForumCategory;
-    liked_by_users: User[];
+    liked_by_users_count?: number;
+    comments_count?: number;
     user: User; // Relasi dengan User
 }
 

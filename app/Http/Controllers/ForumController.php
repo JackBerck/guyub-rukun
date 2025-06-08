@@ -20,7 +20,7 @@ class ForumController extends Controller
     public function index(): CursorPaginator
     {
         return Forum::with(['user', 'forumCategory'])
-            ->withCount('likedByUsers')
+            ->withCount(['likedByUsers', 'comments'])
             ->latest()
             ->cursorPaginate(16);
     }
@@ -54,8 +54,7 @@ class ForumController extends Controller
                 'user',
                 'forumCategory',
                 'comments',
-                'likedByUsers'
-            ]),
+            ])->loadCount(['likedByUsers']),
         ]);
     }
 

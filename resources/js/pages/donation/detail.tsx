@@ -52,17 +52,6 @@ export default function DonationDetail() {
 
     const [commentToDelete, setCommentToDelete] = useState<number | null>(null);
 
-    const handleComment = () => {
-        if (data.body.trim()) {
-            // Submit form when comment button is clicked
-            post(route('donation.comment.create', donation.slug), {
-                onFinish: () => {
-                    reset();
-                },
-            });
-        }
-    };
-
     const handleDeleteComment = (commentId: number) => {
         router.delete(route('donation.comment.delete', [commentId]), {
             onSuccess: () => {
@@ -78,6 +67,11 @@ export default function DonationDetail() {
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
+
+        if (!data.body.trim()) {
+            toast.error('Komentar tidak boleh kosong');
+            return;
+        }
 
         post(route('donation.comment.create', donation.slug), {
             onFinish: () => {
@@ -222,7 +216,7 @@ export default function DonationDetail() {
                                     />
                                     {errors.body && <p className="mb-2 text-sm text-red-500">{errors.body}</p>}
                                     <Button
-                                        onClick={handleComment}
+                                        type="submit"
                                         disabled={!data.body.trim() || processing}
                                         className="text-light-base bg-blue-600 hover:bg-blue-700"
                                     >
