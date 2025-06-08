@@ -26,10 +26,6 @@ Route::get("affair/{affair:slug}", [AffairController::class, "view"])->name("aff
 Route::get("help/{donation:slug}", [DonationController::class, "viewHelp"])->name("donation.help.view");
 
 Route::middleware(['auth', 'verified'])->group(function () {
-    Route::get('dashboard', function () {
-        return Inertia::render('dashboard');
-    })->name('dashboard');
-
     // Route Donate and help
     Route::get("donate", [DonationController::class, "createDonate"])->name("donation.donate.create");
     Route::get("donate/{donation:slug}/edit", [DonationController::class, "editDonate"])->name("donation.donate.edit");

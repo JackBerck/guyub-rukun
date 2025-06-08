@@ -15,6 +15,7 @@ export default function Login() {
                 quoteAuthor="PeduliRasa"
             >
                 <LoginForm />
+                
             </Authentication>
         </Layout>
     );

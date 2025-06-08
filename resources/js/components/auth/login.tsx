@@ -88,9 +88,9 @@ export default function LoginForm() {
                         <Label htmlFor="password" className={errors.password ? 'text-destructive' : ''}>
                             Password
                         </Label>
-                        {/* <Link href="/forgot-password" className="text-xs text-emerald-600 hover:underline">
+                        <Link href="/forgot-password" className="text-xs text-emerald-600 hover:underline">
                             Lupa password?
-                        </Link> */}
+                        </Link>
                     </div>
                     <div className="relative">
                         <Input
