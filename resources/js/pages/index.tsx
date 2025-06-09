@@ -10,7 +10,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import Layout from '@/layouts/layout';
 import { User } from '@/types';
 import { Head, Link, usePage } from '@inertiajs/react';
-import { BadgeCheck, Calendar, Clock, Heart, MessageSquare, UserPlus } from 'lucide-react';
+import { BadgeCheck, Calendar, Heart, MessageSquare } from 'lucide-react';
 
 export default function Home() {
     const { auth } = usePage<{ auth: { user: User } }>().props;
@@ -329,7 +329,7 @@ export default function Home() {
                                     </Card>
 
                                     {/* Cerita Inspiratif */}
-                                    <Card className="bg-light-base text-dark-base gap-2 p-2">
+                                    {/* <Card className="bg-light-base text-dark-base gap-2 p-2">
                                         <CardHeader className="p-0">
                                             <CardTitle className="text-lg">Cerita Inspiratif</CardTitle>
                                         </CardHeader>
@@ -365,7 +365,7 @@ export default function Home() {
                                                 Lihat Semua Cerita
                                             </Button>
                                         </CardFooter>
-                                    </Card>
+                                    </Card> */}
 
                                     {/* Who to Follow */}
                                     <Card className="bg-light-base text-dark-base gap-2 p-2">
@@ -388,12 +388,6 @@ export default function Home() {
                                                             <div className="text-xs text-gray-500">@komunitas{item}</div>
                                                         </div>
                                                     </div>
-                                                    <Button
-                                                        size="sm"
-                                                        className="text-light-base h-8 rounded-full bg-emerald-600 transition duration-100 hover:bg-emerald-700"
-                                                    >
-                                                        <UserPlus className="h-4 w-4" />
-                                                    </Button>
                                                 </div>
                                             ))}
                                         </CardContent>

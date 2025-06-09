@@ -8,6 +8,7 @@ use App\Http\Requests\CreateHelpRequest;
 use App\Http\Requests\UpdateDonationRequest;
 use App\Models\Comment;
 use App\Models\Donation;
+use App\Models\DonationCategory;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -134,7 +135,7 @@ class DonationController extends Controller
     {
         return Inertia::render("donation/edit", [
             'donation' => $donation->load(['donationImages']),
-            'donationCategories' => \App\Models\DonationCategory::all(),
+            'donationCategories' => DonationCategory::all(),
         ]);
     }
 

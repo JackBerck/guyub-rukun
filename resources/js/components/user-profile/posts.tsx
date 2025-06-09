@@ -1,6 +1,6 @@
 'use client';
 
-import { Calendar, Clock, Heart, MapPin, MessageSquare, Share2 } from 'lucide-react';
+import { Calendar, Clock, MapPin, MessageSquare, Share2 } from 'lucide-react';
 import { useEffect, useState } from 'react';
 
 import { Badge } from '@/components/ui/badge';
@@ -21,7 +21,6 @@ interface Post {
     date?: string;
     time?: string;
     createdAt: string;
-    likes: number;
     comments: number;
     isLiked: boolean;
     slug?: string;
@@ -58,7 +57,6 @@ export function UserPostsGrid({ type, userData }: UserPostsGridProps) {
                         location: donation.address,
                         urgency: donation.urgency as 'low' | 'medium' | 'high' | undefined,
                         createdAt: new Date(donation.created_at).toLocaleDateString('id-ID'),
-                        likes: 0, // Not available in current API
                         comments: donation.comments?.length || 0,
                         isLiked: false,
                         slug: donation.slug,
@@ -78,7 +76,6 @@ export function UserPostsGrid({ type, userData }: UserPostsGridProps) {
                         image: forum.thumbnail ? `/storage/${forum.thumbnail}` : undefined,
                         category: forum.forum_category?.name || 'Forum',
                         createdAt: new Date(forum.created_at).toLocaleDateString('id-ID'),
-                        likes: forum.liked_by_users?.length || 0,
                         comments: forum.comments?.length || 0,
                         isLiked: false,
                         slug: forum.slug,
@@ -101,7 +98,6 @@ export function UserPostsGrid({ type, userData }: UserPostsGridProps) {
                         date: affair.date,
                         time: affair.time,
                         createdAt: new Date(affair.created_at).toLocaleDateString('id-ID'),
-                        likes: 0, // Not available in current API
                         comments: 0, // Not available in current API
                         isLiked: false,
                         slug: affair.slug,
@@ -131,20 +127,6 @@ export function UserPostsGrid({ type, userData }: UserPostsGridProps) {
 
         transformDataToPosts();
     }, [userData, type]);
-
-    const handleLike = (postId: number) => {
-        setPosts(
-            posts.map((post) =>
-                post.id === postId
-                    ? {
-                          ...post,
-                          isLiked: !post.isLiked,
-                          likes: post.isLiked ? post.likes - 1 : post.likes + 1,
-                      }
-                    : post,
-            ),
-        );
-    };
 
     const getTypeColor = (postType: string) => {
         switch (postType) {
@@ -218,10 +200,12 @@ export function UserPostsGrid({ type, userData }: UserPostsGridProps) {
         );
     }
 
+    console.log('Rendering posts:', posts);
+
     return (
         <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
             {posts.map((post) => (
-                <Card key={post.id} className="group transition-shadow hover:shadow-lg">
+                <Card key={post.id} className="group bg-light-base text-dark-base transition-shadow hover:shadow-lg">
                     <CardHeader className="pb-3">
                         <div className="flex items-center justify-between">
                             <Badge className={getTypeColor(post.type)}>
@@ -260,7 +244,9 @@ export function UserPostsGrid({ type, userData }: UserPostsGridProps) {
                         </div>
 
                         <div className="flex items-center gap-2 text-sm text-gray-500">
-                            <Badge variant="outline">{post.category}</Badge>
+                            <Badge variant="outline" className="border-green-500 text-green-500">
+                                {post.category}
+                            </Badge>
                             {post.location && (
                                 <div className="flex items-center gap-1">
                                     <MapPin className="h-3 w-3" />
@@ -279,15 +265,6 @@ export function UserPostsGrid({ type, userData }: UserPostsGridProps) {
 
                         <div className="flex items-center justify-between border-t pt-2">
                             <div className="flex items-center gap-4">
-                                <Button
-                                    variant="ghost"
-                                    size="sm"
-                                    className={`gap-1 hover:text-red-500 ${post.isLiked ? 'text-red-500' : 'text-gray-500'}`}
-                                    onClick={() => handleLike(post.id)}
-                                >
-                                    <Heart className={`h-4 w-4 ${post.isLiked ? 'fill-current' : ''}`} />
-                                    <span>{post.likes}</span>
-                                </Button>
                                 <div className="flex items-center gap-1 text-gray-500">
                                     <MessageSquare className="h-4 w-4" />
                                     <span>{post.comments}</span>

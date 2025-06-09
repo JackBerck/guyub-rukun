@@ -80,12 +80,12 @@ export default function UserProfilePage() {
                             </div>
 
                             <Tabs defaultValue="all" className="w-full">
-                                <TabsList className="grid w-full grid-cols-5">
-                                    <TabsTrigger value="all">Semua ({userProfileData.stats.totalPosts})</TabsTrigger>
-                                    <TabsTrigger value="donations">Donasi ({userProfileData.stats.donations})</TabsTrigger>
-                                    <TabsTrigger value="requests">Bantuan ({userProfileData.stats.requests})</TabsTrigger>
-                                    <TabsTrigger value="forums">Forum ({userProfileData.stats.forums})</TabsTrigger>
-                                    <TabsTrigger value="events">Acara ({userProfileData.stats.events})</TabsTrigger>
+                                <TabsList className="no-scrollbar h-10 w-full justify-between overflow-x-auto rounded-none border-b-0 bg-white p-0">
+                                    <TabsTrigger className='rounded-none border-b-2 border-transparent px-4 py-2 data-[state=active]:border-emerald-600 data-[state=active]:bg-transparent data-[state=active]:text-gray-700 data-[state=active]:shadow-none' value="all">Semua ({userProfileData.stats.totalPosts})</TabsTrigger>
+                                    <TabsTrigger className='rounded-none border-b-2 border-transparent px-4 py-2 data-[state=active]:border-emerald-600 data-[state=active]:bg-transparent data-[state=active]:text-gray-700 data-[state=active]:shadow-none' value="donations">Donasi ({userProfileData.stats.donations})</TabsTrigger>
+                                    <TabsTrigger className='rounded-none border-b-2 border-transparent px-4 py-2 data-[state=active]:border-emerald-600 data-[state=active]:bg-transparent data-[state=active]:text-gray-700 data-[state=active]:shadow-none' value="requests">Bantuan ({userProfileData.stats.requests})</TabsTrigger>
+                                    <TabsTrigger className='rounded-none border-b-2 border-transparent px-4 py-2 data-[state=active]:border-emerald-600 data-[state=active]:bg-transparent data-[state=active]:text-gray-700 data-[state=active]:shadow-none' value="forums">Forum ({userProfileData.stats.forums})</TabsTrigger>
+                                    <TabsTrigger className='rounded-none border-b-2 border-transparent px-4 py-2 data-[state=active]:border-emerald-600 data-[state=active]:bg-transparent data-[state=active]:text-gray-700 data-[state=active]:shadow-none' value="events">Acara ({userProfileData.stats.events})</TabsTrigger>
                                 </TabsList>{' '}
                                 <TabsContent value="all" className="mt-6">
                                     <UserPostsGrid type="all" userData={profileUser} />

@@ -4,6 +4,7 @@ use App\Http\Controllers\AffairController;
 use App\Http\Controllers\DetailUserController;
 use App\Http\Controllers\DonationController;
 use App\Http\Controllers\ForumController;
+
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
