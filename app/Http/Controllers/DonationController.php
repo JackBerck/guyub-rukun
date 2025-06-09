@@ -181,7 +181,7 @@ class DonationController extends Controller
             // Delete the donation
             $donation->delete();
 
-            return redirect()->route('donations.index')
+            return redirect()->route('profile.donations')
                 ->with('status', "Postingan $donation->title berhasil dihapus");
         } catch (\Exception $e) {
             return back()->withErrors(['error' => "Postingan gagal dihapus"]);
