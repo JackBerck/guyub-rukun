@@ -227,7 +227,7 @@ export function UserPostsGrid({ type, userData }: UserPostsGridProps) {
 
                     <CardContent className="space-y-4">
                         {post.image && (
-                            <div className="aspect-video overflow-hidden rounded-lg">
+                            <div className="aspect-video w-full overflow-hidden rounded-lg">
                                 <img
                                     src={post.image}
                                     alt={post.title}
@@ -248,9 +248,9 @@ export function UserPostsGrid({ type, userData }: UserPostsGridProps) {
                                 {post.category}
                             </Badge>
                             {post.location && (
-                                <div className="flex items-center gap-1">
+                                <div className="flex items-center gap-1 truncate">
                                     <MapPin className="h-3 w-3" />
-                                    <span className="truncate">{post.location}</span>
+                                    <span className="">{post.location}</span>
                                 </div>
                             )}
                             {post.date && post.time && (

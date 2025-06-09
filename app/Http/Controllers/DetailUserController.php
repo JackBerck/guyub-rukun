@@ -14,8 +14,20 @@ class DetailUserController extends Controller
      */
     public function detailUser(User $user): \Inertia\Response
     {
-        // Load the user with their donations and forums
-        $profileUser = $user->load(['donations', 'forums', 'affairs']);
+        // Load the user with their donations, forums, and affairs
+        // Untuk donations, ambil juga donationCategory dan hanya satu image pertama
+        $profileUser = $user->load([
+            'donations' => function ($query) {
+                $query->with([
+                    'donationCategory',
+                    'donationImages' => function ($imageQuery) {
+                        $imageQuery->limit(1)->oldest(); // Ambil 1 image pertama
+                    }
+                ]);
+            },
+            'forums',
+            'affairs'
+        ]);
 
         // Return the Inertia response with the user data
         return inertia('user/detail', [

@@ -16,7 +16,9 @@ class AffairCategorySeeder extends Seeder
         $categories = [
             'Musik',
             'Pertunjukan',
-            'Olahraga',
+            'Kegiatan Sosial',
+            'Pameran',
+            'Festival',
         ];
 
         foreach ($categories as $category) {

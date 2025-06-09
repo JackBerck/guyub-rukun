@@ -21,7 +21,7 @@ class ForumCategorySeeder extends Seeder
             'Tutorial'
         ];
 
-        foreach ($categories as $category) {
+    foreach ($categories as $category) {
             ForumCategory::firstOrCreate([
                 'name' => $category,
             ]);
