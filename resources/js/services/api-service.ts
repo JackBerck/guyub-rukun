@@ -1,8 +1,8 @@
 import axios from "axios";
 
 // Gunakan VITE_ prefix untuk environment variables di frontend
-export const BASE_URL = import.meta.env.VITE_APP_API_URL || 'http://127.0.0.1:8000/api';
-export const BASE_URL_STORAGE = import.meta.env.VITE_APP_STORAGE_URL || 'http://127.0.0.1:8000/storage';
+export const BASE_URL = import.meta.env.VITE_APP_API_URL;
+export const BASE_URL_STORAGE = import.meta.env.VITE_APP_STORAGE_URL;
 
 const apiClient = axios.create({
     baseURL: BASE_URL,
