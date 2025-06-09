@@ -4,7 +4,7 @@ import { useState } from 'react';
 import { Button } from '../ui/button';
 import { Input } from '../ui/input';
 import { Label } from '../ui/label';
-import { Separator } from '../ui/separator';
+// import { Separator } from '../ui/separator';
 
 type RegisterForm = {
     name: string;
@@ -158,12 +158,12 @@ export default function RegisterForm() {
                     {processing ? 'Mendaftar...' : 'Daftar Sekarang'}
                 </Button>
 
-                <div className="relative flex items-center justify-center">
+                {/* <div className="relative flex items-center justify-center">
                     <Separator className="w-full" />
                     <span className="absolute bg-white px-2 text-xs text-gray-500">atau daftar dengan</span>
-                </div>
+                </div> */}
 
-                <div className="grid grid-cols-2 gap-4">
+                {/* <div className="grid grid-cols-2 gap-4">
                     <Button variant="outline" type="button" className="bg-light-base text-dark-base w-full">
                         <svg className="mr-2 h-4 w-4" viewBox="0 0 24 24">
                             <path
@@ -191,7 +191,7 @@ export default function RegisterForm() {
                         </svg>
                         Facebook
                     </Button>
-                </div>
+                </div> */}
 
                 <p className="text-center text-sm">
                     Sudah memiliki akun?{' '}
