@@ -1,10 +1,11 @@
 <?php
 
 use App\Http\Controllers\AffairController;
+use App\Http\Controllers\ContactController;
 use App\Http\Controllers\DetailUserController;
 use App\Http\Controllers\DonationController;
 use App\Http\Controllers\ForumController;
-
+use App\Http\Controllers\ReportUserController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
@@ -25,7 +26,8 @@ Route::get("donation/{donation:slug}", [DonationController::class, "viewDonate"]
 Route::get("forum/{forum:slug}", [ForumController::class, "view"])->name("forum.view");
 Route::get("affair/{affair:slug}", [AffairController::class, "view"])->name("affair.view");
 Route::get("help/{donation:slug}", [DonationController::class, "viewHelp"])->name("donation.help.view");
-Route::post('contact', [\App\Http\Controllers\ContactController::class, 'send'])->name('contact.send');
+Route::post('contact', [ContactController::class, 'send'])->name('contact.send');
+Route::post('/report-user', [ReportUserController::class, 'send'])->name('report.user');
 
 Route::middleware(['auth', 'verified'])->group(function () {
     // Route Donate and help

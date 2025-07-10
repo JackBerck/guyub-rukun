@@ -21,17 +21,28 @@ class DetailUserController extends Controller
                 $query->with([
                     'donationCategory',
                     'donationImages' => function ($imageQuery) {
-                        $imageQuery->limit(1)->oldest(); // Ambil 1 image pertama
+                        $imageQuery->limit(1)->oldest();
                     }
-                ]);
+                ])->withCount('comments');
             },
-            'forums',
+            'forums' => function ($query) {
+                $query->withCount('comments');
+            },
             'affairs'
         ]);
+
+        $totalUserComments = $user->comments()->count();
+
+        $totalUserLikes = \App\Models\Like::whereIn(
+            'forum_id',
+            $user->forums()->pluck('id')
+        )->count();
 
         // Return the Inertia response with the user data
         return inertia('user/detail', [
             'profileUser' => $profileUser,
+            'totalUserComments' => $totalUserComments,
+            'totalUserLikes' => $totalUserLikes,
         ]);
     }
 }

@@ -78,6 +78,7 @@ export interface Donation {
     donation_category: DonationCategory;
     donation_images: DonationImage[];
     comments: Comment[];
+    comments_count?: number; // Tambahkan jumlah komentar
 }
 
 export interface DonationCategory {

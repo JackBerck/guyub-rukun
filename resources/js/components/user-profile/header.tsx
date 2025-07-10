@@ -1,11 +1,12 @@
-'use client';
-
-import { Calendar, Flag, MapPin, Share2, UserCheck } from 'lucide-react';
-import { useState } from 'react';
-
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
+import { Dialog, DialogClose, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog';
+import { Textarea } from '@/components/ui/textarea';
+import { useForm } from '@inertiajs/react';
+import { Calendar, Flag, MapPin, Share2, UserCheck } from 'lucide-react';
+import { useState } from 'react';
+import { toast } from 'sonner';
 import { Avatar, AvatarFallback, AvatarImage } from '../ui/avatar';
 
 interface UserProfileHeaderProps {
@@ -31,31 +32,56 @@ interface UserProfileHeaderProps {
 }
 
 export function UserProfileHeader({ user }: UserProfileHeaderProps) {
+    const [isDialogOpen, setIsDialogOpen] = useState(false);
     const [isReporting, setIsReporting] = useState(false);
+    const { data, setData, post, processing, errors, reset } = useForm({
+        userId: user.id,
+        reason: '',
+    });
 
-    const handleShare = () => {
-        if (navigator.share) {
-            navigator.share({
-                title: `Profil ${user.name} - PeduliRasa`,
-                text: `Lihat profil dan aktivitas ${user.name} di PeduliRasa`,
-                url: window.location.href,
-            });
-        } else {
-            // Fallback: copy to clipboard
-            navigator.clipboard.writeText(window.location.href);
-            alert('Link profil telah disalin!');
+    const handleShare = async () => {
+        const currentUrl = window.location.href;
+        try {
+            if (navigator.clipboard && window.isSecureContext) {
+                await navigator.clipboard.writeText(currentUrl);
+            } else {
+                const textArea = document.createElement('textarea');
+                textArea.value = currentUrl;
+                textArea.style.position = 'fixed';
+                textArea.style.left = '-999999px';
+                textArea.style.top = '-999999px';
+                document.body.appendChild(textArea);
+                textArea.focus();
+                textArea.select();
+                document.execCommand('copy');
+                document.body.removeChild(textArea);
+            }
+            toast.success('Berhasil menyalin link!');
+        } catch {
+            toast.error('Gagal menyalin link');
         }
     };
 
-    const handleReport = () => {
-        if (confirm('Apakah Anda yakin ingin melaporkan pengguna ini?')) {
-            setIsReporting(true);
-            // Implement report logic
-            setTimeout(() => {
-                setIsReporting(false);
-                alert('Laporan telah dikirim. Terima kasih atas laporan Anda.');
-            }, 1000);
+    const handleReport = (e: React.FormEvent) => {
+        e.preventDefault();
+        if (!data.reason.trim()) {
+            toast.error('Alasan laporan wajib diisi.');
+            return;
         }
+        setIsReporting(true);
+        post('/report-user', {
+            onSuccess: () => {
+                toast.success('Laporan telah dikirim. Admin akan meninjau pengguna ini.');
+                setIsDialogOpen(false);
+                reset();
+            },
+            onError: () => {
+                toast.error('Gagal mengirim laporan.');
+            },
+            onFinish: () => {
+                setIsReporting(false);
+            },
+        });
     };
 
     return (
@@ -66,7 +92,7 @@ export function UserProfileHeader({ user }: UserProfileHeaderProps) {
                     <div className="flex flex-col items-center md:items-start">
                         <div className="relative">
                             <div className="very-large-font-size h-32 w-32 overflow-hidden rounded-full bg-emerald-100">
-                                <Avatar className="text-light-base h-full w-full object-cover">
+                                <Avatar className="text-dark-base h-full w-full object-cover font-semibold">
                                     <AvatarImage src={user?.avatar} />
                                     <AvatarFallback>{user?.name?.[0] || 'U'}</AvatarFallback>
                                 </Avatar>
@@ -80,7 +106,7 @@ export function UserProfileHeader({ user }: UserProfileHeaderProps) {
                             <div className="flex flex-col gap-2 md:flex-row md:items-center">
                                 <h1 className="text-2xl font-bold">{user.name}</h1>
                                 {user.isVerified && (
-                                    <Badge variant="secondary" className="bg-blue-base w-fit">
+                                    <Badge variant="secondary" className="bg-blue-base text-light-base w-fit">
                                         <UserCheck className="mr-1 h-3 w-3" />
                                         Terverifikasi
                                     </Badge>
@@ -132,17 +158,49 @@ export function UserProfileHeader({ user }: UserProfileHeaderProps) {
 
                             <Button
                                 variant="outline"
-                                onClick={handleReport}
-                                className="bg-light-base hover:text-light-base gap-2 text-red-600"
-                                disabled={isReporting}
+                                onClick={() => setIsDialogOpen(true)}
+                                className="bg-light-base hover:text-light-base text-red-600 hover:bg-red-600"
                             >
                                 <Flag className="h-4 w-4" />
-                                {isReporting ? 'Melaporkan...' : 'Laporkan'}
+                                Laporkan
                             </Button>
                         </div>
                     </div>
                 </div>
             </CardContent>
+
+            {/* Dialog untuk pelaporan */}
+            <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+                <DialogContent>
+                    <DialogHeader>
+                        <DialogTitle>Laporkan Pengguna</DialogTitle>
+                        <DialogDescription>
+                            Mohon jelaskan alasan Anda melaporkan pengguna ini. Laporan akan dikirim ke admin untuk ditinjau.
+                        </DialogDescription>
+                    </DialogHeader>
+                    <form onSubmit={handleReport} className="space-y-4">
+                        <Textarea
+                            placeholder="Tulis alasan pelaporan..."
+                            value={data.reason}
+                            onChange={(e) => setData('reason', e.target.value)}
+                            rows={4}
+                            disabled={processing || isReporting}
+                            required
+                        />
+                        {errors.reason && <div className="text-sm text-red-600">{errors.reason}</div>}
+                        <DialogFooter>
+                            <DialogClose asChild>
+                                <Button type="button" variant="ghost" disabled={processing || isReporting}>
+                                    Batal
+                                </Button>
+                            </DialogClose>
+                            <Button type="submit" variant="destructive" disabled={processing || isReporting}>
+                                {isReporting ? 'Mengirim...' : 'Kirim Laporan'}
+                            </Button>
+                        </DialogFooter>
+                    </form>
+                </DialogContent>
+            </Dialog>
         </Card>
     );
 }

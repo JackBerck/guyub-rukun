@@ -1,10 +1,9 @@
 'use client';
 
-import { Calendar, Clock, MapPin, MessageSquare, Share2 } from 'lucide-react';
+import { Calendar, Clock, MapPin, MessageSquare } from 'lucide-react';
 import { useEffect, useState } from 'react';
 
 import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader } from '@/components/ui/card';
 import { Affair, Donation, Forum, UserProfile } from '@/types';
 import { Link } from '@inertiajs/react';
@@ -21,7 +20,7 @@ interface Post {
     date?: string;
     time?: string;
     createdAt: string;
-    comments: number;
+    comments?: number;
     isLiked: boolean;
     slug?: string;
 }
@@ -57,7 +56,7 @@ export function UserPostsGrid({ type, userData }: UserPostsGridProps) {
                         location: donation.address,
                         urgency: donation.urgency as 'low' | 'medium' | 'high' | undefined,
                         createdAt: new Date(donation.created_at).toLocaleDateString('id-ID'),
-                        comments: donation.comments?.length || 0,
+                        comments: donation.comments_count || 0,
                         isLiked: false,
                         slug: donation.slug,
                     }),
@@ -76,7 +75,7 @@ export function UserPostsGrid({ type, userData }: UserPostsGridProps) {
                         image: forum.thumbnail ? `/storage/${forum.thumbnail}` : undefined,
                         category: forum.forum_category?.name || 'Forum',
                         createdAt: new Date(forum.created_at).toLocaleDateString('id-ID'),
-                        comments: forum.comments?.length || 0,
+                        comments: forum.comments_count || 0,
                         isLiked: false,
                         slug: forum.slug,
                     }),
@@ -98,7 +97,7 @@ export function UserPostsGrid({ type, userData }: UserPostsGridProps) {
                         date: affair.date,
                         time: affair.time,
                         createdAt: new Date(affair.created_at).toLocaleDateString('id-ID'),
-                        comments: 0, // Not available in current API
+                        // comments: 0, // Not available in current API
                         isLiked: false,
                         slug: affair.slug,
                     }),
@@ -159,13 +158,13 @@ export function UserPostsGrid({ type, userData }: UserPostsGridProps) {
     const getDetailLink = (post: Post) => {
         switch (post.type) {
             case 'donation':
-                return `/donations/${post.slug}`;
+                return `/donation/${post.slug}`;
             case 'request':
-                return `/requests/${post.slug}`;
+                return `/request/${post.slug}`;
             case 'forum':
-                return `/forums/${post.slug}`;
+                return `/forum/${post.slug}`;
             case 'affair':
-                return `/affairs/${post.slug}`;
+                return `/affair/${post.slug}`;
             default:
                 return '#';
         }
@@ -265,13 +264,15 @@ export function UserPostsGrid({ type, userData }: UserPostsGridProps) {
 
                         <div className="flex items-center justify-between border-t pt-2">
                             <div className="flex items-center gap-4">
-                                <div className="flex items-center gap-1 text-gray-500">
-                                    <MessageSquare className="h-4 w-4" />
-                                    <span>{post.comments}</span>
-                                </div>
-                                <Button variant="ghost" size="sm" className="text-gray-500 hover:text-blue-500">
+                                {post.type !== 'affair' && (
+                                    <div className="flex items-center gap-1 text-gray-500">
+                                        <MessageSquare className="h-4 w-4" />
+                                        <span>{post.comments}</span>
+                                    </div>
+                                )}
+                                {/* <Button variant="ghost" size="sm" className="text-gray-500 hover:text-blue-500">
                                     <Share2 className="h-4 w-4" />
-                                </Button>
+                                </Button> */}
                             </div>
                             <div className="text-xs text-gray-400">{post.createdAt}</div>
                         </div>

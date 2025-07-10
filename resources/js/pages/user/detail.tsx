@@ -10,11 +10,12 @@ import { useMemo } from 'react';
 
 interface UserDetailPageProps extends SharedData {
     profileUser: UserProfile;
+    totalUserComments: number;
+    totalUserLikes: number;
 }
 
 export default function UserProfilePage() {
-    const { profileUser } = usePage<UserDetailPageProps>().props;
-    console.log('User Profile Data:', profileUser);
+    const { profileUser, totalUserComments, totalUserLikes } = usePage<UserDetailPageProps>().props;
 
     // Transform API data to match component expectations
     const userProfileData = useMemo(() => {
@@ -45,8 +46,8 @@ export default function UserProfilePage() {
                 requests,
                 forums: profileUser.forums?.length || 0,
                 events: profileUser.affairs?.length || 0,
-                likes: 0, // Not available in current API
-                comments: 0, // Not available in current API
+                likes: totalUserLikes,
+                comments: totalUserComments,
             },
         };
     }, [profileUser]);
@@ -64,7 +65,7 @@ export default function UserProfilePage() {
 
     return (
         <Layout>
-            <Head title={`${userProfileData.name} - Profil Pengguna`} />
+            <Head title={`Profil ${userProfileData.name}`} />
 
             <section className="section-padding-x py-8">
                 <div className="container max-w-screen-xl">
