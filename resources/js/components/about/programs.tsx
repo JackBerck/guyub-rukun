@@ -44,7 +44,7 @@ export default function ProgramsAbout() {
                 </div>
                 <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
                     {programs.map((program, index) => (
-                        <Card key={index} className="bg-light-base-100 text-dark-base gap-2 overflow-hidden p-0 transition-transform hover:scale-105">
+                        <Card key={index} className="bg-light-base-100 text-dark-base gap-2 overflow-hidden p-0">
                             <div className="aspect-video overflow-hidden">
                                 <img src={program.image} alt={program.title} className="h-full w-full object-cover" />
                             </div>
@@ -56,7 +56,7 @@ export default function ProgramsAbout() {
                                 <Button
                                     size="sm"
                                     asChild
-                                    className="border-blue-base text-blue-base hover:bg-blue-base hover:text-light-base mb-2 border text-xs"
+                                    className="border-blue-base bg-blue-base hover:bg-blue-700 text-light-base mb-2 border text-xs"
                                 >
                                     <Link href={program.link}>Pelajari Lebih Lanjut</Link>
                                 </Button>

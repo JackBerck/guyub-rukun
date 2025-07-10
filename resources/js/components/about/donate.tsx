@@ -1,4 +1,4 @@
-import { Button } from '../ui/button';
+import { Link } from '@inertiajs/react';
 
 export default function DonateAbout() {
     return (
@@ -11,7 +11,9 @@ export default function DonateAbout() {
                             Setiap donasi yang Anda berikan akan digunakan untuk mendukung program berbagi makanan yang kami adakan. Mari bersama kita
                             cegah kelaparan dan tingkatkan kepedulian sosial di Indonesia.
                         </p>
-                        <Button className="w-fit bg-white text-emerald-600 hover:bg-gray-100">Donasi Sekarang</Button>
+                        <Link href="/donate" className="w-fit bg-white text-emerald-600 hover:bg-gray-100 px-3 py-2 rounded-lg transition-colors duration-300">
+                            Donasi Sekarang
+                        </Link>
                     </div>
                 </div>
             </div>
