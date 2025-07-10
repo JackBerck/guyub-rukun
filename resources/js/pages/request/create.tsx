@@ -53,11 +53,13 @@ export default function CreateRequestPage({ donationCategories }: { donationCate
 
         post(route('donation.help.store'), {
             onSuccess: () => {
+                toast.success('Permintaan bantuan berhasil dibuat!');
                 reset();
                 setImagesPreviews([]);
                 localStorage.removeItem('request_draft');
             },
             onError: () => {
+                toast.error('Gagal membuat permintaan bantuan. Silakan periksa kembali data yang Anda masukkan.');
                 console.error('Error submitting request:', errors);
             },
         });

@@ -2,7 +2,7 @@ import { Button } from '@/components/ui/button';
 import apiClient from '@/services/api-service';
 import { Donation } from '@/types';
 import { Link } from '@inertiajs/react';
-import { Heart, Loader2, MapPin, MessageSquare, Share2 } from 'lucide-react';
+import { Heart, Loader2, MapPin, MessageSquare } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { toast } from 'sonner';
 import { Avatar, AvatarFallback, AvatarImage } from '../ui/avatar';
@@ -264,9 +264,9 @@ export default function DonationFeeds() {
                                     <MessageSquare className="h-4 w-4" />
                                     <span>{donation.comments?.length || 0}</span>
                                 </Button>
-                                <Button variant="ghost" size="sm" className="gap-1 text-gray-500 hover:bg-transparent hover:text-green-500">
+                                {/* <Button variant="ghost" size="sm" className="gap-1 text-gray-500 hover:bg-transparent hover:text-green-500">
                                     <Share2 className="h-4 w-4" />
-                                </Button>
+                                </Button> */}
                             </div>
                         </div>
                     </div>

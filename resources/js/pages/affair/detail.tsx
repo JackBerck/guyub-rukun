@@ -5,31 +5,13 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import Layout from '@/layouts/layout';
-import { AffairDetailPageProps, User } from '@/types';
+import { AffairDetailPageProps } from '@/types';
 import { Head, Link, usePage } from '@inertiajs/react';
-import { Calendar, Clock, MapPin, Share2 } from 'lucide-react';
-
-const relatedAffairs = [
-    {
-        id: 2,
-        title: 'Cooking Class: Zero Waste Recipes',
-        user: { name: 'Eco Kitchen' },
-        category: { name: 'Cooking Class' },
-        date: '2024-02-20',
-        location: 'Jakarta Pusat',
-    },
-    {
-        id: 3,
-        title: 'Community Garden Workshop',
-        user: { name: 'Urban Farmers' },
-        category: { name: 'Workshop' },
-        date: '2024-02-25',
-        location: 'Jakarta Timur',
-    },
-];
+import { Album, Calendar, Clock, MapPin, Share2 } from 'lucide-react';
+import { toast } from 'sonner';
 
 export default function AffairDetail() {
-    const { affair, auth } = usePage<AffairDetailPageProps & { auth: { user: User | null } }>().props;
+    const { affair, relatedAffairs } = usePage<AffairDetailPageProps>().props;
 
     const formatDate = (dateString: string) => {
         return new Date(dateString).toLocaleDateString('id-ID', {
@@ -53,7 +35,33 @@ export default function AffairDetail() {
         });
     };
 
-    // ...existing code...
+    const handleShare = async () => {
+        const currentUrl = window.location.href;
+
+        try {
+            // Modern browsers
+            if (navigator.clipboard && window.isSecureContext) {
+                await navigator.clipboard.writeText(currentUrl);
+            } else {
+                // Fallback for older browsers or non-HTTPS
+                const textArea = document.createElement('textarea');
+                textArea.value = currentUrl;
+                textArea.style.position = 'fixed';
+                textArea.style.left = '-999999px';
+                textArea.style.top = '-999999px';
+                document.body.appendChild(textArea);
+                textArea.focus();
+                textArea.select();
+                document.execCommand('copy');
+                document.body.removeChild(textArea);
+            }
+
+            toast.success('Berhasil menyalin link!');
+        } catch {
+            toast.error('Gagal menyalin link');
+        }
+    };
+
     return (
         <Layout>
             <Head title={`${affair.title} - Detail Acara`} />
@@ -71,11 +79,13 @@ export default function AffairDetail() {
                                             <AvatarFallback>{affair.user?.name?.[0] || 'U'}</AvatarFallback>
                                         </Avatar>
                                         <div>
-                                            <h6 className="font-semibold">{affair.user?.name || 'Unknown User'}</h6>
+                                            <Link href={route('user.detail', affair.user?.id)} className="text-dark-base hover:text-green-600">
+                                                <h6 className="font-semibold">{affair.user?.name || 'Unknown User'}</h6>
+                                            </Link>
                                             <p className="text-sm text-gray-500">{formatDateTime(affair.created_at)}</p>
                                         </div>
                                     </div>
-                                    <Badge variant="outline" className="bg-lime-base">
+                                    <Badge variant="outline" className="bg-lime-base text-light-base">
                                         {affair.affair_category?.name || 'Tidak ada kategori'}
                                     </Badge>
                                 </div>
@@ -105,18 +115,24 @@ export default function AffairDetail() {
                                 <div className="border-t pt-4">
                                     <div className="flex flex-wrap items-center justify-between">
                                         <div className="flex items-center space-x-4">
-                                            <Button variant="ghost" className="hover:bg-transparent hover:text-gray-600">
+                                            <Button onClick={handleShare} variant="ghost" className="hover:bg-transparent hover:text-gray-600">
                                                 <Share2 className="mr-2 h-4 w-4" />
                                                 Bagikan
                                             </Button>
                                         </div>
-                                        <Link
-                                            href={auth.user?.phone_number ? `https://wa.me/${auth.user?.phone_number}` : '#'}
+                                        <a
+                                            href={
+                                                affair.user?.phone_number
+                                                    ? `https://wa.me/${affair.user?.phone_number}`
+                                                    : affair.user?.email
+                                                      ? `mailto:${affair.user?.email}`
+                                                      : '#'
+                                            }
                                             className="focus-visible:border-ring focus-visible:ring-ring/50 aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive text-light-base inline-flex h-9 items-center justify-center gap-2 rounded-md bg-blue-600 px-4 py-2 text-sm font-medium whitespace-nowrap transition-[color,box-shadow] outline-none hover:bg-blue-700 hover:text-white focus-visible:ring-[3px] disabled:pointer-events-none disabled:opacity-50 has-[>svg]:px-3 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4"
                                             target="_blank"
                                         >
                                             Daftar Sekarang
-                                        </Link>
+                                        </a>
                                     </div>
                                 </div>
                             </CardContent>
@@ -131,9 +147,12 @@ export default function AffairDetail() {
                                 <CardTitle>Detail Acara</CardTitle>
                             </CardHeader>
                             <CardContent className="space-y-3">
-                                <div>
-                                    <p className="text-sm font-medium text-gray-500">Kategori</p>
-                                    <p className="text-sm">{affair.affair_category?.name || 'Tidak ada kategori'}</p>
+                                <div className="flex items-start space-x-2">
+                                    <Album className="mt-1 h-4 w-4 flex-shrink-0 text-gray-500" />
+                                    <div>
+                                        <p className="text-sm font-medium text-gray-500">Kategori</p>
+                                        <p className="text-sm">{affair.affair_category?.name || 'Tidak ada kategori'}</p>
+                                    </div>
                                 </div>
                                 <div className="flex items-start space-x-2">
                                     <Calendar className="mt-1 h-4 w-4 flex-shrink-0 text-gray-500" />
@@ -160,7 +179,7 @@ export default function AffairDetail() {
                         </Card>
 
                         {/* Organizer */}
-                        <Card className="bg-light-base text-dark-base">
+                        {/* <Card className="bg-light-base text-dark-base">
                             <CardHeader>
                                 <CardTitle>Penyelenggara</CardTitle>
                             </CardHeader>
@@ -182,7 +201,7 @@ export default function AffairDetail() {
                                     </Button>
                                 </div>
                             </CardContent>
-                        </Card>
+                        </Card> */}
 
                         {/* Related Affairs */}
                         <Card className="bg-light-base text-dark-base">
@@ -191,25 +210,31 @@ export default function AffairDetail() {
                             </CardHeader>
                             <CardContent>
                                 <div className="space-y-3">
-                                    {relatedAffairs.map((relatedAffair) => (
-                                        <div
-                                            key={relatedAffair.id}
-                                            className="cursor-pointer rounded-lg p-3 transition-all duration-200 hover:scale-[1.02] hover:bg-gray-100 hover:shadow-sm"
-                                        >
-                                            <h4 className="mb-1 line-clamp-2 text-sm font-medium transition-colors hover:text-green-600">
-                                                {relatedAffair.title}
-                                            </h4>
-                                            <p className="text-xs text-gray-500">{relatedAffair.user.name}</p>
-                                            <div className="mt-1 flex items-center justify-between text-xs text-gray-500">
-                                                <span>{relatedAffair.category.name}</span>
-                                                <span>{formatDate(relatedAffair.date)}</span>
+                                    {relatedAffairs && relatedAffairs.length > 0 ? (
+                                        relatedAffairs.map((relatedAffair) => (
+                                            <div
+                                                key={relatedAffair.id}
+                                                className="cursor-pointer rounded-lg p-3 transition-all duration-200 hover:scale-[1.02] hover:bg-gray-100 hover:shadow-sm"
+                                            >
+                                                <Link href={route('affair.view', relatedAffair.slug)} className="block">
+                                                    <h4 className="mb-1 line-clamp-2 text-sm font-medium transition-colors hover:text-green-600">
+                                                        {relatedAffair.title}
+                                                    </h4>
+                                                </Link>
+                                                <p className="text-xs text-gray-500">{relatedAffair.user.name}</p>
+                                                <div className="mt-1 flex items-center justify-between text-xs text-gray-500">
+                                                    <span>{relatedAffair.affair_category.name}</span>
+                                                    <span>{formatDate(relatedAffair.date)}</span>
+                                                </div>
+                                                <p className="mt-1 flex items-center text-xs text-gray-500">
+                                                    <MapPin className="mr-1 h-3 w-3" />
+                                                    {relatedAffair.location}
+                                                </p>
                                             </div>
-                                            <p className="mt-1 flex items-center text-xs text-gray-500">
-                                                <MapPin className="mr-1 h-3 w-3" />
-                                                {relatedAffair.location}
-                                            </p>
-                                        </div>
-                                    ))}
+                                        ))
+                                    ) : (
+                                        <p className="text-center text-sm text-gray-500">Tidak ada acara terkait.</p>
+                                    )}
                                 </div>
                             </CardContent>
                         </Card>

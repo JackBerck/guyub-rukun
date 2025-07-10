@@ -2,7 +2,7 @@ import { Button } from '@/components/ui/button';
 import apiClient from '@/services/api-service';
 import { Donation } from '@/types';
 import { Link } from '@inertiajs/react';
-import { AlertTriangle, Loader2, MapPin, MessageSquare, Phone, Share2 } from 'lucide-react';
+import { AlertTriangle, Loader2, MapPin, MessageSquare, Phone } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { toast } from 'sonner';
 import { Avatar, AvatarFallback, AvatarImage } from '../ui/avatar';
@@ -246,13 +246,21 @@ export function RequestFeeds() {
                                         <MessageSquare className="h-4 w-4" />
                                         <span>{request.comments?.length || 0}</span>
                                     </Button>
-                                    <Button variant="ghost" size="sm" className="gap-1 text-gray-500 hover:text-green-500">
+                                    {/* <Button variant="ghost" size="sm" className="gap-1 text-gray-500 hover:text-green-500">
                                         <Share2 className="h-4 w-4" />
-                                    </Button>
+                                    </Button> */}
                                 </div>
                                 {request.phone_number && (
                                     <a
-                                        href={request.phone_number ? `https://wa.me/${request.phone_number}` : '#'}
+                                        href={
+                                            request.phone_number
+                                                ? `https://wa.me/${request.phone_number}`
+                                                : request.user?.phone_number
+                                                  ? `https://wa.me/${request.user.phone_number}`
+                                                  : request.user.email
+                                                    ? `mailto:${request.user.email}`
+                                                    : '#'
+                                        }
                                         className="focus-visible:border-ring focus-visible:ring-ring/50 aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive bg-blue-base text-light-base inline-flex h-9 items-center justify-center gap-2 rounded-md px-4 py-2 text-sm font-medium whitespace-nowrap transition-[color,box-shadow] outline-none hover:bg-blue-700 hover:text-white focus-visible:ring-[3px] disabled:pointer-events-none disabled:opacity-50 has-[>svg]:px-3 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4"
                                         target="_blank"
                                     >

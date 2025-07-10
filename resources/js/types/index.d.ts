@@ -114,6 +114,7 @@ export interface DonationDetailPageProps {
     donation_category: DonationCategory;
     donation_images: DonationImage[];
     user: User;
+    relatedDonations?: Donation[];
     [key: string]: unknown;
 }
 
@@ -138,6 +139,7 @@ export interface Forum {
 export interface ForumDetailPageProps {
     forum: Forum;
     relatedForums?: Forum[];
+    forumIsLiked?: boolean;
     [key: string]: unknown;
 }
 
@@ -168,6 +170,7 @@ export interface Affair {
 
 export interface AffairDetailPageProps {
     affair: Affair;
+    relatedAffairs?: Affair[];
     [key: string]: unknown;
 }
 

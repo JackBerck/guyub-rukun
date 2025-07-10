@@ -48,9 +48,20 @@ class AffairController extends Controller
         // if ($affair->date < now()) {
         //     return redirect()->route('home')->withErrors(['error' => "Acara ini sudah lewat."]);
         // }
+        $affair->load(['user', 'affairCategory']);
+
+        $relatedAffairs = Affair::with(['user', 'affairCategory'])
+            ->where('date', '>=', now())
+            ->where('affair_category_id', $affair->affair_category_id)
+            ->where('id', '!=', $affair->id)
+            ->latest()
+            ->take(3)
+            ->get();
+
 
         return Inertia::render('affair/detail', [
-            'affair' => $affair->load(['user', 'affairCategory']),
+            'affair' => $affair,
+            'relatedAffairs' => $relatedAffairs,
         ]);
     }
 

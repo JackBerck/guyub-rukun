@@ -4,7 +4,7 @@ import { Button } from '@/components/ui/button';
 import apiClient from '@/services/api-service';
 import { Forum } from '@/types';
 import { Link } from '@inertiajs/react';
-import { Heart, Loader2, MessageSquare, Share2 } from 'lucide-react';
+import { Heart, Loader2, MessageSquare } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { toast } from 'sonner';
 
@@ -182,9 +182,9 @@ export function ForumFeeds() {
                                         <MessageSquare className="h-4 w-4" />
                                         <span>{forum.comments_count ? forum.comments_count : 0}</span>
                                     </Button>
-                                    <Button variant="ghost" size="sm" className="gap-1 text-gray-500 hover:text-green-500">
+                                    {/* <Button variant="ghost" size="sm" className="gap-1 text-gray-500 hover:text-green-500">
                                         <Share2 className="h-4 w-4" />
-                                    </Button>
+                                    </Button> */}
                                 </div>
                                 {/* <Link href={`/forums/${forum.slug}`}>
                                     <Button size="sm" className="text-light-base bg-indigo-600 hover:bg-indigo-700">

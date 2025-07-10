@@ -1,6 +1,6 @@
 'use client';
 
-import { Calendar, Clock, Loader2, MapPin, Share2 } from 'lucide-react';
+import { Calendar, Clock, Loader2, MapPin } from 'lucide-react';
 import { useEffect, useState } from 'react';
 
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
@@ -252,17 +252,26 @@ export function AffairFeeds() {
                             </Link>
 
                             {/* Post Actions */}
-                            <div className="flex items-center justify-between pt-2">
-                                <div className="flex items-center space-x-4">
+                            <div className="flex items-center justify-end pt-2">
+                                {/* <div className="flex items-center space-x-4">
                                     <Button variant="ghost" size="sm" className="gap-1 text-gray-500 hover:text-green-500">
                                         <Share2 className="h-4 w-4" />
                                     </Button>
-                                </div>
-                                <Link href={affair.user.phone_number ? `https://wa.me/${affair.user.phone_number}` : '#'}>
+                                </div> */}
+                                <a
+                                    href={
+                                        affair.user.phone_number
+                                            ? `https://wa.me/${affair.user.phone_number}`
+                                            : affair.user.email
+                                              ? `mailto:${affair.user.email}`
+                                              : '#'
+                                    }
+                                    target="_blank"
+                                >
                                     <Button size="sm" className="text-light-base bg-purple-600 hover:bg-purple-700">
                                         Daftar Acara
                                     </Button>
-                                </Link>
+                                </a>
                             </div>
                         </div>
                     </div>

@@ -13,10 +13,9 @@ import {
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Toaster } from '@/components/ui/sooner';
 import { Textarea } from '@/components/ui/textarea';
 import Layout from '@/layouts/layout';
-import { Donation, DonationDetailPageProps, User } from '@/types';
+import { DonationDetailPageProps, User } from '@/types';
 import { Head, Link, router, useForm, usePage } from '@inertiajs/react';
 import { Album, Clock, MapPin, MessageCircle, Phone, Share2, Trash2 } from 'lucide-react';
 import { useState } from 'react';
@@ -31,7 +30,6 @@ export default function DonationDetail() {
     const { donation, relatedDonations, auth } = usePage<
         DonationDetailPageProps & {
             auth: { user: User | null };
-            relatedDonations: Donation[];
         }
     >().props;
     const { data, setData, post, processing, errors, reset } = useForm<CreateComment>({
@@ -131,7 +129,9 @@ export default function DonationDetail() {
                                             <AvatarFallback>{donation.user?.name?.[0] || 'U'}</AvatarFallback>
                                         </Avatar>
                                         <div>
-                                            <h6 className="font-semibold">{donation.user?.name || 'Unknown User'}</h6>
+                                            <Link href={route('user.detail', donation.user?.id)} className="text-dark-base hover:text-green-600">
+                                                <h6 className="font-semibold">{donation.user?.name || 'Unknown User'}</h6>
+                                            </Link>
                                             <p className="text-sm text-gray-500">{formatDate(donation.created_at)}</p>
                                         </div>
                                     </div>
@@ -200,7 +200,7 @@ export default function DonationDetail() {
                         {/* Comments */}
                         <Card className="bg-light-base text-dark-base">
                             <CardHeader>
-                                <CardTitle>Komentar ({donation.comments?.length || 0})</CardTitle>
+                                <CardTitle>Komentar & Penawaran ({donation.comments?.length || 0})</CardTitle>
                             </CardHeader>
                             <CardContent>
                                 <form onSubmit={handleSubmit} className="mb-4">
@@ -233,7 +233,12 @@ export default function DonationDetail() {
                                                 <div className="flex-1">
                                                     <div className="rounded-lg bg-gray-50">
                                                         <div className="mb-1 flex items-center space-x-2">
-                                                            <span className="text-sm font-medium">{comment.user?.name || 'Unknown User'}</span>
+                                                            <Link
+                                                                href={route('user.detail', comment.user?.id)}
+                                                                className="text-dark-base hover:text-green-600"
+                                                            >
+                                                                <span className="text-sm font-medium">{comment.user?.name || 'Unknown User'}</span>
+                                                            </Link>
                                                             <span className="text-xs text-gray-500">{formatDate(comment.created_at)}</span>
                                                         </div>
                                                         <p className="text-sm">{comment.body}</p>
@@ -252,7 +257,7 @@ export default function DonationDetail() {
                                             </div>
                                         ))
                                     ) : (
-                                        <p className="py-4 text-center text-gray-500">Belum ada komentar</p>
+                                        <p className="text-center text-sm text-gray-500">Belum ada komentar</p>
                                     )}
                                 </div>
                             </CardContent>
@@ -307,27 +312,31 @@ export default function DonationDetail() {
                         {/* Top Posts */}
                         <Card className="bg-light-base text-dark-base">
                             <CardHeader>
-                                <CardTitle>Postingan Teratas</CardTitle>
+                                <CardTitle>Donasi Terkait</CardTitle>
                             </CardHeader>
                             <CardContent>
                                 <div className="space-y-3">
-                                    {relatedDonations.map((donation) => (
-                                        <div
-                                            key={donation.id}
-                                            className="cursor-pointer rounded-lg p-3 transition-all duration-200 hover:scale-[1.02] hover:bg-gray-100 hover:shadow-sm"
-                                        >
-                                            <Link href={route('donation.donate.view', donation.slug)}>
-                                                <h4 className="mb-1 line-clamp-2 text-sm font-medium transition-colors hover:text-green-600">
-                                                    {donation.title}
-                                                </h4>
-                                            </Link>
-                                            <p className="text-xs text-gray-500">{donation.user.name}</p>
-                                            <div className="mt-1 flex items-center justify-between text-xs text-gray-500">
-                                                <span>{donation.donation_category.name}</span>
-                                                <span>{formatDate(donation.created_at)}</span>
+                                    {relatedDonations && relatedDonations.length > 0 ? (
+                                        relatedDonations.map((donation) => (
+                                            <div
+                                                key={donation.id}
+                                                className="cursor-pointer rounded-lg p-3 transition-all duration-200 hover:scale-[1.02] hover:bg-gray-100 hover:shadow-sm"
+                                            >
+                                                <Link href={route('donation.donate.view', donation.slug)}>
+                                                    <h4 className="mb-1 line-clamp-2 text-sm font-medium transition-colors hover:text-green-600">
+                                                        {donation.title}
+                                                    </h4>
+                                                </Link>
+                                                <p className="text-xs text-gray-500">{donation.user.name}</p>
+                                                <div className="mt-1 flex items-center justify-between text-xs text-gray-500">
+                                                    <span>{donation.donation_category.name}</span>
+                                                    <span>{formatDate(donation.created_at)}</span>
+                                                </div>
                                             </div>
-                                        </div>
-                                    ))}
+                                        ))
+                                    ) : (
+                                        <p className="text-center text-sm text-gray-500">Tidak ada donasi terkait</p>
+                                    )}
                                 </div>
                             </CardContent>
                         </Card>
@@ -353,7 +362,6 @@ export default function DonationDetail() {
                     </AlertDialogFooter>
                 </AlertDialogContent>
             </AlertDialog>
-            <Toaster />
         </Layout>
     );
 }

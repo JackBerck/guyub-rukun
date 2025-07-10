@@ -14,11 +14,10 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Toaster } from '@/components/ui/sooner';
 import { Textarea } from '@/components/ui/textarea';
 import Layout from '@/layouts/layout';
 import { ForumDetailPageProps, User } from '@/types';
-import { Head, router, useForm, usePage } from '@inertiajs/react';
+import { Head, Link, router, useForm, usePage } from '@inertiajs/react';
 import { Album, Clock, MessageCircle, Share2, ThumbsUp, Trash2 } from 'lucide-react';
 import { useState } from 'react';
 import { toast } from 'sonner';
@@ -80,6 +79,14 @@ export default function ForumDetail() {
         }
 
         post(route('forum.comment.create', forum.slug), {
+            preserveScroll: true,
+            onSuccess: () => {
+                toast.success('Komentar berhasil ditambahkan');
+                reset();
+            },
+            onError: () => {
+                toast.error('Gagal menambahkan komentar');
+            },
             onFinish: () => {
                 reset();
             },
@@ -96,7 +103,32 @@ export default function ForumDetail() {
         });
     };
 
-    console.log('Forum Detail Page Props:', forum);
+    const handleShare = async () => {
+        const currentUrl = window.location.href;
+
+        try {
+            // Modern browsers
+            if (navigator.clipboard && window.isSecureContext) {
+                await navigator.clipboard.writeText(currentUrl);
+            } else {
+                // Fallback for older browsers or non-HTTPS
+                const textArea = document.createElement('textarea');
+                textArea.value = currentUrl;
+                textArea.style.position = 'fixed';
+                textArea.style.left = '-999999px';
+                textArea.style.top = '-999999px';
+                document.body.appendChild(textArea);
+                textArea.focus();
+                textArea.select();
+                document.execCommand('copy');
+                document.body.removeChild(textArea);
+            }
+
+            toast.success('Berhasil menyalin link!');
+        } catch {
+            toast.error('Gagal menyalin link');
+        }
+    };
 
     return (
         <Layout>
@@ -130,7 +162,9 @@ export default function ForumDetail() {
                                         <AvatarFallback>{forum.user?.name?.[0] || 'U'}</AvatarFallback>
                                     </Avatar>
                                     <div>
-                                        <h6 className="font-semibold">{forum.user?.name || 'Unknown User'}</h6>
+                                        <Link href={route('user.detail', forum.user?.id)} className="text-dark-base hover:text-green-600">
+                                            <h6 className="font-semibold">{forum.user?.name || 'Unknown User'}</h6>
+                                        </Link>
                                         <p className="text-sm text-gray-500">{formatDate(forum.created_at)}</p>
                                     </div>
                                 </div>
@@ -168,7 +202,7 @@ export default function ForumDetail() {
                                                 <MessageCircle className="mr-2 h-4 w-4" />
                                                 {forum.comments?.length || 0}
                                             </Button>
-                                            <Button variant="ghost" className="hover:bg-transparent hover:text-gray-600">
+                                            <Button onClick={handleShare} variant="ghost" className="hover:bg-transparent hover:text-gray-600">
                                                 <Share2 className="mr-2 h-4 w-4" />
                                                 Bagikan
                                             </Button>
@@ -214,7 +248,12 @@ export default function ForumDetail() {
                                                 <div className="flex-1">
                                                     <div className="rounded-lg bg-gray-50">
                                                         <div className="mb-1 flex items-center space-x-2">
-                                                            <span className="text-sm font-medium">{comment.user?.name || 'Unknown User'}</span>
+                                                            <Link
+                                                                href={route('user.detail', comment.user?.id)}
+                                                                className="text-dark-base hover:text-green-600"
+                                                            >
+                                                                <span className="text-sm font-medium">{comment.user?.name || 'Unknown User'}</span>
+                                                            </Link>
                                                             <span className="text-xs text-gray-500">{formatDate(comment.created_at)}</span>
                                                         </div>
                                                         <p className="text-sm">{comment.body}</p>
@@ -233,7 +272,7 @@ export default function ForumDetail() {
                                             </div>
                                         ))
                                     ) : (
-                                        <p className="py-4 text-center text-gray-500">Belum ada balasan</p>
+                                        <p className="text-center text-sm text-gray-500">Belum ada balasan</p>
                                     )}
                                 </div>
                             </CardContent>
@@ -266,7 +305,7 @@ export default function ForumDetail() {
                         </Card>
 
                         {/* Author */}
-                        <Card className="bg-light-base text-dark-base">
+                        {/* <Card className="bg-light-base text-dark-base">
                             <CardHeader>
                                 <CardTitle>Tentang Penulis</CardTitle>
                             </CardHeader>
@@ -279,11 +318,13 @@ export default function ForumDetail() {
                                     <h6 className="font-semibold">{forum.user?.name || 'Unknown User'}</h6>
                                     <p className="text-sm text-gray-500">{forum.user?.email || 'Email tidak tersedia'}</p>
                                 </div>
-                                <Button variant="outline" size="sm" className="bg-light-base text-dark-base w-full hover:bg-gray-50">
-                                    Lihat Profil
-                                </Button>
+                                <Link href={route('user.detail', forum.user?.id)} className="w-full">
+                                    <Button variant="outline" size="sm" className="bg-light-base text-dark-base w-full hover:bg-gray-100">
+                                        Lihat Profil
+                                    </Button>
+                                </Link>
                             </CardContent>
-                        </Card>
+                        </Card> */}
 
                         {/* Related Topics */}
                         <Card className="bg-light-base text-dark-base">
@@ -298,9 +339,11 @@ export default function ForumDetail() {
                                                 key={forum.id}
                                                 className="cursor-pointer rounded-lg p-3 transition-all duration-200 hover:scale-[1.02] hover:bg-gray-100 hover:shadow-sm"
                                             >
-                                                <h4 className="mb-1 line-clamp-2 text-sm font-medium transition-colors hover:text-green-600">
-                                                    {forum.title}
-                                                </h4>
+                                                <Link href={route('forum.view', forum.slug)} className="block">
+                                                    <h4 className="mb-1 line-clamp-2 text-sm font-medium transition-colors hover:text-green-600">
+                                                        {forum.title}
+                                                    </h4>
+                                                </Link>
                                                 <p className="text-xs text-gray-500">{forum.user.name}</p>
                                                 <div className="mt-1 flex items-center justify-between text-xs text-gray-500">
                                                     <span>{forum.forum_category.name}</span>
@@ -309,7 +352,7 @@ export default function ForumDetail() {
                                             </div>
                                         ))
                                     ) : (
-                                        <p className="py-4 text-center text-gray-500">Belum ada topik terkait</p>
+                                        <p className="text-center text-sm text-gray-500">Belum ada topik terkait</p>
                                     )}
                                 </div>
                             </CardContent>
@@ -336,7 +379,6 @@ export default function ForumDetail() {
                     </AlertDialogFooter>
                 </AlertDialogContent>
             </AlertDialog>
-            <Toaster />
         </Layout>
     );
 }
