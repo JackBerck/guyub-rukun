@@ -1,5 +1,4 @@
 import { Button } from '@/components/ui/button';
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { useForm } from '@inertiajs/react';
@@ -37,69 +36,57 @@ export default function ContactForm() {
     };
 
     return (
-        <Form onSubmit={handleSubmit} className="space-y-4 rounded-md p-2 lg:p-6">
-            <FormField>
-                <FormItem>
-                    <FormLabel htmlFor="name">
-                        Nama <span className="text-red-600">*</span>
-                    </FormLabel>
-                    <FormControl>
-                        <Input
-                            id="name"
-                            name="name"
-                            placeholder="Masukkan nama lengkap..."
-                            required
-                            value={data.name}
-                            onChange={handleChange('name')}
-                            disabled={processing}
-                        />
-                    </FormControl>
-                    <FormMessage>{errors.name}</FormMessage>
-                </FormItem>
-            </FormField>
-            <FormField>
-                <FormItem>
-                    <FormLabel htmlFor="email">
-                        Email <span className="text-red-600">*</span>
-                    </FormLabel>
-                    <FormControl>
-                        <Input
-                            id="email"
-                            name="email"
-                            type="email"
-                            placeholder="Masukkan alamat email..."
-                            required
-                            value={data.email}
-                            onChange={handleChange('email')}
-                            disabled={processing}
-                        />
-                    </FormControl>
-                    <FormMessage>{errors.email}</FormMessage>
-                </FormItem>
-            </FormField>
-            <FormField>
-                <FormItem>
-                    <FormLabel htmlFor="message">
-                        Pesan <span className="text-red-600">*</span>
-                    </FormLabel>
-                    <FormControl>
-                        <Textarea
-                            id="message"
-                            name="message"
-                            placeholder="Masukkan pesan..."
-                            required
-                            rows={4}
-                            value={data.message}
-                            onChange={handleChange('message')}
-                            disabled={processing}
-                        />
-                    </FormControl>
-                    <FormMessage>{errors.message}</FormMessage>
-                </FormItem>
-            </FormField>
-            <Button type="submit" disabled={processing}>
+        <form onSubmit={handleSubmit} className="space-y-4 rounded-md p-2 lg:p-6">
+            <div>
+                <label htmlFor="name" className="mb-1 block font-medium">
+                    Nama <span className="text-red-600">*</span>
+                </label>
+                <Input
+                    id="name"
+                    name="name"
+                    placeholder="Masukkan nama lengkap..."
+                    required
+                    value={data.name}
+                    onChange={handleChange('name')}
+                    disabled={processing}
+                />
+                {errors.name && <p className="mt-1 text-sm text-red-600">{errors.name}</p>}
+            </div>
+            <div>
+                <label htmlFor="email" className="mb-1 block font-medium">
+                    Email <span className="text-red-600">*</span>
+                </label>
+                <Input
+                    id="email"
+                    name="email"
+                    type="email"
+                    placeholder="Masukkan alamat email..."
+                    required
+                    value={data.email}
+                    onChange={handleChange('email')}
+                    disabled={processing}
+                />
+                {errors.email && <p className="mt-1 text-sm text-red-600">{errors.email}</p>}
+            </div>
+            <div>
+                <label htmlFor="message" className="mb-1 block font-medium">
+                    Pesan <span className="text-red-600">*</span>
+                </label>
+                <Textarea
+                    id="message"
+                    name="message"
+                    placeholder="Masukkan pesan..."
+                    required
+                    rows={4}
+                    value={data.message}
+                    onChange={handleChange('message')}
+                    disabled={processing}
+                />
+                {errors.message && <p className="mt-1 text-sm text-red-600">{errors.message}</p>}
+            </div>
+            <Button type="submit" disabled={processing} className="w-full rounded bg-blue-600 px-4 py-2 font-semibold text-white hover:bg-blue-700">
                 Kirim
             </Button>
-        </Form>
+        </form>
     );
 }

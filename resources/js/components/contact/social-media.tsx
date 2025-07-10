@@ -41,7 +41,7 @@ export default function ContactSocialMedia() {
 
                 <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
                     {socialMedia.map((social, index) => (
-                        <Card key={index} className="transition-transform hover:scale-105 p-0 gap-0 bg-light-base text-dark-base">
+                        <Card key={index} className="p-0 gap-0 bg-light-base text-dark-base">
                             <CardContent className="p-6 text-center">
                                 <div className={`mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full ${social.color} text-white`}>
                                     <span className="text-2xl font-bold">{social.name.charAt(0)}</span>

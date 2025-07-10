@@ -25,6 +25,7 @@ Route::get("donation/{donation:slug}", [DonationController::class, "viewDonate"]
 Route::get("forum/{forum:slug}", [ForumController::class, "view"])->name("forum.view");
 Route::get("affair/{affair:slug}", [AffairController::class, "view"])->name("affair.view");
 Route::get("help/{donation:slug}", [DonationController::class, "viewHelp"])->name("donation.help.view");
+Route::post('contact', [\App\Http\Controllers\ContactController::class, 'send'])->name('contact.send');
 
 Route::middleware(['auth', 'verified'])->group(function () {
     // Route Donate and help
