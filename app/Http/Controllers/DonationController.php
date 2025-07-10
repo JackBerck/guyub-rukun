@@ -183,7 +183,7 @@ class DonationController extends Controller
             // Update donation data
             $donation->update($data);
 
-            return redirect()->route('profile.donations')
+            return redirect()->route('profile.requests')
                 ->with('status', "Postingan $donation->title berhasil diperbarui");
         } catch (\Exception $e) {
             Log::error($e->getMessage()); // Log error untuk debugging

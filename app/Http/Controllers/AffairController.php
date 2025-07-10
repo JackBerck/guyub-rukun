@@ -119,7 +119,7 @@ class AffairController extends Controller
 
             $affair->delete();
 
-            return redirect()->route('donations.index')
+            return redirect()->route('profile.affairs')
                 ->with('status', "Acara $affair->title berhasil dihapus");
         } catch (\Exception $e) {
             Log::error($e->getMessage());

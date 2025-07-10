@@ -75,7 +75,7 @@ export default function AffairDetail() {
                                 <div className="mb-4 flex items-center justify-between">
                                     <div className="flex items-center space-x-3">
                                         <Avatar className="text-dark-base font-semibold">
-                                            <AvatarImage src={affair.user?.image} />
+                                            <AvatarImage src={`/storage/${affair.user?.image}`} alt={`Foto ${affair.user?.name}`} />
                                             <AvatarFallback>{affair.user?.name?.[0] || 'U'}</AvatarFallback>
                                         </Avatar>
                                         <div>

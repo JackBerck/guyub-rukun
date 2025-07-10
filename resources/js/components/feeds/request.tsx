@@ -166,7 +166,7 @@ export function RequestFeeds() {
                     <div className="flex gap-3">
                         {/* User Avatar */}
                         <Avatar className="h-10 w-10 shrink-0 font-semibold">
-                            <AvatarImage src={request.user.image} alt={request.user.name} />
+                            <AvatarImage src={`/storage/${request.user.image}`} alt={`Foto ${request.user.name}`} />
                             <AvatarFallback>{request.user.name[0]}</AvatarFallback>
                         </Avatar>
 

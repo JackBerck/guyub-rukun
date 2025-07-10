@@ -160,7 +160,7 @@ export function UserPostsGrid({ type, userData }: UserPostsGridProps) {
             case 'donation':
                 return `/donation/${post.slug}`;
             case 'request':
-                return `/request/${post.slug}`;
+                return `/help/${post.slug}`;
             case 'forum':
                 return `/forum/${post.slug}`;
             case 'affair':

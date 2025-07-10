@@ -93,7 +93,7 @@ export function UserProfileHeader({ user }: UserProfileHeaderProps) {
                         <div className="relative">
                             <div className="very-large-font-size h-32 w-32 overflow-hidden rounded-full bg-emerald-100">
                                 <Avatar className="text-dark-base h-full w-full object-cover font-semibold">
-                                    <AvatarImage src={user?.avatar} />
+                                    <AvatarImage src={`/storage/${user?.avatar}`} alt={`Foto ${user.name}`} />
                                     <AvatarFallback>{user?.name?.[0] || 'U'}</AvatarFallback>
                                 </Avatar>
                             </div>

@@ -126,7 +126,7 @@ export default function EditForumPage({ forum, forumCategories }: { forum: EditF
                                     disabled={processing}
                                     className="text-light-base w-full bg-emerald-600 py-4 hover:bg-emerald-700"
                                 >
-                                    {processing ? 'Memproses...' : 'Perbarui Donasi'}
+                                    {processing ? 'Memproses...' : 'Perbarui Forum'}
                                 </Button>
                                 <Button type="button" variant="destructive" className="text-light-base w-full" onClick={cancelChanges}>
                                     Batalkan Perubahan

@@ -57,6 +57,10 @@ export default function CreateDonationPage({ donationCategories }: { donationCat
                 setImagesPreviews([]);
                 localStorage.removeItem('donation_draft');
             },
+            onError: (errors) => {
+                toast.error('Gagal membuat donasi. Silakan periksa kembali data yang Anda masukkan.');
+                console.error(errors);
+            },
         });
     };
 

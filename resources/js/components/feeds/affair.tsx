@@ -177,7 +177,7 @@ export function AffairFeeds() {
                     <div className="flex gap-3">
                         {/* User Avatar */}
                         <Avatar className="h-10 w-10 shrink-0 font-semibold">
-                            <AvatarImage src={affair.user.image} alt={affair.user.name} />
+                            <AvatarImage src={`/storage/${affair.user.image}`} alt={`Foto ${affair.user.name}`} />
                             <AvatarFallback>{affair.user.name[0]}</AvatarFallback>
                         </Avatar>
 

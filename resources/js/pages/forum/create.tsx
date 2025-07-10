@@ -266,7 +266,7 @@ export default function CreateForumPage({ forumCategories }: { forumCategories: 
                                     disabled={processing}
                                     className="text-light-base w-full bg-emerald-600 py-4 hover:bg-emerald-700"
                                 >
-                                    {processing ? 'Memproses...' : 'Publikasikan Donasi'}
+                                    {processing ? 'Memproses...' : 'Publikasikan Forum'}
                                 </Button>
                                 <Button type="button" variant="outline" className="w-full" onClick={saveForDraft}>
                                     Simpan sebagai Draft

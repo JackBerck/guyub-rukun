@@ -125,7 +125,7 @@ export default function DonationDetail() {
                                 <div className="mb-4 flex items-center justify-between">
                                     <div className="flex items-center space-x-3">
                                         <Avatar className="text-dark-base font-semibold">
-                                            <AvatarImage src={donation.user?.image} />
+                                            <AvatarImage src={`/storage/${donation.user?.image}`} alt={`Foto ${donation.user?.name}`} />
                                             <AvatarFallback>{donation.user?.name?.[0] || 'U'}</AvatarFallback>
                                         </Avatar>
                                         <div>
@@ -227,7 +227,7 @@ export default function DonationDetail() {
                                         donation.comments.map((comment) => (
                                             <div key={comment.id} className="flex space-x-3">
                                                 <Avatar className="text-dark-base h-8 w-8">
-                                                    <AvatarImage src={comment.user?.image} />
+                                                    <AvatarImage src={`/storage/${comment.user?.image}`} alt={`Foto ${comment.user?.name}`} />
                                                     <AvatarFallback>{comment.user?.name?.[0] || 'U'}</AvatarFallback>
                                                 </Avatar>
                                                 <div className="flex-1">

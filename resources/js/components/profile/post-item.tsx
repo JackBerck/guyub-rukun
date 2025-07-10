@@ -1,12 +1,12 @@
 'use client';
 
-import { Clock, Edit, MapPin, MoreHorizontal, Trash2 } from 'lucide-react';
-import { useState } from 'react';
-
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader } from '@/components/ui/card';
+import { Dialog, DialogClose, DialogContent, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 import { Link, router } from '@inertiajs/react';
+import { Clock, Edit, MapPin, MoreHorizontal, Trash2 } from 'lucide-react';
+import { useState } from 'react';
 import { toast } from 'sonner';
 
 interface PostItemProps {
@@ -33,6 +33,7 @@ interface PostItemProps {
 // Sebelumnya di depan saya kasih parameter `id`, tapi ternyata tidak digunakan di dalam komponen ini.
 export function PostItem({ title, slug, description, image, location, category, urgency, date, time, createdAt, type, stats }: PostItemProps) {
     const [isDeleting, setIsDeleting] = useState(false);
+    const [isDialogOpen, setIsDialogOpen] = useState(false);
 
     const handleEdit = () => {
         if (type === 'donation') {
@@ -47,12 +48,7 @@ export function PostItem({ title, slug, description, image, location, category, 
     };
 
     const handleDelete = async () => {
-        if (!confirm('Apakah Anda yakin ingin menghapus postingan ini?')) {
-            return;
-        }
-
         setIsDeleting(true);
-
         try {
             if (type === 'donation' || type === 'request') {
                 router.delete(route('donation.remove', slug), {
@@ -64,6 +60,7 @@ export function PostItem({ title, slug, description, image, location, category, 
                     },
                     onFinish: () => {
                         setIsDeleting(false);
+                        setIsDialogOpen(false);
                     },
                 });
             } else if (type === 'forum') {
@@ -76,6 +73,7 @@ export function PostItem({ title, slug, description, image, location, category, 
                     },
                     onFinish: () => {
                         setIsDeleting(false);
+                        setIsDialogOpen(false);
                     },
                 });
             } else if (type === 'affair') {
@@ -88,12 +86,14 @@ export function PostItem({ title, slug, description, image, location, category, 
                     },
                     onFinish: () => {
                         setIsDeleting(false);
+                        setIsDialogOpen(false);
                     },
                 });
             }
         } catch {
             toast.error('Terjadi kesalahan saat menghapus');
             setIsDeleting(false);
+            setIsDialogOpen(false);
         }
     };
 
@@ -214,21 +214,15 @@ export function PostItem({ title, slug, description, image, location, category, 
                             </Button>
                         </DropdownMenuTrigger>
                         <DropdownMenuContent align="end" className="bg-light-base text-dark-base">
-                            {/* <DropdownMenuItem asChild>
-                                <Link href={getDetailUrl()}>
-                                    <ExternalLink className="mr-2 h-4 w-4" />
-                                    Lihat Detail
-                                </Link>
-                            </DropdownMenuItem> */}
                             <DropdownMenuItem onClick={handleEdit}>
                                 <Edit className="mr-2 h-4 w-4" />
                                 Edit
                             </DropdownMenuItem>
-                            <DropdownMenuItem onClick={handleDelete} className="text-red-600" disabled={isDeleting}>
+                            <DropdownMenuItem onClick={() => setIsDialogOpen(true)} className="text-red-600" disabled={isDeleting}>
                                 <Trash2 className="mr-2 h-4 w-4" />
                                 {isDeleting ? 'Menghapus...' : 'Hapus'}
                             </DropdownMenuItem>
-                        </DropdownMenuContent>
+                    </DropdownMenuContent>
                     </DropdownMenu>
                 </div>
             </CardHeader>
@@ -250,6 +244,25 @@ export function PostItem({ title, slug, description, image, location, category, 
                     )}
                 </div>
             </CardContent>
+            {/* Dialog Konfirmasi Hapus */}
+            <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+                <DialogContent>
+                    <DialogHeader>
+                        <DialogTitle>Konfirmasi Hapus</DialogTitle>
+                    </DialogHeader>
+                    <p>Apakah Anda yakin ingin menghapus postingan ini? Tindakan ini tidak dapat dibatalkan.</p>
+                    <DialogFooter>
+                        <DialogClose asChild>
+                            <Button type="button" variant="ghost" disabled={isDeleting}>
+                                Batal
+                            </Button>
+                        </DialogClose>
+                        <Button type="button" variant="destructive" onClick={handleDelete} disabled={isDeleting}>
+                            {isDeleting ? 'Menghapus...' : 'Hapus'}
+                        </Button>
+                    </DialogFooter>
+                </DialogContent>
+            </Dialog>
         </Card>
     );
 }

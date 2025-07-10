@@ -152,8 +152,8 @@ export default function ProfilePage() {
                             <div className="flex items-center gap-4">
                                 <div className="relative">
                                     <div className="h-20 w-20 overflow-hidden rounded-full bg-emerald-100">
-                                        <Avatar className="text-light-base large-font-size h-full w-full shrink-0">
-                                            <AvatarImage src={user.image ? `/storage/${user.image}` : '/placeholder.svg'} alt={user.name} />
+                                        <Avatar className="text-dark-base large-font-size h-full w-full shrink-0 font-semibold">
+                                            <AvatarImage src={`/storage/${user.image}`} alt={user.name} />
                                             <AvatarFallback>{user?.name?.[0] || 'U'}</AvatarFallback>
                                         </Avatar>
                                     </div>

@@ -116,6 +116,7 @@ class ProfileController extends Controller
     {
         $donations = Auth::user()->donations()
             ->with(['donationCategory', 'donationImages', 'user'])
+            ->where('type', 'donation')
             ->orderBy('created_at', 'desc')
             ->get()
             ->map(function ($donation) {

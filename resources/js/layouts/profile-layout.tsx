@@ -88,7 +88,7 @@ export function ProfileLayout({ children }: ProfileLayoutProps) {
             <Card className="bg-light-base text-dark-base shadow-none">
                 <CardContent className="p-4">
                     <div className="flex flex-row items-center gap-2 text-left lg:flex-col lg:text-center xl:flex-row xl:text-left">
-                        <Avatar className="large-font-size text-light-base h-12 w-12 shrink-0">
+                        <Avatar className="large-font-size text-dark-base h-12 w-12 shrink-0 font-semibold">
                             <AvatarImage src={`/storage/${user.image}`} alt={user.name} className="object-cover" />
                             <AvatarFallback>{user.name?.[0] || 'U'}</AvatarFallback>
                         </Avatar>

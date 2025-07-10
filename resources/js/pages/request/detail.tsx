@@ -129,7 +129,7 @@ export default function RequestDetail() {
                                 <div className="mb-4 flex items-center justify-between">
                                     <div className="flex items-center space-x-3">
                                         <Avatar>
-                                            <AvatarImage src={donation.user?.image} />
+                                            <AvatarImage src={`/storage/${donation.user?.image}`} alt={`Foto ${donation.user?.name}`} />
                                             <AvatarFallback className="text-dark-base font-semibold">
                                                 {donation.user?.name?.[0] || 'U'}
                                             </AvatarFallback>

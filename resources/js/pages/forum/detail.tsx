@@ -158,7 +158,7 @@ export default function ForumDetail() {
 
                                 <div className="flex items-center space-x-3">
                                     <Avatar className="text-dark-base font-semibold">
-                                        <AvatarImage src={forum.user?.image} />
+                                        <AvatarImage src={`/storage/${forum.user?.image}`} alt={`Foto ${forum.user?.name}`} />
                                         <AvatarFallback>{forum.user?.name?.[0] || 'U'}</AvatarFallback>
                                     </Avatar>
                                     <div>
@@ -242,7 +242,7 @@ export default function ForumDetail() {
                                         forum.comments.map((comment) => (
                                             <div key={comment.id} className="flex space-x-3">
                                                 <Avatar className="text-dark-base h-8 w-8">
-                                                    <AvatarImage src={comment.user?.image} />
+                                                    <AvatarImage src={`/storage/${comment.user?.image}`} alt={`Foto ${comment.user?.name}`} />
                                                     <AvatarFallback>{comment.user?.name?.[0] || 'U'}</AvatarFallback>
                                                 </Avatar>
                                                 <div className="flex-1">
