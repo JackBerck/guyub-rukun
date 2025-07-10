@@ -130,7 +130,7 @@ export function ForumFeeds() {
                     <div className="flex gap-3">
                         {/* User Avatar */}
                         <Avatar className="h-10 w-10 shrink-0 font-semibold uppercase">
-                            <AvatarImage src={forum.user.image || '/placeholder.svg'} alt={forum.user.name} />
+                            <AvatarImage src={forum.user.image} alt={forum.user.name} />
                             <AvatarFallback>{forum.user.name[0]}</AvatarFallback>
                         </Avatar>
 

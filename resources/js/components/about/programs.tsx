@@ -46,7 +46,7 @@ export default function ProgramsAbout() {
                     {programs.map((program, index) => (
                         <Card key={index} className="bg-light-base-100 text-dark-base gap-2 overflow-hidden p-0 transition-transform hover:scale-105">
                             <div className="aspect-video overflow-hidden">
-                                <img src={program.image || '/placeholder.svg'} alt={program.title} className="h-full w-full object-cover" />
+                                <img src={program.image} alt={program.title} className="h-full w-full object-cover" />
                             </div>
                             <CardHeader className="px-2">
                                 <CardTitle className="text-lg">{program.title}</CardTitle>

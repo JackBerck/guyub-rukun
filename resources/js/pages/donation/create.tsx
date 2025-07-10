@@ -248,11 +248,7 @@ export default function CreateDonationPage({ donationCategories }: { donationCat
                                     <div className="grid grid-cols-3 gap-4">
                                         {imagesPreviews.map((imageUrl, index) => (
                                             <div key={index} className="relative aspect-square overflow-hidden rounded-md bg-gray-100">
-                                                <img
-                                                    src={imageUrl || '/placeholder.svg'}
-                                                    alt={`Donasi ${index + 1}`}
-                                                    className="h-full w-full object-cover"
-                                                />
+                                                <img src={imageUrl} alt={`Donasi ${index + 1}`} className="h-full w-full object-cover" />
                                                 <button
                                                     type="button"
                                                     onClick={() => handleRemoveImage(index)}

@@ -67,7 +67,7 @@ export function UserProfileHeader({ user }: UserProfileHeaderProps) {
                         <div className="relative">
                             <div className="very-large-font-size h-32 w-32 overflow-hidden rounded-full bg-emerald-100">
                                 <Avatar className="text-light-base h-full w-full object-cover">
-                                    <AvatarImage src={user?.avatar || '/placeholder.svg'} />
+                                    <AvatarImage src={user?.avatar} />
                                     <AvatarFallback>{user?.name?.[0] || 'U'}</AvatarFallback>
                                 </Avatar>
                             </div>

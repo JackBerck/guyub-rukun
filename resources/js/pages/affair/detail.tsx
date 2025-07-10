@@ -67,7 +67,7 @@ export default function AffairDetail() {
                                 <div className="mb-4 flex items-center justify-between">
                                     <div className="flex items-center space-x-3">
                                         <Avatar className="text-dark-base font-semibold">
-                                            <AvatarImage src={affair.user?.image || '/placeholder.svg'} />
+                                            <AvatarImage src={affair.user?.image} />
                                             <AvatarFallback>{affair.user?.name?.[0] || 'U'}</AvatarFallback>
                                         </Avatar>
                                         <div>
@@ -167,7 +167,7 @@ export default function AffairDetail() {
                             <CardContent>
                                 <div className="mb-4 text-center">
                                     <Avatar className="text-light-base mx-auto mb-2 h-16 w-16">
-                                        <AvatarImage src={affair.user?.image || '/placeholder.svg'} />
+                                        <AvatarImage src={affair.user?.image} />
                                         <AvatarFallback>{affair.user?.name?.[0] || 'U'}</AvatarFallback>
                                     </Avatar>
                                     <h6 className="font-semibold">{affair.user?.name || 'Unknown User'}</h6>

@@ -113,9 +113,9 @@ export default function ProfileLikedPage() {
                                                 </div>
                                                 <h3 className="mb-2 text-lg font-semibold">{post.title}</h3>
                                             </div>
-                                            <div className="text-xs text-gray-400 flex-1">Disukai {post.likedAt}</div>
+                                            <div className="flex-1 text-xs text-gray-400">Disukai {post.likedAt}</div>
                                         </div>
-                                        <div className="flex items-center gap-4 extra-small-font-size text-gray-500">
+                                        <div className="extra-small-font-size flex items-center gap-4 text-gray-500">
                                             <span>oleh {post.author}</span>
                                             <div className="flex items-center gap-1">
                                                 <Clock className="h-3 w-3" />
@@ -133,11 +133,7 @@ export default function ProfileLikedPage() {
                                         <div className="space-y-4">
                                             {post.image && (
                                                 <div className="aspect-video overflow-hidden rounded-lg bg-gray-100">
-                                                    <img
-                                                        src={post.image || '/placeholder.svg'}
-                                                        alt={post.title}
-                                                        className="h-full w-full object-cover"
-                                                    />
+                                                    <img src={post.image} alt={post.title} className="h-full w-full object-cover" />
                                                 </div>
                                             )}
                                             <p className="text-sm text-gray-600">{post.description}</p>

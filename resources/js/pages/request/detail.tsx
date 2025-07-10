@@ -157,7 +157,7 @@ export default function RequestDetail() {
                                 <div className="mb-4 flex items-center justify-between">
                                     <div className="flex items-center space-x-3">
                                         <Avatar>
-                                            <AvatarImage src={donation.user?.image || '/placeholder.svg'} />
+                                            <AvatarImage src={donation.user?.image} />
                                             <AvatarFallback className="text-light-base">{donation.user?.name?.[0] || 'U'}</AvatarFallback>
                                         </Avatar>
                                         <div>
@@ -244,7 +244,7 @@ export default function RequestDetail() {
                                         donation.comments.map((comment) => (
                                             <div key={comment.id} className="relative flex space-x-3">
                                                 <Avatar className="text-light-base h-8 w-8">
-                                                    <AvatarImage src={comment.user.image || '/placeholder.svg'} />
+                                                    <AvatarImage src={comment.user.image} />
                                                     <AvatarFallback>{comment.user.name[0]}</AvatarFallback>
                                                 </Avatar>
                                                 <div className="flex-1">
@@ -334,7 +334,7 @@ export default function RequestDetail() {
                             <CardContent>
                                 <div className="mb-4 text-center">
                                     <Avatar className="text-light-base mx-auto mb-2 h-16 w-16">
-                                        <AvatarImage src={donation.user?.image || '/placeholder.svg'} />
+                                        <AvatarImage src={donation.user?.image} />
                                         <AvatarFallback>{donation.user?.name?.[0] || 'U'}</AvatarFallback>
                                     </Avatar>
                                     <h6 className="font-semibold">{donation.user?.name || 'Unknown User'}</h6>

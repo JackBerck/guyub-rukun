@@ -176,7 +176,7 @@ export function AffairFeeds() {
                     <Calendar className="h-8 w-8 text-gray-400" />
                 </div>
                 <h3 className="mb-2 text-lg font-semibold text-gray-900">Belum Ada Acara</h3>
-                <p className="text-gray-600 mb-4">Belum ada acara yang tersedia saat ini.</p>
+                <p className="mb-4 text-gray-600">Belum ada acara yang tersedia saat ini.</p>
                 <Button asChild>
                     <Link href="/share-affair">Bagikan Acara</Link>
                 </Button>
@@ -190,7 +190,7 @@ export function AffairFeeds() {
                     <div className="flex gap-3">
                         {/* User Avatar */}
                         <Avatar className="h-10 w-10 shrink-0 font-semibold">
-                            <AvatarImage src={affair.user.image || '/placeholder.svg'} alt={affair.user.name} />
+                            <AvatarImage src={affair.user.image} alt={affair.user.name} />
                             <AvatarFallback>{affair.user.name[0]}</AvatarFallback>
                         </Avatar>
 

@@ -199,7 +199,7 @@ export default function DonationFeeds() {
                         {/* User Avatar */}
                         <div className="flex h-10 w-10 shrink-0 items-center justify-center overflow-hidden rounded-full bg-gray-100">
                             <Avatar className="text-dark-base font-semibold">
-                                <AvatarImage src={donation.user?.image || '/placeholder.svg'} />
+                                <AvatarImage src={donation.user?.image} />
                                 <AvatarFallback>{donation.user?.name?.[0] || 'U'}</AvatarFallback>
                             </Avatar>
                         </div>

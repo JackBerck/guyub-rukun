@@ -295,11 +295,7 @@ export default function CreateEventPage({ affairCategories }: { affairCategories
                                     <div className="flex gap-4">
                                         {thumbnailPreview ? (
                                             <div className="relative aspect-video w-64 overflow-hidden rounded-md bg-gray-100">
-                                                <img
-                                                    src={thumbnailPreview || '/placeholder.svg'}
-                                                    alt="Thumbnail Acara"
-                                                    className="h-full w-full object-cover"
-                                                />
+                                                <img src={thumbnailPreview} alt="Thumbnail Acara" className="h-full w-full object-cover" />
                                                 <button
                                                     type="button"
                                                     onClick={handleRemoveThumbnail}

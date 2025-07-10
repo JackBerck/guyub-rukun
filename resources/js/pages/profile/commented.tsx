@@ -93,7 +93,7 @@ export default function ProfileCommentedPage() {
                                                 </div>
                                                 <h3 className="mb-2 text-lg font-semibold">{post.title}</h3>
                                             </div>
-                                            <div className="text-xs text-gray-400 flex-1">Dikomentari {post.commentedAt}</div>
+                                            <div className="flex-1 text-xs text-gray-400">Dikomentari {post.commentedAt}</div>
                                         </div>
                                         <div className="extra-small-font-size flex items-center gap-4 text-gray-500">
                                             <span>oleh {post.author}</span>
@@ -113,11 +113,7 @@ export default function ProfileCommentedPage() {
                                         <div className="space-y-4">
                                             {post.image && (
                                                 <div className="aspect-video overflow-hidden rounded-lg bg-gray-100">
-                                                    <img
-                                                        src={post.image || '/placeholder.svg'}
-                                                        alt={post.title}
-                                                        className="h-full w-full object-cover"
-                                                    />
+                                                    <img src={post.image} alt={post.title} className="h-full w-full object-cover" />
                                                 </div>
                                             )}
                                             <p className="text-sm text-gray-600">{post.description}</p>

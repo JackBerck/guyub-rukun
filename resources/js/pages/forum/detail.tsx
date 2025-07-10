@@ -126,7 +126,7 @@ export default function ForumDetail() {
 
                                 <div className="flex items-center space-x-3">
                                     <Avatar className="text-dark-base font-semibold">
-                                        <AvatarImage src={forum.user?.image || '/placeholder.svg'} />
+                                        <AvatarImage src={forum.user?.image} />
                                         <AvatarFallback>{forum.user?.name?.[0] || 'U'}</AvatarFallback>
                                     </Avatar>
                                     <div>
@@ -208,7 +208,7 @@ export default function ForumDetail() {
                                         forum.comments.map((comment) => (
                                             <div key={comment.id} className="flex space-x-3">
                                                 <Avatar className="text-dark-base h-8 w-8">
-                                                    <AvatarImage src={comment.user?.image || '/placeholder.svg'} />
+                                                    <AvatarImage src={comment.user?.image} />
                                                     <AvatarFallback>{comment.user?.name?.[0] || 'U'}</AvatarFallback>
                                                 </Avatar>
                                                 <div className="flex-1">
@@ -273,7 +273,7 @@ export default function ForumDetail() {
                             <CardContent>
                                 <div className="mb-4 text-center">
                                     <Avatar className="text-dark-base large-font-size mx-auto mb-2 h-16 w-16 font-semibold">
-                                        <AvatarImage src={forum.user?.image || '/placeholder.svg'} />
+                                        <AvatarImage src={forum.user?.image} />
                                         <AvatarFallback>{forum.user?.name?.[0] || 'U'}</AvatarFallback>
                                     </Avatar>
                                     <h6 className="font-semibold">{forum.user?.name || 'Unknown User'}</h6>

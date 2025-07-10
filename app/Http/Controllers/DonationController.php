@@ -73,13 +73,24 @@ class DonationController extends Controller
 
     public function viewDonate(Donation $donation)
     {
+        $donation->load([
+            'donationImages',
+            'user',
+            'comments.user',
+            'donationCategory',
+        ]);
+
+        $relatedDonations = Donation::with(['donationCategory', 'user'])
+            ->where('type', 'donation')
+            ->where('donation_category_id', $donation->donation_category_id)
+            ->where('id', '!=', $donation->id)
+            ->latest()
+            ->take(3)
+            ->get();
+
         return Inertia::render('donation/detail', [
-            'donation' => $donation->load([
-                'donationImages',
-                'user',
-                'comments.user',
-                'donationCategory',
-            ]),
+            'donation' => $donation,
+            'relatedDonations' => $relatedDonations,
         ]);
     }
 

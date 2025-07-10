@@ -115,7 +115,7 @@ export default function Home() {
                                                 <div className="flex items-start gap-2">
                                                     <Avatar className="text-dark-base large-font-size aspect-square h-12 w-12 shrink-0">
                                                         <AvatarImage
-                                                            src={user?.image ? `/storage/${user.image}` : '/placeholder.svg'}
+                                                            src={user?.image ? `/storage/${user.image}` : '/img/placeholder.svg'}
                                                             alt={user?.name || 'User'}
                                                         />
                                                         <AvatarFallback>{user?.name?.[0]?.toUpperCase() || 'U'}</AvatarFallback>
@@ -286,21 +286,22 @@ export default function Home() {
                                     {/* Who to Follow */}
                                     <Card className="bg-light-base text-dark-base gap-2 p-2">
                                         <CardHeader className="p-0">
-                                            <CardTitle className="text-lg">Rekomendasi Untuk Anda</CardTitle>
+                                            <CardTitle className="text-lg">Rekomendasi Komunitas</CardTitle>
                                         </CardHeader>
                                         <CardContent className="space-y-4 p-0">
                                             {dummyCommunities.map((community, index) => (
                                                 <div key={index} className="flex items-center justify-between">
                                                     <div className="flex items-center gap-3">
-                                                        <div className="w-10 overflow-hidden rounded-full bg-gray-100">
-                                                            <img
-                                                                src={community.image}
-                                                                alt={`${community.name} Image`}
-                                                                className="aspect-square h-full w-full object-cover self-center"
-                                                            />
-                                                        </div>
+                                                        <Avatar className="text-dark-base h-10 w-10 font-medium">
+                                                            <AvatarFallback>{community.name?.[0]?.toUpperCase() || 'C'}</AvatarFallback>
+                                                        </Avatar>
                                                         <div>
-                                                            <div className="font-medium">{community.name}</div>
+                                                            <Link
+                                                                href={`https://instagram.com/${community.name}`}
+                                                                className="font-medium transition duration-100 hover:text-emerald-600"
+                                                            >
+                                                                {community.name}
+                                                            </Link>
                                                             <div className="text-xs text-gray-500">@{community.instagram}</div>
                                                         </div>
                                                     </div>
@@ -308,13 +309,15 @@ export default function Home() {
                                             ))}
                                         </CardContent>
                                         <CardFooter className="p-0">
-                                            <Button
-                                                variant="ghost"
-                                                size="sm"
-                                                className="extra-small-font-size hover:text-light-base w-full text-emerald-600 transition duration-100 hover:bg-emerald-600"
-                                            >
-                                                Lihat Lainnya
-                                            </Button>
+                                            <Link href="https://instagram.com/guyub_rukun" className="w-full">
+                                                <Button
+                                                    variant="ghost"
+                                                    size="sm"
+                                                    className="extra-small-font-size hover:text-light-base w-full text-emerald-600 transition duration-100 hover:bg-emerald-600"
+                                                >
+                                                    Lihat Lainnya
+                                                </Button>
+                                            </Link>
                                         </CardFooter>
                                     </Card>
                                 </div>
