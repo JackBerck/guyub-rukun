@@ -49,8 +49,6 @@ export default function CreateRequestPage({ donationCategories }: { donationCate
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
 
-        console.log('Submitting request with data:', data);
-
         post(route('donation.help.store'), {
             onSuccess: () => {
                 toast.success('Permintaan bantuan berhasil dibuat!');
@@ -60,7 +58,6 @@ export default function CreateRequestPage({ donationCategories }: { donationCate
             },
             onError: () => {
                 toast.error('Gagal membuat permintaan bantuan. Silakan periksa kembali data yang Anda masukkan.');
-                console.error('Error submitting request:', errors);
             },
         });
     };
@@ -174,8 +171,7 @@ export default function CreateRequestPage({ donationCategories }: { donationCate
                 if (parsedDraft.title || parsedDraft.description) {
                     toast('Draft berhasil dimuat. Silakan upload ulang foto jika diperlukan.');
                 }
-            } catch (error) {
-                console.error('Error parsing draft:', error);
+            } catch {
                 localStorage.removeItem(draftKey);
             }
         }
@@ -444,13 +440,7 @@ export default function CreateRequestPage({ donationCategories }: { donationCate
                                         'Publikasikan Permintaan'
                                     )}
                                 </Button>
-                                <Button
-                                    type="button"
-                                    variant="outline"
-                                    className="w-full"
-                                    onClick={saveForDraft}
-                                    disabled={processing}
-                                >
+                                <Button type="button" variant="outline" className="w-full" onClick={saveForDraft} disabled={processing}>
                                     Simpan sebagai Draft
                                 </Button>
                             </CardFooter>

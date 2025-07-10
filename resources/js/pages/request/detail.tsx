@@ -51,8 +51,7 @@ export default function RequestDetail() {
                 toast.success('Komentar berhasil dikirim');
                 reset();
             },
-            onError: (errors) => {
-                console.error('Comment errors:', errors);
+            onError: () => {
                 toast.error('Gagal mengirim komentar');
             },
         });
@@ -116,8 +115,6 @@ export default function RequestDetail() {
         };
         return urgencyMap[urgency as keyof typeof urgencyMap] || urgencyMap.low;
     };
-
-    console.log(relatedDonations);
 
     return (
         <Layout>

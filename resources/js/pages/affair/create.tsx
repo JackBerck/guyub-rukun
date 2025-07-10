@@ -13,6 +13,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Textarea } from '@/components/ui/textarea';
 import Layout from '@/layouts/layout';
 import { Head, Link, useForm } from '@inertiajs/react';
+import { toast } from 'sonner';
 
 type CreateAffairForm = {
     title: string;
@@ -68,16 +69,15 @@ export default function CreateEventPage({ affairCategories }: { affairCategories
             return;
         }
 
-        console.log('Submitting affair data:', data);
-
         post(route('affair.store'), {
             onSuccess: () => {
                 reset();
                 localStorage.removeItem('affair_draft');
                 setThumbnailPreview(null);
+                toast.success('Acara berhasil dibuat! Anda dapat melihatnya di daftar acara.');
             },
             onError: () => {
-                console.error('Error creating affair:', errors);
+                toast.error('Gagal membuat acara. Periksa kembali data yang Anda masukkan.');
             },
         });
     };
@@ -160,10 +160,6 @@ export default function CreateEventPage({ affairCategories }: { affairCategories
             }
         };
     }, [thumbnailPreview]);
-
-    useEffect(() => {
-        console.log('Current affair data:', data);
-    }, [data]);
 
     return (
         <Layout>

@@ -8,6 +8,7 @@ import { Authentication } from '@/components/auth';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Button } from '@/components/ui/button';
 import Layout from '@/layouts/layout';
+import { toast } from 'sonner';
 
 export default function VerifyEmail({ status }: { status?: string }) {
     const { post, processing } = useForm({});
@@ -22,8 +23,7 @@ export default function VerifyEmail({ status }: { status?: string }) {
                     setAutoSent(true);
                 },
                 onError: () => {
-                    // Handle error if needed
-                    console.log('Failed to auto-send verification email');
+                    toast.error('Gagal mengirim email verifikasi. Silakan coba lagi.');
                 },
             });
         }

@@ -54,7 +54,6 @@ export default function EditAffairPage({ affair, affairCategories }: { affair: A
         router.get(route('profile.affairs'));
     };
 
-    console.log(data);
     return (
         <Layout>
             <Head title={`Edit ${title}`} />

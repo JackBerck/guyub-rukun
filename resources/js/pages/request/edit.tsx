@@ -45,8 +45,6 @@ export default function EditRequestPage({ help, donationCategories }: { help: Do
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
 
-        console.log('Submitting request with data:', data);
-
         put(route('donation.help.update', data.slug), {
             onSuccess: () => {
                 reset();
@@ -57,8 +55,6 @@ export default function EditRequestPage({ help, donationCategories }: { help: Do
     const cancelChanges = () => {
         router.get(route('profile.helps'));
     };
-
-    console.log(data)
 
     return (
         <Layout>
@@ -103,7 +99,11 @@ export default function EditRequestPage({ help, donationCategories }: { help: Do
                                 {/* Kategori */}
                                 <div className="space-y-2">
                                     <Label htmlFor="category">Kategori *</Label>
-                                    <Select disabled={processing} value={String(data.donation_category_id)} onValueChange={(value) => setData('donation_category_id', parseInt(value))}>
+                                    <Select
+                                        disabled={processing}
+                                        value={String(data.donation_category_id)}
+                                        onValueChange={(value) => setData('donation_category_id', parseInt(value))}
+                                    >
                                         <SelectTrigger id="category">
                                             <SelectValue placeholder="Pilih kategori bantuan" />
                                         </SelectTrigger>

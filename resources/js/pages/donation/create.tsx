@@ -133,8 +133,7 @@ export default function CreateDonationPage({ donationCategories }: { donationCat
                 if (parsedDraft.title || parsedDraft.description) {
                     toast('Draft berhasil dimuat. Silakan upload ulang foto jika diperlukan.');
                 }
-            } catch (error) {
-                console.error('Error parsing draft:', error);
+            } catch {
                 localStorage.removeItem(draftKey);
             }
         }

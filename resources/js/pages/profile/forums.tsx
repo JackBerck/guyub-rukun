@@ -52,8 +52,6 @@ interface ForumsPageProps extends SharedData {
 export default function ProfileForumsPage() {
     const { forums } = usePage<ForumsPageProps>().props;
 
-    console.log('Forums Data:', forums);
-
     return (
         <Layout>
             <Head title="Kelola Forum" />

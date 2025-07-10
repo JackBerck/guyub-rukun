@@ -29,8 +29,6 @@ export default function EditForumPage({ forum, forumCategories }: { forum: EditF
         forum_category_id: forum.forum_category_id || 0,
     });
 
-    console.info('Forum Data:', forum);
-
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
 

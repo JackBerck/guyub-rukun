@@ -46,7 +46,6 @@ interface RequestsPageProps extends SharedData {
 
 export default function ProfileRequetsPage() {
     const { requests } = usePage<RequestsPageProps>().props;
-    console.log('Requests Data:', requests);
 
     return (
         <Layout>

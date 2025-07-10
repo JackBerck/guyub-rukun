@@ -25,7 +25,6 @@ const fetchAffairs = async (cursor?: string): Promise<CursorApiResponse> => {
     try {
         const url = cursor ? `/affairs?cursor=${cursor}` : '/affairs';
         const response = await apiClient.get(url);
-        console.log('API Response:', response); // Debug log
         return response.data;
     } catch (error) {
         console.error('API Error:', error);
@@ -46,23 +45,14 @@ export function AffairFeeds() {
             setError(null);
             const response = await fetchAffairs();
 
-            console.log('Initial Response:', response); // Debug log
-
             if (response.data && Array.isArray(response.data)) {
                 setAffairs(response.data);
                 setNextCursor(response.next_cursor);
                 setHasMoreData(!!response.next_cursor);
-
-                console.log('Processed data:', {
-                    affairsCount: response.data.length,
-                    nextCursor: response.next_cursor,
-                    hasMore: !!response.next_cursor,
-                });
             } else {
                 throw new Error('Unexpected response format');
             }
         } catch (err) {
-            console.error('Load initial data error:', err);
             setError(err instanceof Error ? err.message : 'Terjadi kesalahan saat memuat data');
             toast.error('Gagal memuat data acara');
         } finally {
@@ -77,8 +67,6 @@ export function AffairFeeds() {
             setLoadingMore(true);
             setError(null);
             const response = await fetchAffairs(nextCursor);
-
-            console.log('Load more response:', response); // Debug log
 
             if (response.data && Array.isArray(response.data)) {
                 const newAffairs = response.data;
@@ -104,7 +92,6 @@ export function AffairFeeds() {
                 throw new Error('Unexpected response format');
             }
         } catch (err) {
-            console.error('Load more data error:', err);
             setError(err instanceof Error ? err.message : 'Terjadi kesalahan saat memuat data');
             toast.error('Gagal memuat data lebih banyak');
         } finally {

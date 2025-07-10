@@ -54,7 +54,6 @@ export default function CreateForumPage({ forumCategories }: { forumCategories: 
                 toast.success('Forum berhasil dibuat!');
             },
             onError: () => {
-                console.error('Error creating forum:', errors);
                 toast.error('Gagal membuat forum. Silakan coba lagi.');
             },
         });

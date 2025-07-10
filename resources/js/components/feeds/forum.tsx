@@ -50,7 +50,6 @@ export function ForumFeeds() {
                 throw new Error('Unexpected response format');
             }
         } catch (err) {
-            console.error('Load initial forum data error:', err);
             setError(err instanceof Error ? err.message : 'Terjadi kesalahan saat memuat data');
             toast.error('Gagal memuat data forum');
         } finally {
@@ -90,7 +89,6 @@ export function ForumFeeds() {
                 throw new Error('Unexpected response format');
             }
         } catch (err) {
-            console.error('Load more forum data error:', err);
             setError(err instanceof Error ? err.message : 'Terjadi kesalahan saat memuat data');
             toast.error('Gagal memuat data lebih banyak');
         } finally {

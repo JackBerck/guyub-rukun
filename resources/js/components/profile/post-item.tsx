@@ -30,7 +30,8 @@ interface PostItemProps {
     onDelete?: (id: number) => void;
 }
 
-export function PostItem({ id, title, slug, description, image, location, category, urgency, date, time, createdAt, type, stats }: PostItemProps) {
+// Sebelumnya di depan saya kasih parameter `id`, tapi ternyata tidak digunakan di dalam komponen ini.
+export function PostItem({ title, slug, description, image, location, category, urgency, date, time, createdAt, type, stats }: PostItemProps) {
     const [isDeleting, setIsDeleting] = useState(false);
 
     const handleEdit = () => {
@@ -58,8 +59,7 @@ export function PostItem({ id, title, slug, description, image, location, catego
                     onSuccess: () => {
                         toast.success('Donasi berhasil dihapus');
                     },
-                    onError: (errors) => {
-                        console.error('Delete error:', errors);
+                    onError: () => {
                         toast.error('Gagal menghapus donasi');
                     },
                     onFinish: () => {
@@ -71,8 +71,7 @@ export function PostItem({ id, title, slug, description, image, location, catego
                     onSuccess: () => {
                         toast.success('Forum berhasil dihapus');
                     },
-                    onError: (errors) => {
-                        console.error('Delete error:', errors);
+                    onError: () => {
                         toast.error('Gagal menghapus forum');
                     },
                     onFinish: () => {
@@ -84,8 +83,7 @@ export function PostItem({ id, title, slug, description, image, location, catego
                     onSuccess: () => {
                         toast.success('Acara berhasil dihapus');
                     },
-                    onError: (errors) => {
-                        console.error('Delete error:', errors);
+                    onError: () => {
                         toast.error('Gagal menghapus acara');
                     },
                     onFinish: () => {
@@ -93,8 +91,7 @@ export function PostItem({ id, title, slug, description, image, location, catego
                     },
                 });
             }
-        } catch (error) {
-            console.error('Delete error:', error);
+        } catch {
             toast.error('Terjadi kesalahan saat menghapus');
             setIsDeleting(false);
         }
@@ -170,7 +167,7 @@ export function PostItem({ id, title, slug, description, image, location, catego
     // };
 
     return (
-        <Card className="bg-light-base text-dark-base transition-shadow hover:shadow-md gap-0">
+        <Card className="bg-light-base text-dark-base gap-0 transition-shadow hover:shadow-md">
             <CardHeader className="pb-3">
                 <div className="flex items-start justify-between">
                     <div className="flex-1">
@@ -239,7 +236,7 @@ export function PostItem({ id, title, slug, description, image, location, catego
                 <div className="space-y-3">
                     {image && (
                         <Link href={getDetailUrl()}>
-                            <div className="aspect-video cursor-pointer overflow-hidden rounded-lg bg-gray-100 transition-opacity hover:opacity-90 mb-2">
+                            <div className="mb-2 aspect-video cursor-pointer overflow-hidden rounded-lg bg-gray-100 transition-opacity hover:opacity-90">
                                 <img src={image} alt={title} className="h-full w-full object-cover" />
                             </div>
                         </Link>

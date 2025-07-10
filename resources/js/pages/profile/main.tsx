@@ -50,8 +50,7 @@ export default function ProfilePage() {
                 setIsEditing(false);
                 toast.success('Profil berhasil diperbarui');
             },
-            onError: (errors) => {
-                console.error('Update errors:', errors);
+            onError: () => {
                 toast.error('Gagal memperbarui profil');
             },
         });
@@ -88,8 +87,7 @@ export default function ProfilePage() {
                 toast.success('Foto profil berhasil diperbarui');
                 setIsUploadingImage(false);
             },
-            onError: (errors) => {
-                console.error('Photo upload errors:', errors);
+            onError: () => {
                 toast.error('Gagal mengunggah foto profil');
                 setIsUploadingImage(false);
             },

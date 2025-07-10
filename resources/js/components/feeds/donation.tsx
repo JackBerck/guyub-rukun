@@ -22,7 +22,6 @@ const fetchDonations = async (cursor?: string): Promise<CursorApiResponse> => {
     try {
         const url = cursor ? `/donations?cursor=${cursor}` : '/donations';
         const response = await apiClient.get(url);
-        console.log('API Response:', response); // Debug log
         return response.data;
     } catch (error) {
         console.error('API Error:', error);
@@ -44,23 +43,14 @@ export default function DonationFeeds() {
             setError(null);
             const response = await fetchDonations();
 
-            console.log('Initial Response:', response); // Debug log
-
             if (response.data && Array.isArray(response.data)) {
                 setDonations(response.data);
                 setNextCursor(response.next_cursor);
                 setHasMoreData(!!response.next_cursor);
-
-                console.log('Processed data:', {
-                    donationsCount: response.data.length,
-                    nextCursor: response.next_cursor,
-                    hasMore: !!response.next_cursor,
-                });
             } else {
                 throw new Error('Unexpected response format');
             }
         } catch (err) {
-            console.error('Load initial data error:', err);
             setError(err instanceof Error ? err.message : 'Terjadi kesalahan saat memuat data');
             toast.error('Gagal memuat data donasi');
         } finally {
@@ -75,8 +65,6 @@ export default function DonationFeeds() {
             setLoadingMore(true);
             setError(null);
             const response = await fetchDonations(nextCursor);
-
-            console.log('Load more response:', response); // Debug log
 
             if (response.data && Array.isArray(response.data)) {
                 const newDonations = response.data;
@@ -102,7 +90,6 @@ export default function DonationFeeds() {
                 throw new Error('Unexpected response format');
             }
         } catch (err) {
-            console.error('Load more data error:', err);
             setError(err instanceof Error ? err.message : 'Terjadi kesalahan saat memuat data');
             toast.error('Gagal memuat data lebih banyak');
         } finally {
