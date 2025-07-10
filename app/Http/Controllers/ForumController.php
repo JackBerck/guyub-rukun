@@ -7,6 +7,7 @@ use App\Http\Requests\CreateForumRequest;
 use App\Http\Requests\UpdateForumRequest;
 use App\Models\Comment;
 use App\Models\Forum;
+use App\Models\Like;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Pagination\CursorPaginator;
@@ -49,27 +50,43 @@ class ForumController extends Controller
 
     public function view(Forum $forum)
     {
+        $forum->load([
+            'user',
+            'forumCategory',
+            'comments.user',
+        ])->loadCount(['likedByUsers']);
+
+        $relatedForums = Forum::with(['user', 'forumCategory'])
+            ->where('forum_category_id', $forum->forum_category_id)
+            ->where('id', '!=', $forum->id)
+            ->latest()
+            ->take(3)
+            ->get();
+
+        $forumIsLiked = $forum->likedByUsers->contains(Auth::id());
+
         return Inertia::render('forum/detail', [
-            'forum' => $forum->load([
-                'user',
-                'forumCategory',
-                'comments',
-            ])->loadCount(['likedByUsers']),
+            'forum' => $forum,
+            'relatedForums' => $relatedForums,
+            'forumIsLiked' => $forumIsLiked,
         ]);
     }
 
-    public function like(Forum $forum): RedirectResponse
+    public function like(Request $request, Forum $forum)
     {
-        $user = response()->user();
+        $userId = $request->input('user_id');
+        $forumId = $request->input('forum_id');
 
         // Cek apakah sudah like
-        if ($user->likedPosts()->where('forum_id', $forum->id)->exists()) {
-            $user->likedPosts()->detach($forum->id);
-            return back();
+        $like = Like::where('user_id', $userId)->where('forum_id', $forumId)->first();
+        if ($like) {
+            $like->delete();
+        } else {
+            Like::create([
+                'user_id' => $userId,
+                'forum_id' => $forumId,
+            ]);
         }
-
-        $user->likedPosts()->attach($forum->id);
-        return back();
     }
 
     public function comment(CreateCommentForumRequest $request, Forum $forum): RedirectResponse

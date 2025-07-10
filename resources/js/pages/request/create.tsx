@@ -8,6 +8,7 @@ import Layout from '@/layouts/layout';
 import { Head, Link, useForm } from '@inertiajs/react';
 import { ArrowLeft, Camera, Loader2, MapPin, X } from 'lucide-react';
 import { useEffect, useRef, useState } from 'react';
+import { toast, Toaster } from 'sonner';
 
 type CreateRequestForm = {
     title: string;
@@ -126,15 +127,25 @@ export default function CreateRequestPage({ donationCategories }: { donationCate
     };
 
     const saveForDraft = () => {
+        // Create a draft object without the File objects (since they can't be serialized)
         const draftData = {
-            ...data,
-            imagesPreviews: imagesPreviews,
+            title: data.title,
+            description: data.description,
+            urgency: data.urgency,
+            phone_number: data.phone_number,
+            address: data.address,
+            status: data.status,
+            type: data.type,
+            is_popular: data.is_popular,
+            donation_category_id: data.donation_category_id,
+            // Don't save images as they can't be serialized to localStorage
         };
+
         localStorage.setItem('request_draft', JSON.stringify(draftData));
-        alert('Draft permintaan berhasil disimpan!');
+        toast('Permintaan berhasil disimpan sebagai draft');
     };
 
-    const loadDraft = () => {
+    useEffect(() => {
         const draftKey = 'request_draft';
         const draft = localStorage.getItem(draftKey);
 
@@ -144,36 +155,36 @@ export default function CreateRequestPage({ donationCategories }: { donationCate
                 setData({
                     title: parsedDraft.title || '',
                     description: parsedDraft.description || '',
-                    urgency: parsedDraft.urgency || 'sedang',
+                    urgency: parsedDraft.urgency || 'low',
                     phone_number: parsedDraft.phone_number || '',
                     address: parsedDraft.address || '',
                     status: parsedDraft.status || false,
                     type: parsedDraft.type || 'request',
                     is_popular: parsedDraft.is_popular || false,
-                    donation_category_id: parsedDraft.donation_category_id || 1,
-                    images: parsedDraft.images || [],
+                    donation_category_id: parsedDraft.donation_category_id || 0,
+                    images: [], // Reset images since they can't be restored from localStorage
                 });
 
-                if (parsedDraft.imagesPreviews) {
-                    setImagesPreviews(parsedDraft.imagesPreviews);
+                // Reset image previews as well
+                setImagesPreviews([]);
+
+                // Show a message that images need to be re-uploaded
+                if (parsedDraft.title || parsedDraft.description) {
+                    toast('Draft berhasil dimuat. Silakan upload ulang foto jika diperlukan.');
                 }
             } catch (error) {
-                console.error('Error loading draft:', error);
+                console.error('Error parsing draft:', error);
+                localStorage.removeItem(draftKey);
             }
         }
-    };
+    }, [setData]);
 
     const clearDraft = () => {
         localStorage.removeItem('request_draft');
         reset();
         setImagesPreviews([]);
-        alert('Draft berhasil dihapus!');
+        toast('Draft berhasil dihapus!');
     };
-
-    // Load draft on component mount
-    useEffect(() => {
-        loadDraft();
-    }, []);
 
     // Cleanup function untuk mencegah memory leak
     useEffect(() => {
@@ -187,6 +198,7 @@ export default function CreateRequestPage({ donationCategories }: { donationCate
     return (
         <Layout>
             <Head title="Buat Permintaan Bantuan" />
+            <Toaster />
             <section className="section-padding-x pt-4 pb-8 md:pb-12 lg:pt-4">
                 <div className="container max-w-screen-xl">
                     <div className="mb-6 flex items-center justify-between">
@@ -238,7 +250,11 @@ export default function CreateRequestPage({ donationCategories }: { donationCate
                                 {/* Kategori */}
                                 <div className="space-y-2">
                                     <Label htmlFor="category">Kategori *</Label>
-                                    <Select disabled={processing} onValueChange={(value) => setData('donation_category_id', parseInt(value))}>
+                                    <Select
+                                        disabled={processing}
+                                        value={data.donation_category_id > 0 ? String(data.donation_category_id) : undefined}
+                                        onValueChange={(value) => setData('donation_category_id', parseInt(value))}
+                                    >
                                         <SelectTrigger id="category">
                                             <SelectValue placeholder="Pilih kategori bantuan" />
                                         </SelectTrigger>
@@ -429,7 +445,7 @@ export default function CreateRequestPage({ donationCategories }: { donationCate
                                 <Button
                                     type="button"
                                     variant="outline"
-                                    className="text-light-base w-full"
+                                    className="w-full"
                                     onClick={saveForDraft}
                                     disabled={processing}
                                 >

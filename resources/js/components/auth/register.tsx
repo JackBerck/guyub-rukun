@@ -1,10 +1,9 @@
 import { Link, useForm } from '@inertiajs/react';
-import { UserPlus } from 'lucide-react';
+import { Eye, EyeOff, UserPlus } from 'lucide-react';
 import { useState } from 'react';
 import { Button } from '../ui/button';
 import { Input } from '../ui/input';
 import { Label } from '../ui/label';
-// import { Separator } from '../ui/separator';
 
 type RegisterForm = {
     name: string;
@@ -21,6 +20,8 @@ export default function RegisterForm() {
         password_confirmation: '',
     });
     const [terms, setTerms] = useState<boolean>(false);
+    const [showPassword, setShowPassword] = useState<boolean>(false);
+    const [showPasswordConfirmation, setShowPasswordConfirmation] = useState<boolean>(false);
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
@@ -100,15 +101,24 @@ export default function RegisterForm() {
                     <Label htmlFor="password" className={errors.password ? 'text-destructive' : ''}>
                         Password
                     </Label>
-                    <Input
-                        id="password"
-                        name="password"
-                        type="password"
-                        value={data.password}
-                        onChange={(e) => setData('password', e.target.value)}
-                        placeholder="••••••••"
-                        className={errors.password ? 'border-destructive' : ''}
-                    />
+                    <div className="relative">
+                        <Input
+                            id="password"
+                            name="password"
+                            type={showPassword ? 'text' : 'password'}
+                            value={data.password}
+                            onChange={(e) => setData('password', e.target.value)}
+                            placeholder="••••••••"
+                            className={errors.password ? 'border-destructive pr-10' : 'pr-10'}
+                        />
+                        <button
+                            type="button"
+                            onClick={() => setShowPassword(!showPassword)}
+                            className="absolute top-1/2 right-3 -translate-y-1/2 text-gray-500 hover:text-gray-700"
+                        >
+                            {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                        </button>
+                    </div>
                     {errors.password ? (
                         <p className="text-destructive text-xs">{errors.password}</p>
                     ) : (
@@ -120,15 +130,24 @@ export default function RegisterForm() {
                     <Label htmlFor="password_confirmation" className={errors.password_confirmation ? 'text-destructive' : ''}>
                         Konfirmasi Password
                     </Label>
-                    <Input
-                        id="password_confirmation"
-                        name="password_confirmation"
-                        type="password"
-                        value={data.password_confirmation}
-                        onChange={(e) => setData('password_confirmation', e.target.value)}
-                        placeholder="••••••••"
-                        className={errors.password_confirmation ? 'border-destructive' : ''}
-                    />
+                    <div className="relative">
+                        <Input
+                            id="password_confirmation"
+                            name="password_confirmation"
+                            type={showPasswordConfirmation ? 'text' : 'password'}
+                            value={data.password_confirmation}
+                            onChange={(e) => setData('password_confirmation', e.target.value)}
+                            placeholder="••••••••"
+                            className={errors.password_confirmation ? 'border-destructive pr-10' : 'pr-10'}
+                        />
+                        <button
+                            type="button"
+                            onClick={() => setShowPasswordConfirmation(!showPasswordConfirmation)}
+                            className="absolute top-1/2 right-3 -translate-y-1/2 text-gray-500 hover:text-gray-700"
+                        >
+                            {showPasswordConfirmation ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                        </button>
+                    </div>
                     {errors.password_confirmation && <p className="text-destructive text-xs">{errors.password_confirmation}</p>}
                 </div>
 
@@ -140,9 +159,9 @@ export default function RegisterForm() {
                         checked={terms}
                         onChange={(e) => setTerms(e.target.checked)}
                         required
-                        className={`h-4 w-4 rounded border-gray-300 text-emerald-600 focus:ring-emerald-500 ${terms ? 'border-destructive' : ''}`}
+                        className={`h-4 w-4 rounded border-gray-300 text-emerald-600 focus:ring-emerald-500 ${terms ? 'accent-blue-500' : ''}`}
                     />
-                    <label htmlFor="terms" className={`text-sm ${terms ? 'text-destructive' : 'text-gray-600'}`}>
+                    <label htmlFor="terms" className={`text-sm text-gray-600`}>
                         Saya menyetujui{' '}
                         <Link href="/terms" className="font-medium text-emerald-600 hover:underline">
                             Syarat & Ketentuan

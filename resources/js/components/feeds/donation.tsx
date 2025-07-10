@@ -197,8 +197,8 @@ export default function DonationFeeds() {
                 <div key={`donation-${donation.id}`} className="py-2">
                     <div className="flex gap-3">
                         {/* User Avatar */}
-                        <div className="h-10 w-10 shrink-0 overflow-hidden rounded-full bg-gray-100">
-                            <Avatar className="text-light-base">
+                        <div className="flex h-10 w-10 shrink-0 items-center justify-center overflow-hidden rounded-full bg-gray-100">
+                            <Avatar className="text-dark-base font-semibold">
                                 <AvatarImage src={donation.user?.image || '/placeholder.svg'} />
                                 <AvatarFallback>{donation.user?.name?.[0] || 'U'}</AvatarFallback>
                             </Avatar>
@@ -296,9 +296,7 @@ export default function DonationFeeds() {
 
             {/* End of data message */}
             {!hasMoreData && donations.length > 0 && (
-                <div className="pt-4 text-center">
-                    <p className="text-sm text-gray-500">Tidak ada donasi lagi untuk ditampilkan</p>
-                </div>
+                <p className="py-4 text-center text-sm text-gray-500">Tidak ada donasi lagi untuk ditampilkan</p>
             )}
 
             {/* Error message for load more */}

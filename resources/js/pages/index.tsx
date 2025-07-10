@@ -7,14 +7,18 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Separator } from '@/components/ui/separator';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import dummyCommunities from '@/data/dummies/communities';
 import Layout from '@/layouts/layout';
-import { User } from '@/types';
+import { Forum, User } from '@/types';
 import { Head, Link, usePage } from '@inertiajs/react';
 import { BadgeCheck, Calendar, Heart, MessageSquare } from 'lucide-react';
+import { useState } from 'react';
 
 export default function Home() {
-    const { auth } = usePage<{ auth: { user: User } }>().props;
+    const { auth, popularForums } = usePage<{ auth: { user: User }; popularForums: Forum[] }>().props;
     const user: User = auth?.user;
+
+    const [activeTab, setActiveTab] = useState('donations');
 
     return (
         <Layout>
@@ -31,7 +35,7 @@ export default function Home() {
                                     <Card className="bg-light-base text-dark-base gap-2 p-2">
                                         <CardHeader className="p-0">
                                             <div className="flex items-start gap-2">
-                                                <Avatar className="text-light-base large-font-size aspect-square h-12 w-12 shrink-0">
+                                                <Avatar className="text-dark-base large-font-size aspect-square h-12 w-12 shrink-0 font-semibold">
                                                     <AvatarImage src={user?.image ? `/storage/${user.image}` : ''} alt={user?.name || 'User'} />
                                                     <AvatarFallback>{user?.name?.[0]?.toUpperCase() || 'U'}</AvatarFallback>
                                                 </Avatar>
@@ -97,59 +101,6 @@ export default function Home() {
                                             </Link>
                                         </CardFooter>
                                     </Card>
-
-                                    {/* Main Menu */}
-                                    {/* <Card className="bg-light-base text-dark-base gap-2 p-2">
-                                        <CardContent className="p-0">
-                                            <nav className="space-y-2">
-                                                <Link
-                                                    href="/"
-                                                    className="flex items-center gap-3 rounded-md bg-emerald-50 p-2 text-sm font-medium text-emerald-600"
-                                                >
-                                                    <div className="flex h-8 w-8 items-center justify-center rounded-md bg-emerald-100">
-                                                        <Trending className="h-4 w-4 text-emerald-600" />
-                                                    </div>
-                                                    <span>Beranda</span>
-                                                </Link>
-                                                <Link
-                                                    href="/donations"
-                                                    className="flex items-center gap-2 rounded-md p-2 text-sm font-medium text-gray-600 transition duration-100 hover:bg-gray-100 md:gap-4"
-                                                >
-                                                    <div className="flex h-8 w-8 items-center justify-center rounded-md bg-gray-100">
-                                                        <Heart className="h-4 w-4 text-gray-600" />
-                                                    </div>
-                                                    <span>Donasi</span>
-                                                </Link>
-                                                <Link
-                                                    href="/stories"
-                                                    className="flex items-center gap-2 rounded-md p-2 text-sm font-medium text-gray-600 transition duration-100 hover:bg-gray-100 md:gap-4"
-                                                >
-                                                    <div className="flex h-8 w-8 items-center justify-center rounded-md bg-gray-100">
-                                                        <BadgeCheck className="h-4 w-4 text-gray-600" />
-                                                    </div>
-                                                    <span>Cerita</span>
-                                                </Link>
-                                                <Link
-                                                    href="/forums"
-                                                    className="flex items-center gap-2 rounded-md p-2 text-sm font-medium text-gray-600 transition duration-100 hover:bg-gray-100 md:gap-4"
-                                                >
-                                                    <div className="flex h-8 w-8 items-center justify-center rounded-md bg-gray-100">
-                                                        <MessageSquare className="h-4 w-4 text-gray-600" />
-                                                    </div>
-                                                    <span>Forum</span>
-                                                </Link>
-                                                <Link
-                                                    href="/events"
-                                                    className="flex items-center gap-2 rounded-md p-2 text-sm font-medium text-gray-600 transition duration-100 hover:bg-gray-100 md:gap-4"
-                                                >
-                                                    <div className="flex h-8 w-8 items-center justify-center rounded-md bg-gray-100">
-                                                        <Calendar className="h-4 w-4 text-gray-600" />
-                                                    </div>
-                                                    <span>Event</span>
-                                                </Link>
-                                            </nav>
-                                        </CardContent>
-                                    </Card> */}
                                 </div>
                             </aside>
 
@@ -162,7 +113,7 @@ export default function Home() {
                                         <Card className="bg-light-base text-dark-base gap-2 p-2">
                                             <CardHeader className="p-0">
                                                 <div className="flex items-start gap-2">
-                                                    <Avatar className="text-light-base large-font-size aspect-square h-12 w-12 shrink-0">
+                                                    <Avatar className="text-dark-base large-font-size aspect-square h-12 w-12 shrink-0">
                                                         <AvatarImage
                                                             src={user?.image ? `/storage/${user.image}` : '/placeholder.svg'}
                                                             alt={user?.name || 'User'}
@@ -233,7 +184,7 @@ export default function Home() {
                                 </aside>
                                 {/* Feed Tabs */}
                                 <Card className="bg-light-base text-dark-base mb-4 overflow-hidden p-0">
-                                    <Tabs defaultValue="donations">
+                                    <Tabs defaultValue="donations" value={activeTab} onValueChange={setActiveTab}>
                                         <div className="border-b">
                                             <div className="flex items-center px-4">
                                                 <TabsList className="no-scrollbar h-10 w-full justify-start overflow-x-auto rounded-none border-b-0 bg-white p-0">
@@ -302,16 +253,19 @@ export default function Home() {
                                             <CardTitle className="text-lg">Forum Populer</CardTitle>
                                         </CardHeader>
                                         <CardContent className="space-y-4 p-0">
-                                            {[1, 2, 3, 4].map((item) => (
-                                                <div key={item} className="space-y-2">
+                                            {popularForums.map((forum, index) => (
+                                                <div key={index} className="space-y-2">
                                                     <div className="flex items-center justify-between">
-                                                        <span className="text-xs text-gray-500">Forum Diskusi</span>
+                                                        <span className="text-xs text-gray-500">{forum.forum_category.name}</span>
                                                         <span className="flex items-center text-xs text-gray-500">
-                                                            <MessageSquare className="mr-1 h-3 w-3" /> 24
+                                                            <MessageSquare className="mr-1 h-3 w-3" /> {forum.comments?.length || 0}
                                                         </span>
                                                     </div>
-                                                    <Link href="#" className="block font-medium transition duration-100 hover:text-emerald-600">
-                                                        Tips Menyimpan Makanan Agar Tahan Lama dan Tidak Mudah Basi
+                                                    <Link
+                                                        href={`/forum/${forum.slug}`}
+                                                        className="block font-medium transition duration-100 hover:text-emerald-600"
+                                                    >
+                                                        {forum.title}
                                                     </Link>
                                                     <Separator />
                                                 </div>
@@ -322,50 +276,12 @@ export default function Home() {
                                                 variant="ghost"
                                                 size="sm"
                                                 className="extra-small-font-size hover:text-light-base w-full text-emerald-600 transition duration-100 hover:bg-emerald-600"
+                                                onClick={() => setActiveTab('forums')}
                                             >
                                                 Lihat Semua Forum
                                             </Button>
                                         </CardFooter>
                                     </Card>
-
-                                    {/* Cerita Inspiratif */}
-                                    {/* <Card className="bg-light-base text-dark-base gap-2 p-2">
-                                        <CardHeader className="p-0">
-                                            <CardTitle className="text-lg">Cerita Inspiratif</CardTitle>
-                                        </CardHeader>
-                                        <CardContent className="space-y-4 p-0">
-                                            {[1, 2, 3, 4].map((item) => (
-                                                <div key={item} className="space-y-2">
-                                                    <div className="aspect-video w-full overflow-hidden rounded-md bg-gray-100">
-                                                        <img
-                                                            src={`/img/posts/cerita-inspiratif.jpg`}
-                                                            alt={`Cerita ${item}`}
-                                                            className="h-full w-full object-cover"
-                                                        />
-                                                    </div>
-                                                    <Link href="#" className="block font-medium hover:text-emerald-600">
-                                                        Berbagi di Tengah Keterbatasan: Kisah Perjuangan Melawan Kelaparan
-                                                    </Link>
-                                                    <div className="flex items-center justify-between">
-                                                        <span className="text-xs text-gray-500">Ahmad Rizki</span>
-                                                        <span className="flex items-center text-xs text-gray-500">
-                                                            <Clock className="mr-1 h-3 w-3" /> 3 hari lalu
-                                                        </span>
-                                                    </div>
-                                                    <Separator />
-                                                </div>
-                                            ))}
-                                        </CardContent>
-                                        <CardFooter className="p-0">
-                                            <Button
-                                                variant="ghost"
-                                                size="sm"
-                                                className="extra-small-font-size hover:text-light-base w-full text-emerald-600 transition duration-100 hover:bg-emerald-600"
-                                            >
-                                                Lihat Semua Cerita
-                                            </Button>
-                                        </CardFooter>
-                                    </Card> */}
 
                                     {/* Who to Follow */}
                                     <Card className="bg-light-base text-dark-base gap-2 p-2">
@@ -373,19 +289,19 @@ export default function Home() {
                                             <CardTitle className="text-lg">Rekomendasi Untuk Anda</CardTitle>
                                         </CardHeader>
                                         <CardContent className="space-y-4 p-0">
-                                            {[1, 2, 3].map((item) => (
-                                                <div key={item} className="flex items-center justify-between">
+                                            {dummyCommunities.map((community, index) => (
+                                                <div key={index} className="flex items-center justify-between">
                                                     <div className="flex items-center gap-3">
                                                         <div className="w-10 overflow-hidden rounded-full bg-gray-100">
                                                             <img
-                                                                src={`/img/posts/kumpul.jpg`}
-                                                                alt={`User ${item}`}
-                                                                className="aspect-square h-full w-full object-cover"
+                                                                src={community.image}
+                                                                alt={`${community.name} Image`}
+                                                                className="aspect-square h-full w-full object-cover self-center"
                                                             />
                                                         </div>
                                                         <div>
-                                                            <div className="font-medium">Komunitas Berbagi {item}</div>
-                                                            <div className="text-xs text-gray-500">@komunitas{item}</div>
+                                                            <div className="font-medium">{community.name}</div>
+                                                            <div className="text-xs text-gray-500">@{community.instagram}</div>
                                                         </div>
                                                     </div>
                                                 </div>

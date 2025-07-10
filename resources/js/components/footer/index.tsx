@@ -45,7 +45,7 @@ export default function Footer() {
                 <div className="md:flex md:justify-between">
                     <div className="mb-6 md:mb-0">
                         <Link href="/" className="flex items-center">
-                            <img src="/guyub-rukun.webp" className="me-3 h-8" alt="GuyubRukun Logo" />
+                            <img src="/bagiin.webp" className="me-3 h-8" alt="GuyubRukun Logo" />
                             <span className="self-center text-2xl font-semibold whitespace-nowrap">
                                 {' '}
                                 <span className="text-green-base">Guyub</span>

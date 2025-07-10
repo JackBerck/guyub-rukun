@@ -129,7 +129,7 @@ export function ForumFeeds() {
                 <div key={forum.id} className="py-2 first:pt-0">
                     <div className="flex gap-3">
                         {/* User Avatar */}
-                        <Avatar className="text-light-base h-10 w-10 shrink-0">
+                        <Avatar className="h-10 w-10 shrink-0 font-semibold uppercase">
                             <AvatarImage src={forum.user.image || '/placeholder.svg'} alt={forum.user.name} />
                             <AvatarFallback>{forum.user.name[0]}</AvatarFallback>
                         </Avatar>
@@ -227,9 +227,15 @@ export function ForumFeeds() {
 
             {/* No forums at all */}
             {!loading && forums.length === 0 && !error && (
-                <div className="py-8 text-center text-gray-500">
-                    <MessageSquare className="mx-auto mb-4 h-12 w-12 text-gray-300" />
-                    <p>Belum ada diskusi forum yang tersedia</p>
+                <div className="p-8 text-center">
+                    <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-gray-100">
+                        <MessageSquare className="h-8 w-8 text-gray-400" />
+                    </div>
+                    <h3 className="mb-2 text-lg font-semibold text-gray-900">Belum Ada Forum</h3>
+                    <p className="mb-4 text-gray-600">Belum ada forum yang tersedia saat ini. Jadilah yang pertama!</p>
+                    <Button asChild>
+                        <Link href="/open-forum">Buat Forum</Link>
+                    </Button>
                 </div>
             )}
         </div>

@@ -3,11 +3,13 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Toaster } from '@/components/ui/sooner';
 import { Textarea } from '@/components/ui/textarea';
 import Layout from '@/layouts/layout';
 import { Head, Link, useForm } from '@inertiajs/react';
 import { ArrowLeft, Camera, X } from 'lucide-react';
 import { useEffect, useRef, useState } from 'react';
+import { toast } from 'sonner';
 
 type CreateForumForm = {
     title: string;
@@ -49,9 +51,11 @@ export default function CreateForumPage({ forumCategories }: { forumCategories: 
                 reset();
                 localStorage.removeItem('forum_draft');
                 setThumbnailPreview(null);
+                toast.success('Forum berhasil dibuat!');
             },
             onError: () => {
                 console.error('Error creating forum:', errors);
+                toast.error('Gagal membuat forum. Silakan coba lagi.');
             },
         });
     };
@@ -106,7 +110,7 @@ export default function CreateForumPage({ forumCategories }: { forumCategories: 
     const saveForDraft = () => {
         localStorage.setItem('forum_draft', JSON.stringify(data));
 
-        alert('Draft forum berhasil disimpan!');
+        toast('Draft forum berhasil disimpan!');
     };
 
     useEffect(() => {
@@ -182,10 +186,7 @@ export default function CreateForumPage({ forumCategories }: { forumCategories: 
                                     <Label htmlFor="category" className={errors.forum_category_id ? 'text-red-600' : ''}>
                                         Kategori Forum *
                                     </Label>
-                                    <Select
-                                        disabled={processing}
-                                        onValueChange={(value) => setData('forum_category_id', Number.parseInt(value))}
-                                    >
+                                    <Select disabled={processing} onValueChange={(value) => setData('forum_category_id', Number.parseInt(value))}>
                                         <SelectTrigger id="category">
                                             <SelectValue placeholder="Pilih kategori forum" />
                                         </SelectTrigger>
@@ -268,7 +269,7 @@ export default function CreateForumPage({ forumCategories }: { forumCategories: 
                                 >
                                     {processing ? 'Memproses...' : 'Publikasikan Donasi'}
                                 </Button>
-                                <Button type="button" variant="outline" className="text-light-base w-full" onClick={saveForDraft}>
+                                <Button type="button" variant="outline" className="w-full" onClick={saveForDraft}>
                                     Simpan sebagai Draft
                                 </Button>
                             </CardFooter>
@@ -276,6 +277,7 @@ export default function CreateForumPage({ forumCategories }: { forumCategories: 
                     </form>
                 </div>
             </section>
+            <Toaster />
         </Layout>
     );
 }

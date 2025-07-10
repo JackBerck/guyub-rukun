@@ -49,9 +49,9 @@ class DatabaseSeeder extends Seeder
             DonationCategorySeeder::class,
             ForumCategorySeeder::class,
             AffairCategorySeeder::class, // Tambahkan ini jika belum ada
-            AffairSeeder::class,
-            DonationSeeder::class,
-            ForumSeeder::class,
+            // AffairSeeder::class,
+            // DonationSeeder::class,
+            // ForumSeeder::class,
         ]);
     }
 }

@@ -7,11 +7,13 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Toaster } from '@/components/ui/sooner';
 import { Textarea } from '@/components/ui/textarea';
 import Layout from '@/layouts/layout';
 import { Head, Link, useForm } from '@inertiajs/react';
 import { ArrowLeft, Camera, MapPin, X } from 'lucide-react';
 import { useEffect, useRef, useState } from 'react';
+import { toast } from 'sonner';
 
 type CreateDonationForm = {
     title: string;
@@ -88,9 +90,21 @@ export default function CreateDonationPage({ donationCategories }: { donationCat
     };
 
     const saveForDraft = () => {
-        localStorage.setItem('donation_draft', JSON.stringify(data));
+        // Create a draft object without the File objects (since they can't be serialized)
+        const draftData = {
+            title: data.title,
+            description: data.description,
+            phone_number: data.phone_number,
+            address: data.address,
+            status: data.status,
+            type: data.type,
+            is_popular: data.is_popular,
+            donation_category_id: data.donation_category_id,
+            // Don't save images as they can't be serialized to localStorage
+        };
 
-        alert('Acara berhasil disimpan sebagai draft');
+        localStorage.setItem('donation_draft', JSON.stringify(draftData));
+        toast('Donasi berhasil disimpan sebagai draft');
     };
 
     useEffect(() => {
@@ -98,27 +112,38 @@ export default function CreateDonationPage({ donationCategories }: { donationCat
         const draft = localStorage.getItem(draftKey);
 
         if (draft) {
-            const parsedDraft = JSON.parse(draft);
-            setData({
-                title: parsedDraft.title || '',
-                description: parsedDraft.description || '',
-                phone_number: parsedDraft.phone_number || '',
-                address: parsedDraft.address || '',
-                status: parsedDraft.status || false,
-                type: parsedDraft.type || 'donation',
-                is_popular: parsedDraft.is_popular || false,
-                donation_category_id: parsedDraft.donation_category_id || 0,
-                images: parsedDraft.images || [],
-            });
+            try {
+                const parsedDraft = JSON.parse(draft);
+                setData({
+                    title: parsedDraft.title || '',
+                    description: parsedDraft.description || '',
+                    phone_number: parsedDraft.phone_number || '',
+                    address: parsedDraft.address || '',
+                    status: parsedDraft.status || false,
+                    type: parsedDraft.type || 'donation',
+                    is_popular: parsedDraft.is_popular || false,
+                    donation_category_id: parsedDraft.donation_category_id || 0,
+                    images: [], // Reset images since they can't be restored from localStorage
+                });
 
-            const existingPreviews = parsedDraft.images.map((file: File) => URL.createObjectURL(file));
-            setImagesPreviews(existingPreviews);
+                // Reset image previews as well
+                setImagesPreviews([]);
+
+                // Show a message that images need to be re-uploaded
+                if (parsedDraft.title || parsedDraft.description) {
+                    toast('Draft berhasil dimuat. Silakan upload ulang foto jika diperlukan.');
+                }
+            } catch (error) {
+                console.error('Error parsing draft:', error);
+                localStorage.removeItem(draftKey);
+            }
         }
     }, [setData]);
 
     return (
         <Layout>
             <Head title="Tambah Donasi" />
+            <Toaster />
             <section className="section-padding-x pt-4 pb-8 md:pb-12 lg:pt-4">
                 <div className="container max-w-screen-xl">
                     <div className="mb-6 flex items-center">
@@ -153,6 +178,7 @@ export default function CreateDonationPage({ donationCategories }: { donationCat
                                     <Label htmlFor="category">Kategori</Label>
                                     <Select
                                         disabled={processing}
+                                        value={data.donation_category_id > 0 ? String(data.donation_category_id) : undefined}
                                         onValueChange={(value) => setData({ ...data, donation_category_id: Number.parseInt(value) })}
                                     >
                                         <SelectTrigger id="category">
@@ -259,7 +285,7 @@ export default function CreateDonationPage({ donationCategories }: { donationCat
                                 >
                                     {processing ? 'Memproses...' : 'Publikasikan Donasi'}
                                 </Button>
-                                <Button type="button" variant="outline" className="text-light-base w-full" onClick={saveForDraft}>
+                                <Button type="button" variant="outline" className="text-dark-base w-full" onClick={saveForDraft}>
                                     Simpan sebagai Draft
                                 </Button>
                             </CardFooter>

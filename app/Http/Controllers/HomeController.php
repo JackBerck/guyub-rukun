@@ -17,7 +17,7 @@ class HomeController extends Controller
             ->orderBy('created_at', 'desc')
             ->take(5)
             ->get();
-        $popularForums = Forum::with('user')
+        $popularForums = Forum::with(['user', 'forumCategory'])
             ->where('is_popular', true)
             ->orderBy('created_at', 'desc')
             ->take(5)

@@ -30,7 +30,7 @@ export default function Navbar() {
             <div className="container flex h-16 max-w-screen-xl items-center justify-between">
                 <div className="flex items-center gap-2 md:gap-6">
                     <Link href="/" className="w-10">
-                        <img src="/guyub-rukun.webp" alt="Guyub Rukun Logo" />
+                        <img src="/bagiin.webp" alt="Bagiin Logo" />
                     </Link>
                     <nav className="hidden md:flex md:items-center md:gap-6">
                         {navigations.map((nav) => (
@@ -92,22 +92,24 @@ export default function Navbar() {
                                     </DropdownMenuItem> */}
                                     <DropdownMenuSeparator />
                                     <DropdownMenuItem className="bg-red-base text-light-base hover:bg-red-700">
-                                        <button onClick={handleLogout}>
-                                            Keluar
-                                        </button>
+                                        <button onClick={handleLogout}>Keluar</button>
                                     </DropdownMenuItem>
                                 </DropdownMenuContent>
                             </DropdownMenu>
                         </>
                     )}
                     {!auth.user ? (
-                        <Button className="text-light-base hidden bg-emerald-600 transition duration-100 hover:bg-emerald-700 md:inline-flex">
-                            <Link href="/login">Donasikan Sekarang</Link>
-                        </Button>
+                        <Link href="/login">
+                            <Button className="text-light-base hidden bg-emerald-600 transition duration-100 hover:bg-emerald-700 md:inline-flex">
+                                Donasikan Sekarang
+                            </Button>
+                        </Link>
                     ) : (
-                        <Button className="text-light-base hidden bg-emerald-600 transition duration-100 hover:bg-emerald-700 md:inline-flex">
-                            <Link href="/donate">Donasikan Sekarang</Link>
-                        </Button>
+                        <Link href="/donate">
+                            <Button className="text-light-base hidden bg-emerald-600 transition duration-100 hover:bg-emerald-700 md:inline-flex">
+                                Donasikan Sekarang
+                            </Button>
+                        </Link>
                     )}
                     {/* Hamburger menu with dropdown from top */}
                     <Button variant="ghost" size="icon" className="md:hidden" onClick={() => setIsMenuOpen(!isMenuOpen)}>

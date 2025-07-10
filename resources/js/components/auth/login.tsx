@@ -122,7 +122,7 @@ export default function LoginForm() {
                         name="remember"
                         checked={data.remember}
                         onChange={(e) => setData('remember', e.target.checked)}
-                        className="h-4 w-4 rounded border-gray-300 text-emerald-600 focus:ring-emerald-500"
+                        className="h-4 w-4 rounded border-gray-300 text-emerald-600 focus:ring-emerald-500 accent-blue-500"
                     />
                     <label htmlFor="remember" className="text-sm text-gray-600">
                         Ingat saya

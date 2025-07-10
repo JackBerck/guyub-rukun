@@ -66,12 +66,12 @@ export default function AffairDetail() {
                             <CardHeader>
                                 <div className="mb-4 flex items-center justify-between">
                                     <div className="flex items-center space-x-3">
-                                        <Avatar className="text-light-base">
+                                        <Avatar className="text-dark-base font-semibold">
                                             <AvatarImage src={affair.user?.image || '/placeholder.svg'} />
                                             <AvatarFallback>{affair.user?.name?.[0] || 'U'}</AvatarFallback>
                                         </Avatar>
                                         <div>
-                                            <h3 className="font-semibold">{affair.user?.name || 'Unknown User'}</h3>
+                                            <h6 className="font-semibold">{affair.user?.name || 'Unknown User'}</h6>
                                             <p className="text-sm text-gray-500">{formatDateTime(affair.created_at)}</p>
                                         </div>
                                     </div>
@@ -170,7 +170,7 @@ export default function AffairDetail() {
                                         <AvatarImage src={affair.user?.image || '/placeholder.svg'} />
                                         <AvatarFallback>{affair.user?.name?.[0] || 'U'}</AvatarFallback>
                                     </Avatar>
-                                    <h3 className="font-semibold">{affair.user?.name || 'Unknown User'}</h3>
+                                    <h6 className="font-semibold">{affair.user?.name || 'Unknown User'}</h6>
                                     <p className="text-sm text-gray-500">{affair.user?.email || 'Email tidak tersedia'}</p>
                                 </div>
                                 <div className="space-y-2">

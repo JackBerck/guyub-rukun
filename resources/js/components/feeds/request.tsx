@@ -166,7 +166,7 @@ export function RequestFeeds() {
                 <h3 className="mb-2 text-lg font-semibold text-gray-900">Belum Ada Permintaan</h3>
                 <p className="mb-4 text-gray-600">Belum ada permintaan bantuan yang tersedia saat ini.</p>
                 <Button asChild>
-                    <Link href="/need-help">Buat Permintaan Pertama</Link>
+                    <Link href="/need-help">Buat Permintaan</Link>
                 </Button>
             </div>
         );
@@ -178,7 +178,7 @@ export function RequestFeeds() {
                 <div key={request.id} className="py-2 first:pt-0">
                     <div className="flex gap-3">
                         {/* User Avatar */}
-                        <Avatar className="text-light-base h-10 w-10 shrink-0">
+                        <Avatar className="h-10 w-10 shrink-0 font-semibold">
                             <AvatarImage src={request.user.image || '/placeholder.svg'} alt={request.user.name} />
                             <AvatarFallback>{request.user.name[0]}</AvatarFallback>
                         </Avatar>
@@ -289,9 +289,7 @@ export function RequestFeeds() {
 
             {/* End of data message */}
             {!hasMoreData && requests.length > 0 && (
-                <div className="pt-4 text-center">
-                    <p className="text-sm text-gray-500">Tidak ada permintaan lagi untuk ditampilkan</p>
-                </div>
+                <p className="py-4 text-center text-sm text-gray-500">Tidak ada permintaan lagi untuk ditampilkan</p>
             )}
 
             {/* Error message for load more */}

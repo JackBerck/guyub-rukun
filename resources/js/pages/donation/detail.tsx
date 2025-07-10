@@ -136,12 +136,12 @@ export default function DonationDetail() {
                             <CardHeader>
                                 <div className="mb-4 flex items-center justify-between">
                                     <div className="flex items-center space-x-3">
-                                        <Avatar className="text-light-base">
+                                        <Avatar className="text-dark-base font-semibold">
                                             <AvatarImage src={donation.user?.image || '/placeholder.svg'} />
                                             <AvatarFallback>{donation.user?.name?.[0] || 'U'}</AvatarFallback>
                                         </Avatar>
                                         <div>
-                                            <h3 className="font-semibold">{donation.user?.name || 'Unknown User'}</h3>
+                                            <h6 className="font-semibold">{donation.user?.name || 'Unknown User'}</h6>
                                             <p className="text-sm text-gray-500">{formatDate(donation.created_at)}</p>
                                         </div>
                                     </div>

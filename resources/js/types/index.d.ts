@@ -137,6 +137,7 @@ export interface Forum {
 // PageProps untuk halaman detail forum
 export interface ForumDetailPageProps {
     forum: Forum;
+    relatedForums?: Forum[];
     [key: string]: unknown;
 }
 

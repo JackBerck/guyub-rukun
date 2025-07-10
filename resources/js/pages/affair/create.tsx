@@ -331,7 +331,7 @@ export default function CreateEventPage({ affairCategories }: { affairCategories
                                 <Button type="submit" disabled={processing} className="text-light-base w-full bg-emerald-600 hover:bg-emerald-700">
                                     {processing ? 'Memproses...' : 'Publikasikan Acara'}
                                 </Button>
-                                <Button type="button" variant="outline" className="text-light-base w-full" onClick={saveForDraft}>
+                                <Button type="button" variant="outline" className="text-dark-base w-full" onClick={saveForDraft}>
                                     Simpan sebagai Draft
                                 </Button>
                             </CardFooter>

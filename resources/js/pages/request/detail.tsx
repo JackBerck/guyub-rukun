@@ -161,7 +161,7 @@ export default function RequestDetail() {
                                             <AvatarFallback className="text-light-base">{donation.user?.name?.[0] || 'U'}</AvatarFallback>
                                         </Avatar>
                                         <div>
-                                            <h3 className="font-semibold">{donation.user?.name || 'Unknown User'}</h3>
+                                            <h6 className="font-semibold">{donation.user?.name || 'Unknown User'}</h6>
                                             <p className="text-sm text-gray-500">{formatDate(donation.created_at)}</p>
                                         </div>
                                     </div>
@@ -337,7 +337,7 @@ export default function RequestDetail() {
                                         <AvatarImage src={donation.user?.image || '/placeholder.svg'} />
                                         <AvatarFallback>{donation.user?.name?.[0] || 'U'}</AvatarFallback>
                                     </Avatar>
-                                    <h3 className="font-semibold">{donation.user?.name || 'Unknown User'}</h3>
+                                    <h6 className="font-semibold">{donation.user?.name || 'Unknown User'}</h6>
                                     <p className="text-sm text-gray-500">{donation.user?.email || 'Email tidak tersedia'}</p>
                                 </div>
                                 <div className="space-y-2">
