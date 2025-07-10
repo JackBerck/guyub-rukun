@@ -1,97 +1,68 @@
 'use client';
 
-import { Clock, Heart, MapPin, MessageSquare, Share2 } from 'lucide-react';
-import { useState } from 'react';
+import { Clock, Heart, MapPin, MessageSquare } from 'lucide-react';
 
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader } from '@/components/ui/card';
 import Layout from '@/layouts/layout';
 import { ProfileLayout } from '@/layouts/profile-layout';
-import { Head } from '@inertiajs/react';
+import { PageProps } from '@/types';
+import { Head, Link, usePage } from '@inertiajs/react';
+
+interface LikedPostPageProps extends PageProps {
+    likedPosts: Array<{
+        id: number;
+        title: string;
+        slug: string;
+        description: string;
+        category: string;
+        urgency?: string;
+        image?: string;
+        author: string;
+        createdAt: string;
+        likedAt: string;
+        location?: string;
+        stats: {
+            likes: number;
+            comments: number;
+        };
+    }>;
+}
 
 export default function ProfileLikedPage() {
-    const [likedPosts] = useState([
-        {
-            id: 1,
-            title: 'Makanan Siap Saji untuk 10 Orang',
-            description:
-                'Kami memiliki makanan catering yang tersisa dari acara kantor. Masih layak konsumsi dan bisa diambil hari ini sebelum jam 8 malam.',
-            image: '/img/posts/restoran.jpg',
-            location: 'Jakarta Selatan',
-            category: 'Makanan',
-            urgency: 'mendesak',
-            author: 'Rumah Makan Sejahtera',
-            createdAt: '2 jam yang lalu',
-            likedAt: '1 jam yang lalu',
-            stats: { likes: 24, comments: 5, shares: 12 },
-        },
-        {
-            id: 2,
-            title: 'Tips Menyimpan Makanan Agar Tahan Lama',
-            description:
-                'Berbagi tips dan trik untuk menyimpan makanan agar tidak mudah basi dan tahan lama. Mari diskusikan cara-cara efektif untuk mengurangi pemborosan makanan.',
-            image: '/img/posts/komunitas.jpeg',
-            category: 'Tips & Trik',
-            author: 'Ahmad Nutritionist',
-            createdAt: '1 hari yang lalu',
-            likedAt: '1 hari yang lalu',
-            stats: { likes: 45, comments: 12, shares: 8 },
-        },
-        {
-            id: 3,
-            title: 'Jumat Berkah: Berbagi Makanan di Pasar Minggu',
-            description:
-                'Acara berbagi makanan gratis untuk masyarakat kurang mampu di sekitar Pasar Minggu. Mari bergabung untuk berbagi kebahagiaan.',
-            image: '/img/posts/rumah-makan.jpg',
-            location: 'Pasar Minggu, Jakarta Selatan',
-            category: 'Berbagi Makanan',
-            author: 'Komunitas Peduli',
-            createdAt: '2 hari yang lalu',
-            likedAt: '2 hari yang lalu',
-            stats: { likes: 67, comments: 23, shares: 15 },
-        },
-    ]);
+    const { likedPosts } = usePage<LikedPostPageProps>().props;
 
     const getCategoryColor = (category: string) => {
         const colors: { [key: string]: string } = {
-            Makanan: 'bg-emerald-100 text-emerald-800',
+            Tips: 'bg-emerald-100 text-emerald-800',
             'Tips & Trik': 'bg-blue-100 text-blue-800',
             'Berbagi Makanan': 'bg-purple-100 text-purple-800',
-            Sembako: 'bg-orange-100 text-orange-800',
+            Berita: 'bg-orange-100 text-orange-800',
+            Event: 'bg-yellow-100 text-yellow-800',
+            Tutorial: 'bg-pink-100 text-pink-800',
         };
         return colors[category] || 'bg-gray-100 text-gray-800';
     };
 
-    const getUrgencyColor = (urgency?: string) => {
-        switch (urgency) {
-            case 'mendesak':
-                return 'bg-red-100 text-red-800';
-            case 'sedang':
-                return 'bg-yellow-100 text-yellow-800';
-            case 'rendah':
-                return 'bg-green-100 text-green-800';
-            default:
-                return '';
-        }
-    };
+    console.log('Liked Posts:', likedPosts);
 
     return (
         <Layout>
-            <Head title="Postingan Disukai" />
+            <Head title="Forum Disukai" />
             <ProfileLayout>
                 <div className="space-y-6">
-                    <div>
-                        <h1 className="text-2xl font-bold">Postingan yang Disukai</h1>
-                        <p className="text-gray-600">Daftar semua postingan yang telah Anda sukai</p>
-                    </div>
+                    {/* <div>
+                        <h1 className="text-2xl font-bold">Forum yang Disukai</h1>
+                        <p className="text-gray-600">Daftar semua forum yang telah Anda sukai</p>
+                    </div> */}
 
                     {likedPosts.length === 0 ? (
                         <div className="py-12 text-center">
                             <Heart className="mx-auto mb-4 h-12 w-12 text-gray-400" />
-                            <p className="text-gray-500">Anda belum menyukai postingan apapun</p>
+                            <p className="text-gray-500">Anda belum menyukai forum apapun</p>
                         </div>
                     ) : (
-                        <div className="space-y-6">
+                        <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
                             {likedPosts.map((post) => (
                                 <Card key={post.id} className="bg-light-base text-dark-base transition-shadow hover:shadow-md">
                                     <CardHeader className="pb-3">
@@ -103,17 +74,12 @@ export default function ProfileLikedPage() {
                                                     >
                                                         {post.category}
                                                     </span>
-                                                    {post.urgency && (
-                                                        <span
-                                                            className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium ${getUrgencyColor(post.urgency)}`}
-                                                        >
-                                                            {post.urgency}
-                                                        </span>
-                                                    )}
                                                 </div>
-                                                <h3 className="mb-2 text-lg font-semibold">{post.title}</h3>
+                                                <Link href={route('forum.view', post.slug)} className="text-lg font-semibold hover:underline">
+                                                <h3 className="line-clamp-2 mb-2 text-lg font-semibold">{post.title}</h3>
+                                                </Link>
                                             </div>
-                                            <div className="flex-1 text-xs text-gray-400">Disukai {post.likedAt}</div>
+                                            <div className="flex-1 text-right text-xs text-gray-400">Disukai {post.likedAt}</div>
                                         </div>
                                         <div className="extra-small-font-size flex items-center gap-4 text-gray-500">
                                             <span>oleh {post.author}</span>
@@ -136,7 +102,7 @@ export default function ProfileLikedPage() {
                                                     <img src={post.image} alt={post.title} className="h-full w-full object-cover" />
                                                 </div>
                                             )}
-                                            <p className="text-sm text-gray-600">{post.description}</p>
+                                            <p className="text-sm text-gray-600 line-clamp-3">{post.description}</p>
                                             <div className="flex items-center justify-between border-t pt-2">
                                                 <div className="flex items-center gap-4">
                                                     <Button variant="ghost" size="sm" className="gap-1 text-red-500">
@@ -146,10 +112,6 @@ export default function ProfileLikedPage() {
                                                     <Button variant="ghost" size="sm" className="gap-1 text-gray-500">
                                                         <MessageSquare className="h-4 w-4" />
                                                         <span>{post.stats.comments}</span>
-                                                    </Button>
-                                                    <Button variant="ghost" size="sm" className="gap-1 text-gray-500">
-                                                        <Share2 className="h-4 w-4" />
-                                                        <span>{post.stats.shares}</span>
                                                     </Button>
                                                 </div>
                                             </div>

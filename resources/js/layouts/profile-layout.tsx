@@ -3,7 +3,7 @@
 import type React from 'react';
 
 import { Link } from '@inertiajs/react';
-import { Calendar, Gift, HelpCircle, LogOut, Menu, User, Users } from 'lucide-react';
+import { Calendar, Gift, Heart, HelpCircle, LogOut, Menu, MessageSquare, User, Users } from 'lucide-react';
 import { useState } from 'react';
 
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
@@ -35,16 +35,16 @@ export function ProfileLayout({ children }: ProfileLayoutProps) {
             icon: <User className="h-5 w-5" />,
             exact: true,
         },
-        // {
-        //     href: '/settings/liked-posts',
-        //     label: 'Postingan Disukai',
-        //     icon: <Heart className="h-5 w-5" />,
-        // },
-        // {
-        //     href: '/settings/commenteded-posts',
-        //     label: 'Postingan Dikomentari',
-        //     icon: <MessageSquare className="h-5 w-5" />,
-        // },
+        {
+            href: '/settings/liked-posts',
+            label: 'Forum Disukai',
+            icon: <Heart className="h-5 w-5" />,
+        },
+        {
+            href: '/settings/commented-posts',
+            label: 'Postingan Dikomentari',
+            icon: <MessageSquare className="h-5 w-5" />,
+        },
         {
             href: '/settings/donations',
             label: 'Kelola Donasi',

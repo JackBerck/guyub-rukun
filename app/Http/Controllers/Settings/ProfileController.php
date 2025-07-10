@@ -261,4 +261,115 @@ class ProfileController extends Controller
             'affairs' => $affairs,
         ]);
     }
+
+    /**
+     * Show the user's liked posts.
+     */
+    public function likedPost(): Response
+    {
+        $likedPosts = Auth::user()->likedPosts()
+            ->with(['forumCategory', 'user'])
+            ->orderBy('likes.created_at', 'desc') // urutkan berdasarkan waktu like
+            ->get()
+            ->map(function ($forum) {
+                return [
+                    'id' => $forum->id,
+                    'title' => $forum->title,
+                    'slug' => $forum->slug,
+                    'description' => $forum->description,
+                    'image' => $forum->thumbnail ? '/storage/' . $forum->thumbnail : null,
+                    'category' => $forum->forumCategory->name ?? '-',
+                    'author' => $forum->user->name ?? '-',
+                    'createdAt' => $forum->created_at->diffForHumans(),
+                    'likedAt' => $forum->pivot->created_at->diffForHumans(), // waktu saat user like
+                    'stats' => [
+                        'likes' => $forum->likedByUsers->count(),
+                        'comments' => $forum->comments->count(),
+                    ],
+                    'location' => null, // forum biasanya tidak punya lokasi, bisa diisi jika ada
+                    'urgency' => null, // forum biasanya tidak punya urgency
+                ];
+            });
+
+        return Inertia::render('profile/liked-posts', [
+            'likedPosts' => $likedPosts,
+        ]);
+    }
+
+
+    /**
+     * Show the user's commented posts.
+     */
+    public function commentedPost(): Response
+    {
+        $user = Auth::user();
+
+        // Ambil semua komentar user beserta relasi commentable (forum, donation, affair)
+        $comments = $user->comments()
+            ->with(['commentable' => function ($morphTo) {
+                $morphTo->morphWith([
+                    \App\Models\Forum::class => ['forumCategory', 'user', 'likedByUsers', 'comments'],
+                    \App\Models\Donation::class => ['donationCategory', 'donationImages', 'user', 'comments'],
+                    \App\Models\Affair::class => ['affairCategory', 'user', 'comments'],
+                ]);
+            }])
+            ->orderByDesc('created_at')
+            ->get();
+
+        // Mapping ke bentuk post
+        $commentedPosts = $comments->map(function ($comment) {
+            $post = $comment->commentable;
+            if (!$post) return null;
+
+            $type = null;
+            $image = null;
+            $category = null;
+            $location = null;
+            $urgency = null;
+
+            if ($post instanceof \App\Models\Forum) {
+                $type = 'forum';
+                $image = $post->thumbnail ? '/storage/' . $post->thumbnail : null;
+                $category = $post->forumCategory->name ?? '-';
+            } elseif ($post instanceof \App\Models\Donation) {
+                $type = $post->type; // 'donation' atau 'request'
+                $image = $post->donationImages->first()
+                    ? '/storage/' . $post->donationImages->first()->image
+                    : null;
+                $category = $post->donationCategory->name ?? '-';
+                $location = $post->address;
+                $urgency = $post->urgency;
+            } elseif ($post instanceof \App\Models\Affair) {
+                $type = 'affair';
+                $image = $post->thumbnail ? '/storage/' . $post->thumbnail : null;
+                $category = $post->affairCategory->name ?? '-';
+                $location = $post->location;
+            }
+
+            return [
+                'id' => $post->id,
+                'type' => $type,
+                'title' => $post->title,
+                'slug' => $post->slug,
+                'description' => $post->description,
+                'image' => $image,
+                'category' => $category,
+                'location' => $location,
+                'urgency' => $urgency,
+                'author' => $post->user->name ?? '-',
+                'createdAt' => $post->created_at->diffForHumans(),
+                'commentedAt' => $comment->created_at->diffForHumans(),
+                'myComment' => $comment->body,
+                'stats' => [
+                    'likes' => method_exists($post, 'likedByUsers') ? $post->likedByUsers->count() : 0,
+                    'comments' => method_exists($post, 'comments') ? $post->comments->count() : 0,
+                    'shares' => 0,
+                ],
+            ];
+        })->filter()->values();
+
+        return Inertia::render('profile/commented', [
+            'commentedPosts' => $commentedPosts,
+        ]);
+    }
 }

@@ -24,6 +24,9 @@ Route::middleware('auth')->group(function () {
     // Settings for liked posts
     Route::get('settings/liked-posts', [ProfileController::class, 'likedPost'])->name('profile.liked-posts');
 
+    // Settings for commented posts
+    Route::get('settings/commented-posts', [ProfileController::class, 'commentedPost'])->name('profile.commented-posts');
+
     // Settings for donations
     Route::get('settings/donations', [ProfileController::class, 'donations'])->name('profile.donations');
 
