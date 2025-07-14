@@ -25,10 +25,10 @@ export default function Footer() {
                     {/* Brand & Logo */}
                     <div className="mb-6 md:mb-0 flex flex-col gap-2">
                         <Link href="/" className="flex items-center gap-2">
-                            <img src="/bagiin.webp" className="h-10 w-10" alt="GuyubRukun Logo" />
+                            <img src="/bagiin.webp" className="h-10 w-10" alt="PeduliRasa Logo" />
                             <span className="text-2xl font-bold whitespace-nowrap text-dark-base">
-                                <span className="text-green-base">Guyub</span>
-                                <span className="text-blue-base">Rukun</span>
+                                <span className="text-green-base">Peduli</span>
+                                <span className="text-blue-base">Rasa</span>
                             </span>
                         </Link>
                         <p className="text-sm text-gray-500 max-w-xs mt-2">
@@ -47,7 +47,7 @@ export default function Footer() {
                     <span className="text-gray-500 text-sm">
                         &copy; {new Date().getFullYear()}{' '}
                         <Link href="https://instagram.com/zakidzlfkr_" className="hover:underline font-semibold text-emerald-600">
-                            GuyubRukun&#8482;
+                            PeduliRasa&#8482;
                         </Link>
                         . All Rights Reserved.
                     </span>

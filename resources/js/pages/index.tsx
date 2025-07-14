@@ -309,7 +309,7 @@ export default function Home() {
                                             ))}
                                         </CardContent>
                                         <CardFooter className="p-0">
-                                            <Link href="https://instagram.com/guyub_rukun" className="w-full">
+                                            <Link href="https://instagram.com/pedulirasa" className="w-full">
                                                 <Button
                                                     variant="ghost"
                                                     size="sm"

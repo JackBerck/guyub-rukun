@@ -92,7 +92,7 @@
             </div>
         </div>
         <div class="footer">
-            Email ini dikirim otomatis oleh sistem Guyub Rukun.
+            Email ini dikirim otomatis oleh sistem PeduliRasa.
         </div>
     </div>
 </body>
