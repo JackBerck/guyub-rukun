@@ -80,12 +80,12 @@ export default function Navbar() {
                                             Profil
                                         </Link>
                                     </DropdownMenuItem>
-                                    {/* <DropdownMenuItem>
-                                        <Link href="/my-donations" className="flex w-full">
-                                            Donasi Saya
+                                    <DropdownMenuItem>
+                                        <Link href="/chat" className="flex w-full">
+                                            Pesan
                                         </Link>
                                     </DropdownMenuItem>
-                                    <DropdownMenuItem>
+                                    {/* <DropdownMenuItem>
                                         <Link href="/settings" className="flex w-full">
                                             Pengaturan
                                         </Link>

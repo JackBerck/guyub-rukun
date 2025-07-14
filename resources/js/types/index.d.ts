@@ -1,6 +1,13 @@
 import { LucideIcon } from 'lucide-react';
 import type { Config } from 'ziggy-js';
 
+declare global {
+    interface Window {
+        Echo: Echo;
+        // Pusher: any; // Assuming Pusher is globally available
+    }
+}
+
 export interface Auth {
     user: User;
 }

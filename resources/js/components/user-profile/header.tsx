@@ -3,8 +3,8 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Dialog, DialogClose, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Textarea } from '@/components/ui/textarea';
-import { useForm } from '@inertiajs/react';
-import { Calendar, Flag, MapPin, Share2, UserCheck } from 'lucide-react';
+import { Link, useForm } from '@inertiajs/react';
+import { Calendar, Flag, MapPin, MessageCircle, Share2, UserCheck } from 'lucide-react';
 import { useState } from 'react';
 import { toast } from 'sonner';
 import { Avatar, AvatarFallback, AvatarImage } from '../ui/avatar';
@@ -151,11 +151,19 @@ export function UserProfileHeader({ user }: UserProfileHeaderProps) {
 
                         {/* Action Buttons */}
                         <div className="flex flex-wrap gap-3">
+                            <Link href={`/chat/${user.id}`}>
+                                <Button
+                                    variant="outline"
+                                    className="bg-light-base text-dark-base hover:text-light-base gap-2 hover:bg-emerald-600"
+                                >
+                                    <MessageCircle className="h-4 w-4" />
+                                    Kirim Pesan
+                                </Button>
+                            </Link>
                             <Button variant="outline" onClick={handleShare} className="bg-light-base text-dark-base gap-2">
                                 <Share2 className="h-4 w-4" />
                                 Bagikan
                             </Button>
-
                             <Button
                                 variant="outline"
                                 onClick={() => setIsDialogOpen(true)}

@@ -64,6 +64,10 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::post("share-affair", [AffairController::class, "store"])->name("affair.store");
     Route::put("affair/{affair:slug}/edit", [AffairController::class, "update"])->name("affair.update");
     Route::delete("affair/{affair:slug}", [AffairController::class, "remove"])->name("affair.remove");
+
+    Route::get('/chat', [\App\Http\Controllers\ChatController::class, 'index'])->name('chat.index');
+    Route::get('/chat/{id}', [\App\Http\Controllers\ChatController::class, 'show'])->name('chat.show');
+    Route::post('/chat/send', [\App\Http\Controllers\ChatController::class, 'sendMessage'])->name('chat.send');
 });
 
 require __DIR__ . '/settings.php';
