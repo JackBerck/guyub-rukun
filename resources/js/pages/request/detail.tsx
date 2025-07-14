@@ -242,7 +242,7 @@ export default function RequestDetail() {
                                         donation.comments.map((comment) => (
                                             <div key={comment.id} className="relative flex space-x-3">
                                                 <Avatar className="text-dark-base h-8 w-8">
-                                                    <AvatarImage src={comment.user.image} />
+                                                    <AvatarImage src={`/storage/${comment.user.image}`} />
                                                     <AvatarFallback>{comment.user.name[0]}</AvatarFallback>
                                                 </Avatar>
                                                 <div className="flex-1">

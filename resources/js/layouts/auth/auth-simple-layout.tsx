@@ -17,7 +17,7 @@ export default function AuthSimpleLayout({ children, title, description }: Props
                         <Link href={route('home')} className="flex flex-col items-center gap-2 font-medium">
                             <div className="mb-1 flex h-9 w-9 items-center justify-center rounded-md md:h-16 md:w-16 lg:h-32 lg:w-32">
                                 {/* <AppLogoIcon className="size-9 fill-current text-[var(--foreground)] dark:text-white" /> */}
-                                <img src="bagiin.webp" alt="peduli-rasa-logo" className="size-32" />
+                                <img src="pedulirasa.webp" alt="peduli-rasa-logo" className="size-32" />
                             </div>
                             <span className="sr-only">{title}</span>
                         </Link>

@@ -1,8 +1,23 @@
 import tailwindcss from '@tailwindcss/vite';
 import react from '@vitejs/plugin-react';
 import laravel from 'laravel-vite-plugin';
+import { networkInterfaces } from 'node:os';
 import { resolve } from 'node:path';
 import { defineConfig } from 'vite';
+
+function getLocalIp() {
+    const nets = networkInterfaces();
+    for (const name of Object.keys(nets)) {
+        for (const net of nets[name]!) {
+            if (net.family === 'IPv4' && !net.internal) {
+                return net.address;
+            }
+        }
+    }
+    return 'localhost';
+}
+
+const localHost = getLocalIp();
 
 export default defineConfig({
     plugins: [
@@ -23,11 +38,11 @@ export default defineConfig({
         },
     },
     server: {
-        host: '192.168.1.2', // IP lokal kamu
+        host: localHost,
         port: 5173,
         strictPort: true,
         hmr: {
-            host: '192.168.1.2',
+            host: localHost,
         },
     },
 });

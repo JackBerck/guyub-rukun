@@ -30,7 +30,7 @@ export default function Navbar() {
             <div className="container flex h-16 max-w-screen-xl items-center justify-between">
                 <div className="flex items-center gap-2 md:gap-6">
                     <Link href="/" className="w-10">
-                        <img src="/bagiin.webp" alt="Bagiin Logo" />
+                        <img src="/pedulirasa.webp" alt="PeduliRasa Logo" />
                     </Link>
                     <nav className="hidden md:flex md:items-center md:gap-6">
                         {navigations.map((nav) => (

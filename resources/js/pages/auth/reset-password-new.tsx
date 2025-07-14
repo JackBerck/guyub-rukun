@@ -50,6 +50,8 @@ export default function ResetPasswordPage({ token, email }: ResetPasswordProps) 
         });
     };
 
+    console.log(errorHomemade);
+
     if (!isValidToken) {
         return (
             <Layout>
@@ -75,7 +77,7 @@ export default function ResetPasswordPage({ token, email }: ResetPasswordProps) 
                         <div className="space-y-4">
                             <Alert variant="destructive">
                                 <AlertCircle className="h-4 w-4" />
-                                <AlertDescription>{errorHomemade}</AlertDescription>
+                                <AlertDescription className="text-dark-base">{errorHomemade}</AlertDescription>
                             </Alert>
 
                             <div className="space-y-3">

@@ -3,7 +3,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import Layout from '@/layouts/layout';
 import { Head, router, useForm, usePage } from '@inertiajs/react';
-import { MoreVertical, Send } from 'lucide-react';
+import { Send } from 'lucide-react';
 import { useEffect, useRef, useState } from 'react';
 
 type ChatUser = {
@@ -24,10 +24,17 @@ type Message = {
 type ChatDetailPageProps = {
     chatUser: ChatUser | null;
     messages: Message[];
+    auth: {
+        user: {
+            id: number;
+            name: string;
+            avatar: string | null;
+        } | null;
+    };
 };
 
 export default function ChatDetailPage() {
-    const { chatUser, messages: initialMessages } = usePage<ChatDetailPageProps>().props;
+    const { chatUser, messages: initialMessages, auth } = usePage<ChatDetailPageProps>().props;
 
     const [messages, setMessages] = useState<Message[]>(initialMessages || []);
     const messagesEndRef = useRef<HTMLDivElement>(null);
@@ -35,30 +42,38 @@ export default function ChatDetailPage() {
         receiver_id: chatUser?.id,
         message: '',
     });
-    
+    const currentUserId = auth?.user?.id;
+
     useEffect(() => {
         setMessages(initialMessages || []);
     }, [initialMessages]);
 
     useEffect(() => {
-        if (!chatUser || typeof window === "undefined") return;
+        if (!currentUserId || typeof window === 'undefined' || !window.Echo) return;
 
-        const channel = window.Echo.private(`chat.${chatUser.id}`);
+        const channel = window.Echo.private(`chat.${currentUserId}`);
 
-        channel.listen('NewChatMessage', (e: any) => {
-            // Hanya push pesan jika dari lawan bicara
-            if (e.message.senderId === chatUser.id) {
+        type NewChatMessageEvent = {
+            id: number;
+            senderId: number;
+            message: string;
+            timestamp: string;
+        };
+
+        channel.listen('NewChatMessage', (e: NewChatMessageEvent) => {
+            // Jika pesan dari lawan bicara yang sedang dibuka, tampilkan
+            if (e.senderId === chatUser?.id) {
                 setMessages((prev) => [
                     ...prev,
                     {
-                        id: e.message.id,
-                        senderId: e.message.senderId,
-                        message: e.message.message,
-                        timestamp: new Date(e.message.timestamp).toLocaleTimeString('id-ID', {
+                        id: e.id,
+                        senderId: e.senderId,
+                        message: e.message,
+                        timestamp: new Date(e.timestamp).toLocaleTimeString('id-ID', {
                             hour: '2-digit',
                             minute: '2-digit',
                         }),
-                        date: e.message.timestamp.split(' ')[0],
+                        date: e.timestamp.split(' ')[0],
                     },
                 ]);
             }
@@ -67,7 +82,7 @@ export default function ChatDetailPage() {
         return () => {
             channel.stopListening('NewChatMessage');
         };
-    }, [chatUser, chatUser?.id]);
+    }, [chatUser, chatUser?.id, currentUserId]);
 
     useEffect(() => {
         messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -127,13 +142,8 @@ export default function ChatDetailPage() {
                             <div className="flex flex-1 items-center gap-3">
                                 <div className="relative">
                                     <Avatar className="h-10 w-10">
-                                        <AvatarImage src={`/storage/${chatUser.avatar}`} alt={`Foto ${chatUser.name}`} />
-                                        <AvatarFallback>
-                                            {chatUser.name
-                                                .split(' ')
-                                                .map((n) => n[0])
-                                                .join('')}
-                                        </AvatarFallback>
+                                        <AvatarImage src={chatUser.avatar ?? undefined} alt={`Foto ${chatUser.name}`} />
+                                        <AvatarFallback>{chatUser.name[0].toUpperCase()}</AvatarFallback>
                                     </Avatar>
                                     {chatUser.isOnline && (
                                         <div className="absolute -right-1 -bottom-1 h-3 w-3 rounded-full border-2 border-white bg-green-500"></div>
@@ -145,23 +155,19 @@ export default function ChatDetailPage() {
                                     <p className="text-xs text-gray-500">{chatUser.isOnline ? 'Online' : 'Terakhir dilihat baru-baru ini'}</p>
                                 </div>
                             </div>
-
-                            <Button variant="ghost" size="sm" className="p-2">
-                                <MoreVertical className="h-5 w-5" />
-                            </Button>
                         </div>
 
                         {/* Messages */}
                         <div className="flex-1 space-y-4 overflow-y-auto p-4">
                             {messages.map((msg) => (
-                                <div key={msg.id} className={`flex ${msg.senderId === chatUser.id ? 'justify-end' : 'justify-start'}`}>
+                                <div key={msg.id} className={`flex ${msg.senderId !== chatUser.id ? 'justify-end' : 'justify-start'}`}>
                                     <div
                                         className={`max-w-xs rounded-2xl px-4 py-2 lg:max-w-md ${
-                                            msg.senderId === chatUser.id ? 'bg-emerald-600 text-white' : 'border bg-white text-gray-900'
+                                            msg.senderId !== chatUser.id ? 'bg-emerald-600 text-white' : 'border bg-white text-gray-900'
                                         }`}
                                     >
                                         <p className="text-sm">{msg.message}</p>
-                                        <p className={`mt-1 text-xs ${msg.senderId === chatUser.id ? 'text-emerald-100' : 'text-gray-500'}`}>
+                                        <p className={`mt-1 text-xs ${msg.senderId !== chatUser.id ? 'text-emerald-100' : 'text-gray-500'}`}>
                                             {msg.timestamp}
                                         </p>
                                     </div>
