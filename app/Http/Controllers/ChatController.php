@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Events\NewChatMessage;
+use App\Events\UnreadCountUpdated;
 use App\Models\ChatMessage;
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -127,7 +128,7 @@ class ChatController extends Controller
             'message' => 'required|string|max:1000',
         ]);
 
-        
+
         $chatMessage = ChatMessage::create([
             'sender_id' => Auth::id(),
             'receiver_id' => $request->receiver_id,
@@ -137,5 +138,17 @@ class ChatController extends Controller
 
         // Broadcast pesan ke receiver
         broadcast(new NewChatMessage($chatMessage))->toOthers();
+
+        // Hitung unreadCount baru untuk receiver dari pengirim ini
+        $unreadCount = ChatMessage::where('sender_id', Auth::id())
+            ->where('receiver_id', $request->receiver_id)
+            ->where('is_read', false)
+            ->count();
+
+        broadcast(new UnreadCountUpdated(
+            $request->receiver_id,
+            Auth::id(),
+            $unreadCount
+        ))->toOthers();
     }
 }

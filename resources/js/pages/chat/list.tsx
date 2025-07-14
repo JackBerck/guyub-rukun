@@ -3,7 +3,7 @@ import { Input } from '@/components/ui/input';
 import Layout from '@/layouts/layout';
 import { Head, Link, usePage } from '@inertiajs/react';
 import { MessageCircle, Search } from 'lucide-react';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 type ChatUser = {
     id: number;
@@ -17,13 +17,43 @@ type ChatUser = {
         senderId: number;
     } | null;
     unreadCount: number;
+    auth: {
+        user: {
+            id: number;
+            name: string;
+            avatar: string | null;
+        } | null;
+    };
 };
 
 export default function ChatPage() {
-    const { chatList = [] } = usePage<{ chatList: ChatUser[] }>().props;
+    const { chatList = [], currentUserId } = usePage<{ chatList: ChatUser[] }>().props;
     const [searchQuery, setSearchQuery] = useState('');
+    const [chats, setChats] = useState<ChatUser[]>(chatList);
 
-    const filteredChats = chatList.filter((chat) => chat.name.toLowerCase().includes(searchQuery.toLowerCase()));
+    const filteredChats = chats.filter((chat) => chat.name.toLowerCase().includes(searchQuery.toLowerCase()));
+
+    useEffect(() => {
+        setChats(chatList);
+    }, [chatList]);
+
+    useEffect(() => {
+        if (typeof window === 'undefined' || !window.Echo || !currentUserId) return;
+
+        const channel = window.Echo.private(`chat.${currentUserId}`);
+
+        channel.listen('UnreadCountUpdated', (e: {
+            fromUserId: number;
+            unreadCount: number;
+        }) => {
+            setChats((prev) => prev.map((chat) => (chat.id === e.fromUserId ? { ...chat, unreadCount: e.unreadCount } : chat)));
+            console.log(`Unread count updated for user ${e.fromUserId}: ${e.unreadCount}`);
+        });
+
+        return () => {
+            channel.stopListening('UnreadCountUpdated');
+        };
+    }, [currentUserId]);
 
     return (
         <Layout>
