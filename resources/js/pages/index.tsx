@@ -113,9 +113,9 @@ export default function Home() {
                                         <Card className="bg-light-base text-dark-base gap-2 p-2">
                                             <CardHeader className="p-0">
                                                 <div className="flex items-start gap-2">
-                                                    <Avatar className="text-dark-base large-font-size aspect-square h-12 w-12 shrink-0">
+                                                    <Avatar className="text-dark-base large-font-size aspect-square h-12 w-12 shrink-0 font-semibold">
                                                         <AvatarImage
-                                                            src={user?.image ? `/storage/${user.image}` : '/img/placeholder.svg'}
+                                                            src={user?.image ? `/storage/${user.image}` : ''}
                                                             alt={user?.name || 'User'}
                                                         />
                                                         <AvatarFallback>{user?.name?.[0]?.toUpperCase() || 'U'}</AvatarFallback>
