@@ -12,7 +12,7 @@ import {
 import navigations from '@/data/navigations';
 import { SharedData } from '@/types';
 import { Link, router, usePage } from '@inertiajs/react';
-import { Menu, User, X } from 'lucide-react';
+import { Menu, Search, User, X } from 'lucide-react';
 import { useState } from 'react';
 
 export default function Navbar() {
@@ -54,11 +54,13 @@ export default function Navbar() {
                             </Button>
                         </div>
                     ) : (
-                        <Button variant="ghost" size="icon" onClick={() => setIsSearchOpen(true)}>
+                    )} */}
+                    <Link href={route('search.index')}>
+                        <Button variant="ghost" size="icon">
                             <Search className="h-5 w-5" />
                             <span className="sr-only">Search</span>
                         </Button>
-                    )} */}
+                    </Link>
                     {auth.user && (
                         <>
                             {/* <Button variant="ghost" size="icon">

@@ -206,7 +206,7 @@ export default function DonationFeeds() {
                                 <Link href={donation.type === 'donation' ? `/donation/${donation.slug}` : `/help/${donation.slug}`}>
                                     <h4 className="line-clamp-2 cursor-pointer text-lg font-bold hover:text-emerald-600">{donation.title}</h4>
                                 </Link>
-                                <p className="small-font-size mt-1 line-clamp-2 text-gray-600">{donation.description}</p>
+                                <p className="small-font-size mt-1 line-clamp-3 text-gray-600">{donation.description}</p>
                             </div>
 
                             {/* Post Meta */}

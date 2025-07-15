@@ -20,6 +20,13 @@ Route::get('/contact', function () {
     return Inertia::render('contact');
 })->name('contact');
 
+Route::get('/contact', function () {
+    return Inertia::render('contact');
+})->name('contact');
+
+Route::get('/search', [\App\Http\Controllers\SearchController::class, 'index'])
+    ->name('search.index');
+
 // Route General
 Route::get("user/{user:id}", [DetailUserController::class, "detailUser"])->name("user.detail");
 Route::get("donation/{donation:slug}", [DonationController::class, "viewDonate"])->name("donation.donate.view");
