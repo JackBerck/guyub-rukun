@@ -181,7 +181,7 @@ export default function LoginForm() {
                         Facebook
                     </Button> */}
 
-                <p className="text-center text-sm">
+                <p className="mt-2 text-center text-sm">
                     Belum memiliki akun?{' '}
                     <Link href="/register" className="font-medium text-emerald-600 hover:underline">
                         Daftar sekarang
